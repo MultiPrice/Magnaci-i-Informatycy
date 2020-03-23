@@ -1,0 +1,29 @@
+(1/4)(1/7)XXXX
+//type of item
+//type of weapon
+{
+<Item name>
+<Item desc> (if "-" then empty)
+<Texture>
+<Cost>
+<Min lvl>
+<Hero Class>  (kodujemy binarnie -> 1101 = 13)
+	        (Paladyn = tak, Berserk = tak, Rogue = nie, Mage = tak)
+<Min damage>
+<Max damage>
+<Attack Speed>
+}
+
+Example:
+210001
+{
+Siekacz
+Ostrzejszy niz kebab z ostrym
+textures/items/weapon/sword/siekacz.png
+800
+35
+13 
+5
+8
+6
+}

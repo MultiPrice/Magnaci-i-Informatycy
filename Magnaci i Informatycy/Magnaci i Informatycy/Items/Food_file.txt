@@ -1,0 +1,20 @@
+(1/4)(1/4)XXXX
+//type of item
+//type of food
+{
+<Item name>
+<Item desc> (if "-" then empty)
+<Texture>
+<Cost>
+<Health>/<Tp dest>
+}
+
+Example:
+310001
+{
+Jablko
+Newton nie narzekal
+textures/items/food/jablko.jpg
+20
+50
+}

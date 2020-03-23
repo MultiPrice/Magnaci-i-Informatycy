@@ -1,0 +1,14 @@
+Plains1
+{
+1
+64
+36
+Locations/PLAINS/Plains1/background.png
+Plains2
+500
+500
+}
+<nazwa_mapy_2>
+{
+...
+}

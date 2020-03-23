@@ -1,0 +1,29 @@
+(1/4)(1/5)XXXX
+//type of item
+//part of armor
+{
+<Item name>
+<Item desc> (if "-" then empty)
+<Texture>
+<Cost>
+<Min lvl>
+<Hero Class>  (kodujemy binarnie -> 1101 = 13)
+	        (Paladyn = tak, Berserk = tak, Rogue = nie, Mage = tak)
+<Armor Points>
+<Speed>
+<Magic Resistance>
+}
+
+Example:
+110001
+{
+Helm
+Nie jeden leb uratowal
+textures/items/armour/helmet/helm.png
+300
+30
+12
+2
+0
+0
+}
