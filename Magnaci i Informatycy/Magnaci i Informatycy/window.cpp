@@ -99,10 +99,7 @@ butt_list* remove_from_list(Button* el, butt_list* buttons)
 
 void which_x_in_animation(int& start_x)
 {
-    if (start_x == 320)
-        start_x = 40;
-    else
-        start_x += 40;
+    start_x = 0;
 }
 
 window::window(int pwidth, int pheight)

@@ -14,7 +14,6 @@
 
 #include "general_functions.h"
 
-
 bool al_addon() //funkcja wywyo³uje wewnêtrzne funkcje biblioteki allegro
 {
     if (!al_init())

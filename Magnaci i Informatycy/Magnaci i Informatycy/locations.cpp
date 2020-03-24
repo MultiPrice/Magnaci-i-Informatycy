@@ -110,28 +110,29 @@ void Location::read_colision_file(std::string& colision_file, std::string& mob_f
 	file.open(colision_file);
 	if (file)
 	{
-		map = new Object * *[sizeX];
+		map = new Object **[sizeX];
 		char tmp;
 		for (int i = 0; i < sizeX; ++i)
+			map[i] = new Object *[sizeY];
+		for (int i = 0; i < sizeY; ++i)
 		{
-			map[i] = new Object * [sizeY];
-			for (int j = 0; j < sizeY; ++j)
+			for (int j = 0; j < sizeX; ++j)
 			{
 				file >> tmp;
 				switch (tmp)
 				{
-				case 'V'://void
-					map[i][j] = nullptr;
+				case 'O'://void
+					map[j][i] = nullptr;
 					break;
 				case 'W'://wall
-					map[i][j] = new Element(i, j, false);
+					map[j][i] = new Element(j, i, false);
 					break;
 				}
 			}
 		}
 	}
 	file.close();
-	mob_file_read(mob_file, map);
+	//mob_file_read(mob_file, map);
 }
 
 void Location::mob_file_read(std::string mob_file, Object***& map)
@@ -201,11 +202,12 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 
 void Location::draw()
 {
-	al_draw_bitmap(this->texture, positionX * 30, positionY * 30, 0);
+	al_draw_bitmap_region(texture, positionX * measure, positionY * measure, screen_width, screen_height,0,0,0);
 }
 
 void Location::draw(int position_x, int position_y)
 {
+	al_draw_bitmap_region(texture, (position_x-16)*measure, (position_y-9)*measure, screen_width, screen_height, 0, 0, 0);
 }
 
 void Location::draw_mobs()

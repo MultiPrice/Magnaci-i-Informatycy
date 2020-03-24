@@ -74,12 +74,12 @@ Berserk::~Berserk()
 
 void Berserk::draw()
 {
-	al_draw_bitmap(this->texture, positionX * 30, positionY * 30, 0);
+	al_draw_bitmap(this->texture, 16 * measure, 8 * measure, 0);
 }
 
 void Berserk::draw(int position_x, int position_y)
 {
-	al_draw_bitmap_region(this->texture, bitmap_start_x, bitmap_start_y, bitmap_width, bitmap_height, position_x * 30, position_y * 30, 0);
+	al_draw_bitmap_region(this->texture, bitmap_start_x, bitmap_start_y, measure*1.5, measure*2, position_x * measure, position_y * measure, 0);
 }
 
 void Berserk::test()
@@ -98,12 +98,12 @@ Paladin::~Paladin()
 
 void Paladin::draw()
 {
-	al_draw_bitmap(this->texture, positionX * 30, positionY * 30, 0);
+	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
 }
 
 void Paladin::draw(int X, int Y)
 {
-	al_draw_bitmap(this->texture, X * 30, Y * 30, 0);
+	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
 }
 
 Rogue::Rogue(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
@@ -118,12 +118,12 @@ Rogue::~Rogue()
 
 void Rogue::draw()
 {
-	al_draw_bitmap(this->texture, positionX * 30, positionY * 30, 0);
+	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
 }
 
 void Rogue::draw(int X, int Y)
 {
-	al_draw_bitmap(this->texture, X * 30, Y * 30, 0);
+	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
 }
 
 Mage::Mage(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
@@ -138,12 +138,12 @@ Mage::~Mage()
 
 void Mage::draw()
 {
-	al_draw_bitmap(this->texture, positionX * 30, positionY * 30, 0);
+	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
 }
 
 void Mage::draw(int X, int Y)
 {
-	al_draw_bitmap(this->texture, X * 30, Y * 30, 0);
+	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
 }
 
 Native::Native(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
@@ -158,10 +158,10 @@ Native::~Native()
 
 void Native::draw()
 {
-	al_draw_bitmap(this->texture, positionX * 30, positionY * 30, 0);
+	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
 }
 
 void Native::draw(int X, int Y)
 {
-	al_draw_bitmap(this->texture, X * 30, Y * 30, 0);
+	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
 }

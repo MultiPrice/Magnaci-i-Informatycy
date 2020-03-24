@@ -16,6 +16,7 @@
 
 const int screen_width = 1920;
 const int screen_height = 1060;
+const int measure = 60; //rozmiar pojedynczej kratki/najmniejszej dlugosci miary
 
 
 class Object
@@ -27,8 +28,6 @@ public:
 	//````````````````````````````````````````````````````
 	int bitmap_start_x = 0;
 	int bitmap_start_y = 0;
-	int bitmap_width = 40;
-	int bitmap_height = 60;
 	//````````````````````````````````````````````````````
 	virtual void draw() = 0;
 	virtual void draw(int position_x, int position_y) = 0;
