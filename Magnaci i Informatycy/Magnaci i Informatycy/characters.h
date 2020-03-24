@@ -45,6 +45,7 @@ public:
 	Character(int X, int Y, int seek_id, std::string& file_name);
 	Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
+	double movement_cooldown;
 };
 
 class Berserk : public Character

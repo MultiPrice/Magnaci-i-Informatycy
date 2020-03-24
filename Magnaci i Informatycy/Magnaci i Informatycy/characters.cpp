@@ -12,6 +12,7 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	hp = mana = lvl = min_damage = max_damage = critical_chance = armor = strength = agility = intelligence = charisma = 0;
 	texture = nullptr;
 	attitude = FRIEND;
+	movement_cooldown = al_get_time();
 
 	File_read(file_name);
 }
@@ -34,6 +35,7 @@ Character::Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl,
 	this->attitude = attitude;
 	this->positionX = X;
 	this->positionY = Y;
+	this->movement_cooldown = al_get_time();
 }
 
 bool Character::File_read(std::string& file_name)

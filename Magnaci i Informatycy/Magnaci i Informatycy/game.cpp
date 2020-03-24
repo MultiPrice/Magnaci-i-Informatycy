@@ -13,8 +13,6 @@ void window::change_position(Object*& who, int prevX, int prevY, int nextX, int 
 void window::player_movement() // ruch gracza na planszy
 {
 	al_get_keyboard_state(&keyboard);
-	/*if (al_key_down(&keyboard, ALLEGRO_KEY_ESCAPE))
-		return;*/
 	if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
 		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
@@ -24,6 +22,7 @@ void window::player_movement() // ruch gracza na planszy
 			location->change_mob_coordinates(-1, 0);
 			which_x_in_animation(player->bitmap_start_x);
 			player->bitmap_start_y = 60;
+			dynamic_cast<Character*>(player)->movement_cooldown = al_get_time();
 		}
 		/*if (typeid(Element) == typeid(*map[player->get_X + 1][player->get_Y]))
 		{
@@ -35,7 +34,7 @@ void window::player_movement() // ruch gracza na planszy
 			//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
 			//gracz->X += 1;
 	}
-	if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
 	{
 		if (map[player->get_X() - 1][player->get_Y()] == nullptr)
 		{
@@ -44,9 +43,10 @@ void window::player_movement() // ruch gracza na planszy
 			location->change_mob_coordinates(+1, 0);
 			which_x_in_animation(player->bitmap_start_x);
 			player->bitmap_start_y = 120;
+			dynamic_cast<Character*>(player)->movement_cooldown = al_get_time();
 		}
 	}
-	if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
 	{
 		if (map[player->get_X()][player->get_Y() - 1] == nullptr)
 		{
@@ -55,9 +55,10 @@ void window::player_movement() // ruch gracza na planszy
 			location->change_mob_coordinates(0, +1);
 			which_x_in_animation(player->bitmap_start_x);
 			player->bitmap_start_y = 180;
+			dynamic_cast<Character*>(player)->movement_cooldown = al_get_time();
 		}
 	}
-	if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
 	{
 		if (map[player->get_X()][player->get_Y() + 1] == nullptr)
 		{
@@ -66,6 +67,7 @@ void window::player_movement() // ruch gracza na planszy
 			location->change_mob_coordinates(0, -1);
 			which_x_in_animation(player->bitmap_start_x);
 			player->bitmap_start_y = 0;
+			dynamic_cast<Character*>(player)->movement_cooldown = al_get_time();
 		}
 	}
 }
@@ -82,10 +84,14 @@ void window::game_working()// odœwierzenie planszy
 	//default:
 	//	break;
 	//}
-	player_movement();
+	if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 0.5)
+	{
+		player_movement();
+	}
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	location->draw();
 	location->draw_mobs();
+	//al_draw_filled_rectangle(300, 300, 360, 420, al_map_rgb(0, 0, 0));
 	player->draw(screen_width / 60, screen_height / 60);
 	draw_buttons();
 
