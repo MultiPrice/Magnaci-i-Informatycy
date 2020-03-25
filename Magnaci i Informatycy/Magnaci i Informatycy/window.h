@@ -3,6 +3,7 @@
 #include <allegro5/allegro_font.h>
 #include <vector>
 #include <typeinfo>
+#include <time.h>
 
 #include "buttons.h"
 #include "general_functions.h"

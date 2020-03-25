@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <time.h>
 #include <allegro5/bitmap.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_ttf.h>
@@ -51,13 +52,16 @@ protected:
 	ATTITUDE attitude;
 	DIRECTION direction;
 	std::vector<Item*> inventory;
-	Item* equipment[7];
+	Item* equipment[6];
+	Weapon* weapon;
 
 public:
 	Character();
 	Character(int X, int Y, int seek_id, std::string& file_name);
 	Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
+	int get_hp();
+	void get_damage(int dmg);
 	double movement_cooldown;
 };
 

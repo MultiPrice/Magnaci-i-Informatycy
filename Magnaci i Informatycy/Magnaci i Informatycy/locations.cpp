@@ -215,7 +215,11 @@ void Location::draw(int position_x, int position_y)//funckaj dostaje koordynaty 
 void Location::draw_mobs(int position_x, int position_y)//funckaj dostaje koordynaty gracza
 {
 	for (int i = 0; i < mobs.size(); i++)
+	{
+		if (dynamic_cast<Character*>(mobs[i])->get_hp() == 0)
+			mobs.erase(mobs.begin()+i);
 		mobs[i]->draw(position_x - shiftX, position_y - shiftY);
+	}
 }
 
 void Location::change_mob_coordinates(int changeX, int changeY)

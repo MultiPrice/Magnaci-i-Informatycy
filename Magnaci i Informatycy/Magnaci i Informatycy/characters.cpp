@@ -14,7 +14,8 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	attitude = FRIEND;
 	movement_cooldown = al_get_time();
 	direction = RIGHT;
-	for (int i = 0; i < 7; i++)
+	weapon = nullptr;
+	for (int i = 0; i < 6; i++)
 		equipment[i] = nullptr;
 
 	File_read(file_name);
@@ -39,6 +40,9 @@ Character::Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl,
 	this->positionX = X;
 	this->positionY = Y;
 	direction = RIGHT;
+	weapon = nullptr;
+	for (int i = 0; i < 6; i++)
+		equipment[i] = nullptr;
 	movement_cooldown = al_get_time();
 }
 
@@ -67,6 +71,20 @@ bool Character::File_read(std::string& file_name)
 	return true;
 }
 
+int Character::get_hp()
+{
+	return hp;
+}
+
+void Character::get_damage(int dmg)
+{
+	if (armor > dmg)
+		return;
+	hp = (hp + armor) - dmg;
+	if (hp <= 0)
+		hp = 0;
+}
+
 Berserk::Berserk(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
 
 Berserk::Berserk(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
@@ -92,25 +110,38 @@ void Berserk::draw(int position_x, int position_y)//rysuje moba
 
 int Berserk::basic_attack(Object ***map)
 {
+	int damage = rand() % (max_damage - min_damage) + min_damage + weapon->get_damage();
 	switch (direction)
 	{
 	case UP:
-	for (int i = positionY - 1; i < positionY - 3; i++)
-	{
-		for (int j = positionX - 1; j < 2; j++)
+		for (int i = positionY - 1; i < positionY - 3; i++)
 		{
-			if(map[j][i] != nullptr && typeid(map[j][i]) != typeid(Element))
+			for (int j = positionX - 1; j < positionX + 2; j++)
+				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage);
 		}
-	}
 		break;
 	case RIGHT:
-
+		for (int i = positionY - 2; i < positionY + 1; i++)
+		{
+			if (map[positionX+1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Element))
+				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage);
+		}
 		break;
 	case DOWN:
-
+		for (int i = positionY + 1; i < positionY + 3; i++)
+		{
+			for (int j = positionX - 1; j < positionX + 2; j++)
+				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage);
+		}
 		break;
 	case LEFT:
-
+		for (int i = positionY - 2; i < positionY + 1; i++)
+		{
+			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX -1][i]) != typeid(Element))
+				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage);
+		}
 		break;
 	}
 	return 0;

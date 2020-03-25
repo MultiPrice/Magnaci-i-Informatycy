@@ -117,6 +117,7 @@ void window::game_working()// odœwierzenie planszy
 
 void window::start() // pierwsze uruchomienie planszy
 {
+	srand(time(NULL));
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
