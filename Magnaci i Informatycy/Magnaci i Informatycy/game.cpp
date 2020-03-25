@@ -37,7 +37,6 @@ void window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
 		{
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
-			//location->change_coordinates(location->get_X() - 1, location->get_Y());
 			//location->change_mob_coordinates(-1, 0);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
@@ -58,7 +57,6 @@ void window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X() - 1][player->get_Y()] == nullptr)
 		{
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
-			//location->change_coordinates(location->get_X() + 1, location->get_Y());
 			//location->change_mob_coordinates(+1, 0);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
@@ -70,7 +68,6 @@ void window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X()][player->get_Y() - 1] == nullptr)
 		{
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
-			//location->change_coordinates(location->get_X(), location->get_Y() + 1);
 			//location->change_mob_coordinates(0, +1);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
@@ -82,7 +79,6 @@ void window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X()][player->get_Y() + 1] == nullptr)
 		{
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
-			//location->change_coordinates(location->get_X(), location->get_Y() - 1);
 			//location->change_mob_coordinates(0, -1);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
@@ -109,7 +105,7 @@ void window::game_working()// odœwierzenie planszy
 	}
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	location->draw(player->get_X(), player->get_Y());
-	//location->draw_mobs();
+	location->draw_mobs(player->get_X(), player->get_Y());
 	//player->draw(screen_width / 60, screen_height / 60);
 	player->draw();
 	//std::cout << player->get_X() << " " << player->get_Y() << std::endl;
@@ -124,7 +120,7 @@ void window::start() // pierwsze uruchomienie planszy
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
-
 	player = new Berserk(2,2, 110000, "player/player.txt");
 	location = new Location("Plains1", 0, 0, this->map);
+	std::cout << shiftX << " " << shiftY << std::endl;
 }

@@ -13,6 +13,9 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	texture = nullptr;
 	attitude = FRIEND;
 	movement_cooldown = al_get_time();
+	direction = RIGHT;
+	for (int i = 0; i < 7; i++)
+		equipment[i] = nullptr;
 
 	File_read(file_name);
 }
@@ -35,7 +38,8 @@ Character::Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl,
 	this->attitude = attitude;
 	this->positionX = X;
 	this->positionY = Y;
-	this->movement_cooldown = al_get_time();
+	direction = RIGHT;
+	movement_cooldown = al_get_time();
 }
 
 bool Character::File_read(std::string& file_name)
@@ -74,18 +78,42 @@ Berserk::~Berserk()
 	al_destroy_bitmap(texture);
 }
 
-void Berserk::draw()
+void Berserk::draw()// rysuje gracza
 {
-	al_draw_bitmap(this->texture, 16 * measure, 8 * measure, 0);
+	al_draw_bitmap(texture, shiftX * measure, shiftY * measure, 0);
 }
 
-void Berserk::draw(int position_x, int position_y)
+void Berserk::draw(int position_x, int position_y)//rysuje moba
 {
-	al_draw_bitmap_region(this->texture, bitmap_start_x, bitmap_start_y, measure*1.5, measure*2, position_x * measure, position_y * measure, 0);
+	//al_draw_bitmap_region(this->texture, bitmap_start_x, bitmap_start_y, measure*1.5, measure*2, position_x * measure, position_y * measure, 0);
+	//al_draw_bitmap(texture, positionX * measure, positionY * measure, 0);
+	al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
-void Berserk::test()
+int Berserk::basic_attack(Object ***map)
 {
+	switch (direction)
+	{
+	case UP:
+	for (int i = positionY - 1; i < positionY - 3; i++)
+	{
+		for (int j = positionX - 1; j < 2; j++)
+		{
+			if(map[j][i] != nullptr && typeid(map[j][i]) != typeid(Element))
+		}
+	}
+		break;
+	case RIGHT:
+
+		break;
+	case DOWN:
+
+		break;
+	case LEFT:
+
+		break;
+	}
+	return 0;
 }
 
 Paladin::Paladin(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}

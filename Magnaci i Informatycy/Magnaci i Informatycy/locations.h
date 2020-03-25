@@ -63,7 +63,7 @@ public:
 	void mob_file_read(std::string mob_file, Object***& map);
 	void draw();
 	void draw(int position_x, int position_y);
-	void draw_mobs();
+	void draw_mobs(int position_x, int position_y);
 	void change_mob_coordinates(int changeX, int changeY);
 	~Location();
 };

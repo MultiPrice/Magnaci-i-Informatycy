@@ -14,12 +14,22 @@
 #include <allegro5/allegro_native_dialog.h>
 
 #include "general_functions.h"
+#include "items.h"
+#include "element.h"
 
 enum ATTITUDE
 {
 	FRIEND = 1,
-	NEUTRAL = 2,
-	ENEMY = 3
+	NEUTRAL,
+	ENEMY
+};
+
+enum DIRECTION
+{
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT
 };
 
 class Character : public Object
@@ -39,6 +49,9 @@ protected:
 	int intelligence;// zmniejsza koszt czarow, zwieksza obrazenia magiczne, odblokowywuje opcje dialogowe
 	int charisma;// gadanie i cena, odblokowywuje opcje dialogowe
 	ATTITUDE attitude;
+	DIRECTION direction;
+	std::vector<Item*> inventory;
+	Item* equipment[7];
 
 public:
 	Character();
@@ -56,7 +69,7 @@ public:
 	~Berserk();
 	void draw();
 	void draw(int position_x, int position_y);
-	void test();
+	int basic_attack(Object*** map);
 };
 
 class Paladin : public Character

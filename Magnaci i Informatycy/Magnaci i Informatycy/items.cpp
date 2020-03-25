@@ -15,7 +15,8 @@
 
 #include "items.h"
 
-bool Armour::File_read(std::string& file_name) {
+bool Armour::File_read(std::string& file_name) 
+{
 
 	//File variable
 	std::fstream file;

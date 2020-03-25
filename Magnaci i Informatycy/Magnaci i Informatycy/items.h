@@ -66,6 +66,7 @@ protected:
 	std::string name;					//Item name
 	std::string description;			//Item possible description
 	ITEM item;
+	int weight;
 
 public:
 	virtual bool File_read(std::string& file_name) = 0;

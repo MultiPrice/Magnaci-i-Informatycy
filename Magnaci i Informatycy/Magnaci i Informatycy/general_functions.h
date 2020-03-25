@@ -17,6 +17,8 @@
 const int screen_width = 1920;
 const int screen_height = 1060;
 const int measure = 60; //rozmiar pojedynczej kratki/najmniejszej dlugosci miary
+const int shiftX = screen_width / measure * 0.5;
+const int shiftY = screen_height/ measure * 0.5;
 
 
 class Object

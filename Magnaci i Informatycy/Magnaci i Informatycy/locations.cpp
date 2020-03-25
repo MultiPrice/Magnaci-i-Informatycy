@@ -132,7 +132,7 @@ void Location::read_colision_file(std::string& colision_file, std::string& mob_f
 		}
 	}
 	file.close();
-	//mob_file_read(mob_file, map);
+	mob_file_read(mob_file, map);
 }
 
 void Location::mob_file_read(std::string mob_file, Object***& map)
@@ -174,7 +174,9 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 				switch (id / 100000)
 				{
 				case 1:
-					mobs.push_back(new Berserk(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
+					map[X][Y] = new Berserk(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					//mobs.push_back(new Berserk(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
+					mobs.push_back(map[X][Y]);
 					break;
 				case 2:
 					map[X][Y] = new Paladin(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
@@ -205,15 +207,15 @@ void Location::draw()
 	al_draw_bitmap_region(texture, positionX * measure, positionY * measure, screen_width, screen_height,0,0,0);
 }
 
-void Location::draw(int position_x, int position_y)
+void Location::draw(int position_x, int position_y)//funckaj dostaje koordynaty gracza
 {
-	al_draw_bitmap_region(texture, (position_x-16)*measure, (position_y-9)*measure, screen_width, screen_height, 0, 0, 0);
+	al_draw_bitmap_region(texture, (position_x-shiftX)*measure, (position_y-shiftY-1)*measure, screen_width, screen_height, 0, 0, 0);
 }
 
-void Location::draw_mobs()
+void Location::draw_mobs(int position_x, int position_y)//funckaj dostaje koordynaty gracza
 {
 	for (int i = 0; i < mobs.size(); i++)
-		mobs[i]->draw();
+		mobs[i]->draw(position_x - shiftX, position_y - shiftY);
 }
 
 void Location::change_mob_coordinates(int changeX, int changeY)
