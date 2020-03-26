@@ -47,9 +47,9 @@ void window::player_movement() // ruch gracza na planszy
 
 		}*/
 		/*if (typeid(personel) == typeid(*lista[i]))
-			suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();*/
-			//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
-			//gracz->X += 1;
+		suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();*/
+		//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
+		//gracz->X += 1;
 		wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
