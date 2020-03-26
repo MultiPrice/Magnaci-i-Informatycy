@@ -49,7 +49,6 @@ protected:
 	int intelligence;// zmniejsza koszt czarow, zwieksza obrazenia magiczne, odblokowywuje opcje dialogowe
 	int charisma;// gadanie i cena, odblokowywuje opcje dialogowe
 	ATTITUDE attitude;
-	DIRECTION direction;
 	std::vector<Item*> inventory;
 	Item* equipment[7];
 
@@ -58,7 +57,10 @@ public:
 	Character(int X, int Y, int seek_id, std::string& file_name);
 	Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
+	void what_should_I_draw();
 	double movement_cooldown;
+	DIRECTION direction;
+	bool is_moving;
 };
 
 class Berserk : public Character

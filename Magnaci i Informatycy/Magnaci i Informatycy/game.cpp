@@ -32,10 +32,14 @@ void window::change_position(Object*& who, int prevX, int prevY, int nextX, int 
 void window::player_movement() // ruch gracza na planszy
 {
 	al_get_keyboard_state(&keyboard);
+	Character* tmp = dynamic_cast<Character*>(player);
 	if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
 		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
 		{
+			tmp->is_moving = true;
+			tmp->direction = RIGHT;
+			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
 			//location->change_mob_coordinates(-1, 0);
 			//which_x_in_animation(player->bitmap_start_x);
@@ -56,6 +60,9 @@ void window::player_movement() // ruch gracza na planszy
 	{
 		if (map[player->get_X() - 1][player->get_Y()] == nullptr)
 		{
+			tmp->is_moving = true;
+			tmp->direction = LEFT;
+			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
 			//location->change_mob_coordinates(+1, 0);
 			//which_x_in_animation(player->bitmap_start_x);
@@ -67,6 +74,9 @@ void window::player_movement() // ruch gracza na planszy
 	{
 		if (map[player->get_X()][player->get_Y() - 1] == nullptr)
 		{
+			tmp->is_moving = true;
+			tmp->direction = UP;
+			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
 			//location->change_mob_coordinates(0, +1);
 			//which_x_in_animation(player->bitmap_start_x);
@@ -78,12 +88,20 @@ void window::player_movement() // ruch gracza na planszy
 	{
 		if (map[player->get_X()][player->get_Y() + 1] == nullptr)
 		{
+			tmp->is_moving = true;
+			tmp->direction = DOWN;
+			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
 			//location->change_mob_coordinates(0, -1);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
 		}
 		wypisz_kurde_wszytsko(map);
+	}
+	else
+	{
+		tmp->is_moving = false;
+		tmp->what_should_I_draw();
 	}
 }
 

@@ -38,6 +38,7 @@ Character::Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl,
 	this->attitude = attitude;
 	this->positionX = X;
 	this->positionY = Y;
+	this->is_moving = false;
 	direction = RIGHT;
 	movement_cooldown = al_get_time();
 }
@@ -67,6 +68,67 @@ bool Character::File_read(std::string& file_name)
 	return true;
 }
 
+void Character::what_should_I_draw()
+{
+	if (is_moving)
+	{
+		switch (direction)
+		{
+		case UP:
+			if (bitmap_start_x == 720)
+				bitmap_start_x = 0;
+			else
+				bitmap_start_x += measure * 1.5;
+			bitmap_start_y = 0;
+			break;
+		case RIGHT:
+			if (bitmap_start_x == 720)
+				bitmap_start_x = 0;
+			else
+				bitmap_start_x += measure * 1.5;
+			bitmap_start_y = 240;
+			std::cout << bitmap_start_x << " " << bitmap_start_y << std::endl;
+			break;
+		case DOWN:
+			if (bitmap_start_x == 720)
+				bitmap_start_x = 0;
+			else
+				bitmap_start_x += measure * 1.5;
+			bitmap_start_y = 360;
+			break;
+		case LEFT:
+			if (bitmap_start_x == 720)
+				bitmap_start_x = 0;
+			else
+				bitmap_start_x += measure * 1.5;
+			bitmap_start_y = 120;
+			break;
+		}
+	}
+	else
+	{
+		switch (direction)
+		{
+		case UP:
+			bitmap_start_x = 0;
+			bitmap_start_y = 0;
+			break;
+		case RIGHT:
+			bitmap_start_x = 0;
+			bitmap_start_y = 240;
+			break;
+		case DOWN:
+			bitmap_start_x = 0;
+			bitmap_start_y = 360;
+			break;
+		case LEFT:
+			bitmap_start_x = 0;
+			bitmap_start_y = 120;
+			break;
+		}
+	}
+}
+
 Berserk::Berserk(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
 
 Berserk::Berserk(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
@@ -80,7 +142,8 @@ Berserk::~Berserk()
 
 void Berserk::draw()// rysuje gracza
 {
-	al_draw_bitmap(texture, shiftX * measure, shiftY * measure, 0);
+	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, shiftX * measure, shiftY * measure, 0);
+	//al_draw_bitmap(texture, shiftX * measure, shiftY * measure, 0);
 }
 
 void Berserk::draw(int position_x, int position_y)//rysuje moba
@@ -99,7 +162,7 @@ int Berserk::basic_attack(Object ***map)
 	{
 		for (int j = positionX - 1; j < 2; j++)
 		{
-			if(map[j][i] != nullptr && typeid(map[j][i]) != typeid(Element))
+			//if (map[j][i] != nullptr && typeid(map[j][i]) != typeid(Element))
 		}
 	}
 		break;
