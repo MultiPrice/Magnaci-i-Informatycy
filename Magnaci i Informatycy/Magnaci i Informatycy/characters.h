@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <time.h>
 #include <allegro5/bitmap.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_ttf.h>
@@ -50,7 +51,8 @@ protected:
 	int charisma;// gadanie i cena, odblokowywuje opcje dialogowe
 	ATTITUDE attitude;
 	std::vector<Item*> inventory;
-	Item* equipment[7];
+	Item* equipment[6];
+	Weapon* weapon;
 
 public:
 	Character();
@@ -58,6 +60,8 @@ public:
 	Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
 	void what_should_I_draw();
+	int get_hp();
+	void get_damage(int dmg);
 	double movement_cooldown;
 	DIRECTION direction;
 	bool is_moving;

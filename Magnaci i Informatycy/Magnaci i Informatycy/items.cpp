@@ -141,6 +141,11 @@ bool Weapon::File_read(std::string& file_name) {
 	return true;
 }
 
+int Weapon::get_damage()
+{
+	return rand() % (max_damage - min_damage) + min_damage;
+}
+
 
 Weapon::Weapon(int id, std::string& file_name) {
 

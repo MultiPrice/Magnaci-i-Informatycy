@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <time.h>
 #include <allegro5/bitmap.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_ttf.h>
@@ -108,6 +109,7 @@ protected:
 public:
 	Weapon(int id, std::string& file_name);	//Constuctor of Weapon
 	bool File_read(std::string& file_name);	//Reads weapon list file and returns true if finds needed value
+	int get_damage();
 };
 
 //------------------------------------------------------------
