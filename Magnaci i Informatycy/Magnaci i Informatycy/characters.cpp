@@ -171,9 +171,9 @@ void Berserk::draw(int position_x, int position_y)//rysuje moba
 	al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
-int Berserk::basic_attack(Object ***map)
+void Berserk::basic_attack(Object *** &map)
 {
-	int damage = rand() % (max_damage - min_damage) + min_damage + weapon->get_damage();
+	int damage = rand() % (max_damage - min_damage) + min_damage;
 	switch (direction)
 	{
 	case UP:
@@ -182,6 +182,7 @@ int Berserk::basic_attack(Object ***map)
 		for (int j = positionX - 1; j < 2; j++)
 		{
 			if(map[j][i] != nullptr && typeid(map[j][i]) != typeid(Element))
+				dynamic_cast<Character*>(map[j][i])->get_damage(damage);
 		}
 	}
 		break;
@@ -208,85 +209,4 @@ int Berserk::basic_attack(Object ***map)
 		}
 		break;
 	}
-	return 0;
-}
-
-Paladin::Paladin(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
-
-Paladin::Paladin(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
-	: Character(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y) {}
-
-Paladin::~Paladin()
-{
-	al_destroy_bitmap(texture);
-}
-
-void Paladin::draw()
-{
-	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
-}
-
-void Paladin::draw(int X, int Y)
-{
-	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
-}
-
-Rogue::Rogue(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
-
-Rogue::Rogue(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
-	: Character(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y) {}
-
-Rogue::~Rogue()
-{
-	al_destroy_bitmap(texture);
-}
-
-void Rogue::draw()
-{
-	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
-}
-
-void Rogue::draw(int X, int Y)
-{
-	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
-}
-
-Mage::Mage(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
-
-Mage::Mage(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
-	: Character(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y) {}
-
-Mage::~Mage()
-{
-	al_destroy_bitmap(texture);
-}
-
-void Mage::draw()
-{
-	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
-}
-
-void Mage::draw(int X, int Y)
-{
-	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
-}
-
-Native::Native(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
-
-Native::Native(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
-	: Character(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y) {}
-
-Native::~Native()
-{
-	al_destroy_bitmap(texture);
-}
-
-void Native::draw()
-{
-	al_draw_bitmap(this->texture, positionX * measure, positionY * measure, 0);
-}
-
-void Native::draw(int X, int Y)
-{
-	al_draw_bitmap(this->texture, X * measure, Y * measure, 0);
 }
