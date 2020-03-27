@@ -2,6 +2,19 @@
 
 Character::Character()
 {
+	positionX = -1000;
+	positionY = -1000;
+	this->id = 0;
+	hp = mana = lvl = min_damage = max_damage = critical_chance = armor = strength = agility = intelligence = charisma = 0;
+	texture = nullptr;
+	attitude = FRIEND;
+	is_moving = false;
+	movement_cooldown = al_get_time();
+	direction = RIGHT;
+	weapon = nullptr;
+//	equipment { nullptr, nullptr,nullptr, nullptr ,nullptr, nullptr };
+	for (int i = 0; i < 6; i++)
+		equipment[i] = nullptr;
 }
 
 Character::Character(int X, int Y, int seek_id, std::string& file_name)
@@ -184,17 +197,16 @@ void Berserk::basic_attack(Object *** &map, std::vector <Object*> &mobs)
 	switch (direction)
 	{
 	case UP:
-	for (int i = positionY - 1; i < positionY - 3; i++)
+		std::cout << "DUPA";
+	for (int i = positionY - 3; i < positionY - 1; i++)
 	{
-		for (int j = positionX - 1; j < 2; j++)
-		{
-			if(map[j][i] != nullptr && typeid(map[j][i]) != typeid(Element))
+		for (int j = positionX - 1; j < positionX + 2; j++)
+			if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
 				dynamic_cast<Character*>(map[j][i])->get_damage(damage, j, i, map, mobs);
-		}
 	}
 		break;
 	case RIGHT:
-		for (int i = positionY - 2; i < positionY + 1; i++)
+		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
 			if (map[positionX+1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Element))
 				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, positionX + 1, i, map, mobs);
@@ -209,7 +221,7 @@ void Berserk::basic_attack(Object *** &map, std::vector <Object*> &mobs)
 		}
 		break;
 	case LEFT:
-		for (int i = positionY - 2; i < positionY + 1; i++)
+		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
 			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX -1][i]) != typeid(Element))
 				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, positionX - 1, i, map, mobs);
