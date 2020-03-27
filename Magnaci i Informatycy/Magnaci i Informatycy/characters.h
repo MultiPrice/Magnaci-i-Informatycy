@@ -63,11 +63,11 @@ public:
 	bool File_read(std::string& file_name); // false jak blad odczytu
 	void what_should_I_draw();
 	int get_hp();
-	void get_damage(int dmg);
+	void get_damage(int dmg, int X, int Y, Object***& map, std::vector <Object*>& mobs);
 	double movement_cooldown;
 	DIRECTION direction;
 	bool is_moving;
-	virtual void basic_attack(Object*** &map) = 0;
+	virtual void basic_attack(Object*** &map, std::vector <Object*>& mobs) = 0;
 };
 
 class Berserk : public Character
@@ -78,5 +78,5 @@ public:
 	~Berserk();
 	void draw();
 	void draw(int position_x, int position_y);
-	void basic_attack(Object *** &map);
+	void basic_attack(Object *** &map, std::vector <Object*>& mobs);
 };

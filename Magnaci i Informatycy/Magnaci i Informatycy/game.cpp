@@ -35,7 +35,7 @@ void window::player_movement() // ruch gracza na planszy
 	Character* tmp = dynamic_cast<Character*>(player);
 	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
 	{
-		tmp->basic_attack(map);
+		tmp->basic_attack(map, location->mobs);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
