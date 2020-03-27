@@ -33,7 +33,11 @@ void window::player_movement() // ruch gracza na planszy
 {
 	al_get_keyboard_state(&keyboard);
 	Character* tmp = dynamic_cast<Character*>(player);
-	if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
+	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
+	{
+		tmp->basic_attack(map);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
 		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
 		{
@@ -51,9 +55,9 @@ void window::player_movement() // ruch gracza na planszy
 
 		}*/
 		/*if (typeid(personel) == typeid(*lista[i]))
-			suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();*/
-			//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
-			//gracz->X += 1;
+		suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();*/
+		//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
+		//gracz->X += 1;
 		wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))

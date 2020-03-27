@@ -178,7 +178,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 					//mobs.push_back(new Berserk(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
 					mobs.push_back(map[X][Y]);
 					break;
-				case 2:
+				/*case 2:
 					map[X][Y] = new Paladin(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
 					mobs.push_back(map[X][Y]);
 					break;
@@ -193,7 +193,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 				case 5:
 					map[X][Y] = new Native(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
 					mobs.push_back(map[X][Y]);
-					break;
+					break;*/
 				}
 				file >> trash;
 			}

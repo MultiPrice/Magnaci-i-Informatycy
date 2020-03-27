@@ -2,7 +2,9 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <time.h>
+#include <ctime>
+#include <cstdlib>
+#include <cstdio>
 #include <allegro5/bitmap.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_ttf.h>
