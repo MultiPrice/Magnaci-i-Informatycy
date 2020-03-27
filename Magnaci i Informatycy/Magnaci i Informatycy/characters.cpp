@@ -182,6 +182,7 @@ int Berserk::basic_attack(Object ***map)
 		for (int j = positionX - 1; j < 2; j++)
 		{
 			if(map[j][i] != nullptr && typeid(map[j][i]) != typeid(Element))
+				dynamic_cast<Character*>(map[j][i])->get_damage(damage);
 		}
 	}
 		break;
