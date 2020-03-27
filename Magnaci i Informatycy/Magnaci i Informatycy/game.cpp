@@ -39,10 +39,10 @@ void window::player_movement() // ruch gracza na planszy
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
+		tmp->direction = RIGHT;
 		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = RIGHT;
 			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
 			//location->change_mob_coordinates(-1, 0);
@@ -62,10 +62,10 @@ void window::player_movement() // ruch gracza na planszy
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
 	{
+		tmp->direction = LEFT;
 		if (map[player->get_X() - 1][player->get_Y()] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = LEFT;
 			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
 			//location->change_mob_coordinates(+1, 0);
@@ -76,10 +76,10 @@ void window::player_movement() // ruch gracza na planszy
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
 	{
+		tmp->direction = UP;
 		if (map[player->get_X()][player->get_Y() - 1] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = UP;
 			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
 			//location->change_mob_coordinates(0, +1);
@@ -90,10 +90,10 @@ void window::player_movement() // ruch gracza na planszy
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
 	{
+		tmp->direction = DOWN;
 		if (map[player->get_X()][player->get_Y() + 1] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = DOWN;
 			tmp->what_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
 			//location->change_mob_coordinates(0, -1);
