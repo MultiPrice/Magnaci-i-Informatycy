@@ -197,7 +197,7 @@ void Berserk::basic_attack(Object***& map, std::vector <Object*>& mobs)
 	switch (direction)
 	{
 	case UP:
-		for (int i = positionY - 2; i < positionY; i++)
+		for (int i = positionY - 1; i < positionY; i++)
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
 				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
@@ -212,7 +212,7 @@ void Berserk::basic_attack(Object***& map, std::vector <Object*>& mobs)
 		}
 		break;
 	case DOWN:
-		for (int i = positionY + 1; i < positionY + 3; i++)
+		for (int i = positionY + 1; i < positionY + 2; i++)
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
 				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
