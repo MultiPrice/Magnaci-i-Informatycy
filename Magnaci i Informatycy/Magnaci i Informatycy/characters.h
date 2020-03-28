@@ -38,6 +38,7 @@ enum DIRECTION
 class Character : public Object
 {
 protected:
+	std::string name;
 	int id;
 	ALLEGRO_BITMAP* texture;
 	int hp;// hit points
@@ -51,6 +52,7 @@ protected:
 	int agility;// szybkosc ataku, szybkosc ruchu
 	int intelligence;// zmniejsza koszt czarow, zwieksza obrazenia magiczne, odblokowywuje opcje dialogowe
 	int charisma;// gadanie i cena, odblokowywuje opcje dialogowe
+	int attack_type;
 	ATTITUDE attitude;
 	std::vector<Item*> inventory;
 	Item* equipment[6];
@@ -59,11 +61,15 @@ protected:
 public:
 	Character();
 	Character(int X, int Y, int seek_id, std::string& file_name);
-	Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
+	Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
-	void what_should_I_draw();
+	void what_move_should_I_draw();
+	void what_attack_should_I_draw(int animation_frames);
+	void change_texture(std::string tmp);
 	int get_hp();
 	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs);
+	int get_attack_type();
+	void change_attack_type(int tmp);
 	double movement_cooldown;
 	DIRECTION direction;
 	bool is_moving;
@@ -74,7 +80,7 @@ class Berserk : public Character
 {
 public:
 	Berserk(int X, int Y, int id, std::string file_name);
-	Berserk(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
+	Berserk(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
 	~Berserk();
 	void draw();
 	void draw(int position_x, int position_y);

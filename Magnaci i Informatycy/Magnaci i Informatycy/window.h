@@ -69,6 +69,7 @@ public:
     void add_fader(float position_x, float position_y);
     // funkcje przemieszczania na mapie
     void player_movement();
+    void player_attack();
     void change_position(Object*& who, int prevX, int prevY, int nextX, int nextY);
     void add_fader(float position_x, float position_y, FADER_FUNCTION pfunction);
     void add_combo(int pposition_x, int pposition_y);

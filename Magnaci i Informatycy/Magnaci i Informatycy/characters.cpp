@@ -19,6 +19,7 @@ Character::Character()
 
 Character::Character(int X, int Y, int seek_id, std::string& file_name)
 {
+	name = "";
 	positionX = X;
 	positionY = Y;
 	this->id = seek_id;
@@ -34,8 +35,9 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	File_read(file_name);
 }
 
-Character::Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
+Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
 {
+	this->name = name;
 	this->id = id;
 	this->texture = texture;
 	this->hp = hp;
@@ -53,6 +55,7 @@ Character::Character(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl,
 	this->positionX = X;
 	this->positionY = Y;
 	this->is_moving = false;
+	this->attack_type = 0;
 	direction = RIGHT;
 	weapon = nullptr;
 	for (int i = 0; i < 6; i++)
@@ -78,14 +81,14 @@ bool Character::File_read(std::string& file_name)
 		std::string bitmap_file;
 		file >> bitmap_file;
 		texture = al_load_bitmap(bitmap_file.c_str());
-		file >> hp >> mana >> lvl >> min_damage >> max_damage >> critical_chance >> armor >> strength >> agility >> intelligence >> charisma;
+		file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> critical_chance >> armor >> strength >> agility >> intelligence >> charisma;
 		file.close();
 	}
 	else return false;
 	return true;
 }
 
-void Character::what_should_I_draw()
+void Character::what_move_should_I_draw()
 {
 	if (is_moving)
 	{
@@ -104,7 +107,6 @@ void Character::what_should_I_draw()
 			else
 				bitmap_start_x += measure * 1.5;
 			bitmap_start_y = 240;
-			std::cout << bitmap_start_x << " " << bitmap_start_y << std::endl;
 			break;
 		case DOWN:
 			if (bitmap_start_x == 720)
@@ -146,6 +148,47 @@ void Character::what_should_I_draw()
 	}
 }
 
+void Character::what_attack_should_I_draw(int animation_frames)
+{
+	switch (direction)
+	{
+	case UP:
+		if (bitmap_start_x == measure*1.5*animation_frames)
+			this->attack_type = 0;
+		else
+			bitmap_start_x += measure * 1.5;
+		bitmap_start_y = 0;
+		break;
+	case RIGHT:
+		if (bitmap_start_x == measure * 1.5 * animation_frames)
+			this->attack_type = 0;
+		else
+			bitmap_start_x += measure * 1.5;
+		bitmap_start_y = measure*4;
+		break;
+	case DOWN:
+		if (bitmap_start_x == measure * 1.5 * animation_frames)
+			this->attack_type = 0;
+		else
+			bitmap_start_x += measure * 1.5;
+		bitmap_start_y = measure*6;
+		break;
+	case LEFT:
+		if (bitmap_start_x == measure * 1.5 * animation_frames)
+			this->attack_type = 0;
+		else
+			bitmap_start_x += measure * 1.5;
+		bitmap_start_y = measure*2;
+		break;
+	}
+	std::cout << bitmap_start_x;
+}
+
+void Character::change_texture(std::string tmp)
+{
+	texture = al_load_bitmap(tmp.c_str());
+}
+
 int Character::get_hp()
 {
 	return hp;
@@ -167,10 +210,20 @@ void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs
 	}
 }
 
+int Character::get_attack_type()
+{
+	return attack_type;
+}
+
+void Character::change_attack_type(int tmp)
+{
+	attack_type = tmp;
+}
+
 Berserk::Berserk(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
 
-Berserk::Berserk(int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
-	: Character(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y)
+Berserk::Berserk(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
+	: Character(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y)
 {}
 
 Berserk::~Berserk()
