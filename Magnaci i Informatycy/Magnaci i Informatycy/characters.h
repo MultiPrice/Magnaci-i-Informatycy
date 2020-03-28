@@ -67,7 +67,7 @@ public:
 	void what_attack_should_I_draw(int animation_frames);
 	void change_texture(std::string tmp);
 	int get_hp();
-	void get_damage(int dmg);
+	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs);
 	int get_attack_type();
 	void change_attack_type(int tmp);
 	double movement_cooldown;

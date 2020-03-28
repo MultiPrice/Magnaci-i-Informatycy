@@ -36,14 +36,14 @@ void window::player_movement() // ruch gracza na planszy
 	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
 	{
 		tmp->change_attack_type(1);
-		tmp->basic_attack(map);
+		tmp->basic_attack(map, location->mobs);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
+		tmp->direction = RIGHT;
 		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = RIGHT;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
 			//location->change_mob_coordinates(-1, 0);
@@ -59,49 +59,49 @@ void window::player_movement() // ruch gracza na planszy
 		suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();*/
 		//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
 		//gracz->X += 1;
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
 	{
+		tmp->direction = LEFT;
 		if (map[player->get_X() - 1][player->get_Y()] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = LEFT;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
 			//location->change_mob_coordinates(+1, 0);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
 		}
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
 	{
+		tmp->direction = UP;
 		if (map[player->get_X()][player->get_Y() - 1] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = UP;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
 			//location->change_mob_coordinates(0, +1);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
 		}
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
 	{
+		tmp->direction = DOWN;
 		if (map[player->get_X()][player->get_Y() + 1] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->direction = DOWN;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
 			//location->change_mob_coordinates(0, -1);
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
 		}
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else
 	{
@@ -141,7 +141,6 @@ void window::game_working()// odœwierzenie planszy
 		location->draw_mobs(player->get_X(), player->get_Y());
 		//player->draw(screen_width / 60, screen_height / 60);
 		player->draw();
-		//std::cout << player->get_X() << " " << player->get_Y() << std::endl;
 		draw_buttons();
 
 		al_flip_display();
@@ -168,5 +167,4 @@ void window::start() // pierwsze uruchomienie planszy
 	add_functional_button(10, 10, MENU);
 	player = new Berserk(2,2, 110000, "player/player.txt");
 	location = new Location("Plains1", 0, 0, this->map);
-	std::cout << shiftX << " " << shiftY << std::endl;
 }
