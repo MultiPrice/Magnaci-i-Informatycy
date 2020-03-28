@@ -63,7 +63,7 @@ public:
 	bool File_read(std::string& file_name); // false jak blad odczytu
 	void what_should_I_draw();
 	int get_hp();
-	void get_damage(int dmg, int X, int Y, Object***& map, std::vector <Object*>& mobs);
+	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs);
 	double movement_cooldown;
 	DIRECTION direction;
 	bool is_moving;

@@ -58,7 +58,7 @@ void window::player_movement() // ruch gracza na planszy
 		suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();*/
 		//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
 		//gracz->X += 1;
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
 	{
@@ -72,7 +72,7 @@ void window::player_movement() // ruch gracza na planszy
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
 		}
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
 	{
@@ -86,7 +86,7 @@ void window::player_movement() // ruch gracza na planszy
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
 		}
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
 	{
@@ -100,7 +100,7 @@ void window::player_movement() // ruch gracza na planszy
 			//which_x_in_animation(player->bitmap_start_x);
 			//player->bitmap_start_y = 0;
 		}
-		wypisz_kurde_wszytsko(map);
+		//wypisz_kurde_wszytsko(map);
 	}
 	else
 	{

@@ -151,14 +151,14 @@ int Character::get_hp()
 	return hp;
 }
 
-void Character::get_damage(int dmg, int X, int Y, Object *** &map, std::vector <Object*> &mobs)
+void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs)
 {
 	if (armor > dmg)
 		return;
 	hp = (hp + armor) - dmg;
 	if (hp <= 0)
 	{
-		map[X][Y] = nullptr;
+		map[positionX][positionY] = nullptr;
 		for (int i = 0; i < mobs.size(); i++)
 		{
 			if (dynamic_cast<Character*>(mobs[i])->get_hp() <= 0)
@@ -191,25 +191,24 @@ void Berserk::draw(int position_x, int position_y)//rysuje moba
 	al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
-void Berserk::basic_attack(Object *** &map, std::vector <Object*> &mobs)
+void Berserk::basic_attack(Object***& map, std::vector <Object*>& mobs)
 {
 	int damage = rand() % (max_damage - min_damage) + min_damage;
 	switch (direction)
 	{
 	case UP:
-		std::cout << "DUPA";
-	for (int i = positionY - 3; i < positionY - 1; i++)
-	{
-		for (int j = positionX - 1; j < positionX + 2; j++)
-			if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
-				dynamic_cast<Character*>(map[j][i])->get_damage(damage, j, i, map, mobs);
-	}
+		for (int i = positionY - 2; i < positionY; i++)
+		{
+			for (int j = positionX - 1; j < positionX + 2; j++)
+				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs);
+		}
 		break;
 	case RIGHT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
-			if (map[positionX+1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Element))
-				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, positionX + 1, i, map, mobs);
+			if (map[positionX + 1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Element))
+				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, map, mobs);
 		}
 		break;
 	case DOWN:
@@ -217,14 +216,14 @@ void Berserk::basic_attack(Object *** &map, std::vector <Object*> &mobs)
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
 				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
-					dynamic_cast<Character*>(map[j][i])->get_damage(damage, j, i, map, mobs);
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs);
 		}
 		break;
 	case LEFT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
-			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX -1][i]) != typeid(Element))
-				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, positionX - 1, i, map, mobs);
+			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX - 1][i]) != typeid(Element))
+				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, map, mobs);
 		}
 		break;
 	}
