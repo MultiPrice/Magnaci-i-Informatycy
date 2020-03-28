@@ -35,6 +35,7 @@ void window::player_movement() // ruch gracza na planszy
 	Character* tmp = dynamic_cast<Character*>(player);
 	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
 	{
+		tmp->change_attack_type(1);
 		tmp->basic_attack(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
@@ -43,7 +44,7 @@ void window::player_movement() // ruch gracza na planszy
 		{
 			tmp->is_moving = true;
 			tmp->direction = RIGHT;
-			tmp->what_should_I_draw();
+			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
 			//location->change_mob_coordinates(-1, 0);
 			//which_x_in_animation(player->bitmap_start_x);
@@ -66,7 +67,7 @@ void window::player_movement() // ruch gracza na planszy
 		{
 			tmp->is_moving = true;
 			tmp->direction = LEFT;
-			tmp->what_should_I_draw();
+			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
 			//location->change_mob_coordinates(+1, 0);
 			//which_x_in_animation(player->bitmap_start_x);
@@ -80,7 +81,7 @@ void window::player_movement() // ruch gracza na planszy
 		{
 			tmp->is_moving = true;
 			tmp->direction = UP;
-			tmp->what_should_I_draw();
+			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
 			//location->change_mob_coordinates(0, +1);
 			//which_x_in_animation(player->bitmap_start_x);
@@ -94,7 +95,7 @@ void window::player_movement() // ruch gracza na planszy
 		{
 			tmp->is_moving = true;
 			tmp->direction = DOWN;
-			tmp->what_should_I_draw();
+			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
 			//location->change_mob_coordinates(0, -1);
 			//which_x_in_animation(player->bitmap_start_x);
@@ -105,12 +106,46 @@ void window::player_movement() // ruch gracza na planszy
 	else
 	{
 		tmp->is_moving = false;
-		tmp->what_should_I_draw();
+		tmp->what_move_should_I_draw();
+	}
+}
+
+void window::player_attack()
+{
+	Character* tmp = dynamic_cast<Character*>(player);
+	switch (tmp->get_attack_type())
+	{
+	case 1:
+		tmp->change_texture("dupa/player_attack.png");
+		tmp->what_attack_should_I_draw(5);
+		if (!tmp->get_attack_type())
+			tmp->change_texture("dupa/player_move.png");
+		break;
 	}
 }
 
 void window::game_working()// odœwierzenie planszy 
 {
+	while (true)
+	{
+		if (dynamic_cast<Character*>(player)->get_attack_type())
+		{
+			player_attack();
+		}
+		if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5)
+		{
+			player_movement();
+		}
+		al_clear_to_color(al_map_rgb(0, 0, 0));
+		location->draw(player->get_X(), player->get_Y());
+		location->draw_mobs(player->get_X(), player->get_Y());
+		//player->draw(screen_width / 60, screen_height / 60);
+		player->draw();
+		//std::cout << player->get_X() << " " << player->get_Y() << std::endl;
+		draw_buttons();
+
+		al_flip_display();
+	}
 	//al_draw_scaled_bitmap(bitmap, 0, 0, rozmiar_dla_full_HD_szerokosc, rozmiar_dla_full_HD_wysokosc, pozycja_po_X, pozycja_po_y, przeskalowana_szerokosc, przeskalowana_wyskosc)
 	//switch (events.type)
 	//{
@@ -121,19 +156,7 @@ void window::game_working()// odœwierzenie planszy
 	//default:
 	//	break;
 	//}
-	if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 0.5)
-	{
-		player_movement();
-	}
-	al_clear_to_color(al_map_rgb(0, 0, 0));
-	location->draw(player->get_X(), player->get_Y());
-	location->draw_mobs(player->get_X(), player->get_Y());
-	//player->draw(screen_width / 60, screen_height / 60);
-	player->draw();
-	//std::cout << player->get_X() << " " << player->get_Y() << std::endl;
-	draw_buttons();
-
-	al_flip_display();
+	
 	//update_positions();
 }
 

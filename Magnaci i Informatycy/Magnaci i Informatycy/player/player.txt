@@ -1,6 +1,7 @@
 110000
 {
 player/player_move.png
+dupa
 1
 1
 1

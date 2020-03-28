@@ -141,6 +141,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 	file.open(mob_file);
 	if (file)
 	{
+		std::string name;
 		int id;
 		std::string trash;
 		std::string bitmap_file;
@@ -166,7 +167,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 			texture = al_load_bitmap(bitmap_file.c_str());
 			enums = id / 10000 % 10;
 			attitude = (ATTITUDE)(enums);
-			file >> hp >> mana >> lvl >> min_damage >> max_damage >> critical_chance >> armor >> strength >> agility >> intelligence >> charisma >> trash;
+			file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> critical_chance >> armor >> strength >> agility >> intelligence >> charisma >> trash;
 			while (trash != "}")
 			{
 				X = stoi(trash);
@@ -174,7 +175,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 				switch (id / 100000)
 				{
 				case 1:
-					map[X][Y] = new Berserk(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					map[X][Y] = new Berserk(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
 					//mobs.push_back(new Berserk(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
 					mobs.push_back(map[X][Y]);
 					break;
@@ -195,6 +196,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 					mobs.push_back(map[X][Y]);
 					break;*/
 				}
+
 				file >> trash;
 			}
 		}
