@@ -55,8 +55,8 @@ protected:
 	int sizeX;
 	int sizeY;
 	Travel_list* pHead;
-	std::vector <Object*> mobs;
 public:
+	std::vector <Object*> mobs;
 	Location(std::string location_name, int X, int Y, Object***& map);
 	void read_info_file(std::string& location_name);
 	void read_colision_file(std::string& colision_file, std::string& mob_file, Object***& map);
