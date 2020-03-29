@@ -142,7 +142,7 @@ void window::working()
     {
         al_wait_for_event(event_queue, &events);
         if (game_is_on)
-            game_working();
+            game_is_on = game_working();
         if (mouse_position_x != events.mouse.x || mouse_position_y != events.mouse.y)
         {
             butt_list* temp = buttons;

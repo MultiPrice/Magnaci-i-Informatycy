@@ -50,7 +50,7 @@ public:
     window(int pwidth, int pheight);
     void registration();
     void working();
-    void game_working();
+    bool game_working();
 
     void display_mode();
     //funkcje ustawiaj¹ce wygl¹d okna
@@ -68,7 +68,7 @@ public:
     void add_mapping_button(float position_x, float position_y, int pbutton_number);
     void add_fader(float position_x, float position_y);
     // funkcje przemieszczania na mapie
-    void player_movement();
+    bool player_movement();
     void player_attack();
     void change_position(Object*& who, int prevX, int prevY, int nextX, int nextY);
     void add_fader(float position_x, float position_y, FADER_FUNCTION pfunction);
