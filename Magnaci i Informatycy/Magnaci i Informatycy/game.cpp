@@ -12,7 +12,7 @@ void wypisz_kurde_wszytsko(Object*** twoja_stara)
 		{
 			if (twoja_stara[j][i] == nullptr)
 				std::cout << "O";
-			else if (typeid(Berserk)==typeid(*twoja_stara[j][i]))
+			else if (typeid(Magnat)==typeid(*twoja_stara[j][i]))
 				std::cout << " ";
 			else if (typeid(Element) == typeid(*twoja_stara[j][i]))
 				std::cout << "W";
@@ -165,6 +165,6 @@ void window::start() // pierwsze uruchomienie planszy
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
-	player = new Berserk(2,2, 110000, "player/player.txt");
+	player = new Magnat(2,2, 110000, "player/player.txt");
 	location = new Location("Plains1", 0, 0, this->map);
 }

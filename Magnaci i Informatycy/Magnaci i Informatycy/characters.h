@@ -40,7 +40,6 @@ class Character : public Object
 protected:
 	std::string name;
 	int id;
-	ALLEGRO_BITMAP* texture;
 	int hp;// hit points
 	int mana;
 	int lvl;
@@ -76,12 +75,12 @@ public:
 	virtual void basic_attack(Object*** &map, std::vector <Object*>& mobs) = 0;
 };
 
-class Berserk : public Character
+class Magnat : public Character
 {
 public:
-	Berserk(int X, int Y, int id, std::string file_name);
-	Berserk(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
-	~Berserk();
+	Magnat(int X, int Y, int id, std::string file_name);
+	Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
+	~Magnat();
 	void draw();
 	void draw(int position_x, int position_y);
 	void basic_attack(Object *** &map, std::vector <Object*>& mobs);

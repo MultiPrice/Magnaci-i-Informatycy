@@ -197,12 +197,14 @@
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="action.h" />
     <ClInclude Include="buttons.h" />
     <ClInclude Include="characters.h" />
     <ClInclude Include="element.h" />
     <ClInclude Include="general_functions.h" />
     <ClInclude Include="items.h" />
     <ClInclude Include="locations.h" />
+    <ClInclude Include="quest.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>

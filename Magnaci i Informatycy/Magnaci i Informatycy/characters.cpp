@@ -220,31 +220,31 @@ void Character::change_attack_type(int tmp)
 	attack_type = tmp;
 }
 
-Berserk::Berserk(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
+Magnat::Magnat(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
 
-Berserk::Berserk(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
+Magnat::Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
 	: Character(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y)
 {}
 
-Berserk::~Berserk()
+Magnat::~Magnat()
 {
 	al_destroy_bitmap(texture);
 }
 
-void Berserk::draw()// rysuje gracza
+void Magnat::draw()// rysuje gracza
 {
 	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, shiftX * measure, shiftY * measure, 0);
 	//al_draw_bitmap(texture, shiftX * measure, shiftY * measure, 0);
 }
 
-void Berserk::draw(int position_x, int position_y)//rysuje moba
+void Magnat::draw(int position_x, int position_y)//rysuje moba
 {
 	//al_draw_bitmap_region(this->texture, bitmap_start_x, bitmap_start_y, measure*1.5, measure*2, position_x * measure, position_y * measure, 0);
 	//al_draw_bitmap(texture, positionX * measure, positionY * measure, 0);
 	al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
-void Berserk::basic_attack(Object***& map, std::vector <Object*>& mobs)
+void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs)
 {
 	int damage = rand() % (max_damage - min_damage) + min_damage;
 	switch (direction)

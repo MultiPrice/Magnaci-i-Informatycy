@@ -20,7 +20,8 @@
 #include "general_functions.h"
 
 //Type of item
-enum ITEM {
+enum class ITEM 
+{
 	ARMOUR,
 	WEAPON,
 	FOOD,
@@ -28,7 +29,7 @@ enum ITEM {
 };
 
 //Type of gear-up
-enum ARMOUR_TYPE
+enum class ARMOUR_TYPE
 {
 	HELMET,
 	CHESTPLATE,
@@ -38,7 +39,7 @@ enum ARMOUR_TYPE
 };
 
 //Type of weapon
-enum WEAPON_TYPE
+enum class WEAPON_TYPE
 {
 	TWO_HANDED,
 	ONE_HANDED,
@@ -50,7 +51,7 @@ enum WEAPON_TYPE
 };
 
 //Type of food
-enum FOOD_TYPE
+enum class FOOD_TYPE
 {
 	//FOOD,          wywala³o b³¹d mo¿liwe dlatego, ¿e taka sama wartoœæ wystêpuje w enumie ITEM
 	POTION,

@@ -7,6 +7,7 @@ Element::Element(int X, int Y, bool ghost)
 	positionX = X;
 	positionY = Y;
 	ghosted = ghost;
+	texture = nullptr;
 	/*
 		std::fstream file;
 		file.open(file_name);
