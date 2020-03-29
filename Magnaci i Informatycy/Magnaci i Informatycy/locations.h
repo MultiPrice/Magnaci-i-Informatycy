@@ -49,7 +49,6 @@ class Location : public Object
 {
 protected:
 	int id;
-	ALLEGRO_BITMAP* texture;
 	std::string name;
 	TERRAIN terrain;
 	int sizeX;

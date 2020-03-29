@@ -175,8 +175,8 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 				switch (id / 100000)
 				{
 				case 1:
-					map[X][Y] = new Berserk(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
-					//mobs.push_back(new Berserk(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
+					map[X][Y] = new Magnat(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					//mobs.push_back(new Magnat(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
 					mobs.push_back(map[X][Y]);
 					break;
 				/*case 2:

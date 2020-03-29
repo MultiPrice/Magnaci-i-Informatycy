@@ -26,6 +26,7 @@ class Object
 protected:
 	int positionX;
 	int positionY;
+	ALLEGRO_BITMAP* texture;
 public:
 	//````````````````````````````````````````````````````
 	int bitmap_start_x = 0;
