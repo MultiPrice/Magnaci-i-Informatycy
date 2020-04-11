@@ -15,11 +15,20 @@
 
 #include "general_functions.h"
 
+
+enum TYPE
+{
+	kill,
+	speak_to,
+	go_to,
+	interct
+};
+
 class Quest
 {
 protected:
 	std::string name;
-	Object* objective;
+	std::vector <Object*, TYPE> objective;
 public:
 
 };
