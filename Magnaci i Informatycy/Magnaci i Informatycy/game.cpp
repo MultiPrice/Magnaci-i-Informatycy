@@ -29,10 +29,19 @@ void window::change_position(Object*& who, int prevX, int prevY, int nextX, int 
 	map[prevX][prevY] = nullptr;
 }
 
-void window::player_movement() // ruch gracza na planszy
+bool window::player_movement() // ruch gracza na planszy
 {
 	al_get_keyboard_state(&keyboard);
 	Character* tmp = dynamic_cast<Character*>(player);
+
+	switch (events.keyboard.keycode)
+	{
+	case ALLEGRO_KEY_ESCAPE:
+		return false;
+	case ALLEGRO_KEY_SPACE:
+		std::cout << "dupa";
+	}
+
 	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
 	{
 		tmp->change_attack_type(1);
@@ -108,6 +117,7 @@ void window::player_movement() // ruch gracza na planszy
 		tmp->is_moving = false;
 		tmp->what_move_should_I_draw();
 	}
+	return true;
 }
 
 void window::player_attack()
@@ -124,7 +134,7 @@ void window::player_attack()
 	}
 }
 
-void window::game_working()// odœwierzenie planszy 
+bool window::game_working()// odœwierzenie planszy 
 {
 	while (true)
 	{
@@ -134,7 +144,8 @@ void window::game_working()// odœwierzenie planszy
 		}
 		if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5)
 		{
-			player_movement();
+			if (!player_movement())
+				return false;
 		}
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 		location->draw(player->get_X(), player->get_Y());
