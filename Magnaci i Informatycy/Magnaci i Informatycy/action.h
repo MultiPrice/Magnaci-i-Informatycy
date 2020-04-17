@@ -27,7 +27,7 @@ protected:
 public:
 	void draw();
 	void draw(int position_x, int position_y);
-	void make_action();
+	void start_action();
 };
 
 class AoE : public Action
