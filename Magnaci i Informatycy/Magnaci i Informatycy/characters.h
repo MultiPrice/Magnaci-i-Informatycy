@@ -85,3 +85,13 @@ public:
 	void draw(int position_x, int position_y);
 	void basic_attack(Object *** &map, std::vector <Object*>& mobs);
 };
+
+class Informatyk : public Character
+{
+public:
+	Informatyk(int X, int Y, int id, std::string file_name);
+	Informatyk(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
+	~Informatyk();
+	void draw();
+	void draw(int position_x, int position_y);
+};
