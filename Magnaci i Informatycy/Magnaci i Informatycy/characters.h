@@ -52,6 +52,7 @@ protected:
 	int intelligence;// zmniejsza koszt czarow, zwieksza obrazenia magiczne, odblokowywuje opcje dialogowe
 	int charisma;// gadanie i cena, odblokowywuje opcje dialogowe
 	int attack_type;
+	double frames;
 	ATTITUDE attitude;
 	std::vector<Item*> inventory;
 	Item* equipment[6];
