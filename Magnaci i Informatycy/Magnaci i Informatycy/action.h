@@ -29,3 +29,20 @@ public:
 	void draw(int position_x, int position_y);
 	void make_action();
 };
+
+class AoE : public Action
+{
+public:
+	void choose_location();
+};
+
+class Wind : public Action
+{
+
+};
+
+class Self : public Action
+{
+
+};
+
