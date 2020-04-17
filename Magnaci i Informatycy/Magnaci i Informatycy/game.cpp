@@ -3,6 +3,8 @@
 #include <typeinfo>
 #include "window.h"
 
+const int FPS = 60;
+
 void wypisz_kurde_wszytsko(Object*** twoja_stara)
 {
 	system("cls");
@@ -136,25 +138,44 @@ void window::player_attack()
 
 bool window::game_working()// odœwierzenie planszy 
 {
+	bool draw = true;
+	ALLEGRO_TIMER* timer = al_create_timer(1.0 / FPS);
+	ALLEGRO_TIMER* move_timer = al_create_timer(1.0 / FPS / 400);
+	ALLEGRO_EVENT_QUEUE* event_q = al_create_event_queue();
+	al_register_event_source(event_q, al_get_keyboard_event_source());
+	al_register_event_source(event_q, al_get_timer_event_source(timer));
+	al_register_event_source(event_q, al_get_timer_event_source(move_timer));
+	al_start_timer(timer);
+	al_start_timer(move_timer);
+	ALLEGRO_EVENT events;
+
 	while (true)
 	{
-		if (dynamic_cast<Character*>(player)->get_attack_type())
+		al_wait_for_event(event_q, &events);
+		if (events.type == ALLEGRO_EVENT_TIMER)
 		{
-			player_attack();
+			if (events.timer.source == timer)
+			{
+				if (dynamic_cast<Character*>(player)->get_attack_type())
+				{
+					player_attack();
+				}
+				if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5)
+				{
+					if (!player_movement())
+						return false;
+				}
+			}
+			else if (events.timer.source == move_timer)
+			{
+				al_clear_to_color(al_map_rgb(0, 0, 0));
+				location->draw(player->get_X(), player->get_Y());
+				location->draw_mobs(player->get_X(), player->get_Y());
+				player->draw();
+				draw_buttons();
+				al_flip_display();
+			}
 		}
-		if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5)
-		{
-			if (!player_movement())
-				return false;
-		}
-		al_clear_to_color(al_map_rgb(0, 0, 0));
-		location->draw(player->get_X(), player->get_Y());
-		location->draw_mobs(player->get_X(), player->get_Y());
-		//player->draw(screen_width / 60, screen_height / 60);
-		player->draw();
-		draw_buttons();
-
-		al_flip_display();
 	}
 	//al_draw_scaled_bitmap(bitmap, 0, 0, rozmiar_dla_full_HD_szerokosc, rozmiar_dla_full_HD_wysokosc, pozycja_po_X, pozycja_po_y, przeskalowana_szerokosc, przeskalowana_wyskosc)
 	//switch (events.type)
