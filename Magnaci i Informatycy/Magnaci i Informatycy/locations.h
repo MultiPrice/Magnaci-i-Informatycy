@@ -58,11 +58,11 @@ public:
 	std::vector <Object*> mobs;
 	Location(std::string location_name, int X, int Y, Object***& map);
 	void read_info_file(std::string& location_name);
-	void read_colision_file(std::string& colision_file, std::string& mob_file, Object***& map);
+	void read_colision_file(std::string& colision_file, Object***& map);
 	void mob_file_read(std::string mob_file, Object***& map);
-	void draw();
+	void draw(Object ***map);
 	void draw(int position_x, int position_y);
-	void draw_mobs(int position_x, int position_y);
+	void draw_mobs(int position_x, int position_y, Object*** map);
 	void change_mob_coordinates(int changeX, int changeY);
 	~Location();
 };

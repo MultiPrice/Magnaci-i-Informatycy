@@ -140,7 +140,7 @@ bool window::game_working()// odœwierzenie planszy
 {
 	bool draw = true;
 	ALLEGRO_TIMER* timer = al_create_timer(1.0 / FPS);
-	ALLEGRO_TIMER* move_timer = al_create_timer(1.0 / FPS / 400);
+	ALLEGRO_TIMER* move_timer = al_create_timer(1.0 / FPS / 40);
 	ALLEGRO_EVENT_QUEUE* event_q = al_create_event_queue();
 	al_register_event_source(event_q, al_get_keyboard_event_source());
 	al_register_event_source(event_q, al_get_timer_event_source(timer));
@@ -170,8 +170,8 @@ bool window::game_working()// odœwierzenie planszy
 			{
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
-				location->draw_mobs(player->get_X(), player->get_Y());
-				player->draw();
+				location->draw_mobs(player->get_X(), player->get_Y(), map);
+				player->draw(map);
 				draw_buttons();
 				al_flip_display();
 			}

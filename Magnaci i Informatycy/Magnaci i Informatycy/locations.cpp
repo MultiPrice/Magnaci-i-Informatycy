@@ -68,7 +68,8 @@ Location::Location(std::string location_name, int X, int Y, Object***& map)
 	std::string colision_file = "Locations/" + find_enum_name(terrain) + "/" + name + "/colision.txt";
 	std::string mob_file = "Locations/" + find_enum_name(terrain) + "/" + name + "/mobs.txt";
 
-	read_colision_file(colision_file, mob_file, map);
+	read_colision_file(colision_file, map);
+	mob_file_read(mob_file, map);
 }
 
 void Location::read_info_file(std::string& location_name)
@@ -132,7 +133,6 @@ void Location::read_colision_file(std::string& colision_file, std::string& mob_f
 		}
 	}
 	file.close();
-	mob_file_read(mob_file, map);
 }
 
 void Location::mob_file_read(std::string mob_file, Object***& map)
@@ -204,7 +204,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 	}
 }
 
-void Location::draw()
+void Location::draw(Object ***map)
 {
 	al_draw_bitmap_region(texture, positionX * measure, positionY * measure, screen_width, screen_height,0,0,0);
 }
@@ -214,13 +214,28 @@ void Location::draw(int position_x, int position_y)//funckaj dostaje koordynaty 
 	al_draw_bitmap_region(texture, (position_x-shiftX)*measure, (position_y-shiftY-1)*measure, screen_width, screen_height, 0, 0, 0);
 }
 
-void Location::draw_mobs(int position_x, int position_y)//funckaj dostaje koordynaty gracza
+void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj dostaje koordynaty gracza
 {
 	for (int i = 0; i < mobs.size(); i++)
 	{
 		if (dynamic_cast<Character*>(mobs[i])->get_hp() == 0)
 			mobs.erase(mobs.begin()+i);
-		mobs[i]->draw(position_x - shiftX, position_y - shiftY);
+		//mobs[i]->draw(position_x - shiftX, position_y - shiftY);
+		int n = 0;
+		while (true)
+		{
+			if (map[mobs[i]->get_X()][mobs[i]->get_Y() + n + 1] == nullptr)
+				break;
+			else
+				n++;
+		}
+		int j = 0;
+		while (n >= j)
+		{
+			if(dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
+				dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->draw(position_x - shiftX, position_y - shiftY);
+			j++;
+		}
 	}
 }
 

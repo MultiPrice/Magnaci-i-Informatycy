@@ -24,7 +24,8 @@ enum ATTITUDE
 {
 	FRIEND = 1,
 	NEUTRAL,
-	ENEMY
+	ENEMY,
+	PLAYER
 };
 
 enum DIRECTION
@@ -69,6 +70,7 @@ public:
 	int get_hp();
 	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs);
 	int get_attack_type();
+	int get_attitude();
 	void change_attack_type(int tmp);
 	double movement_cooldown;
 	DIRECTION direction;
@@ -82,7 +84,7 @@ public:
 	Magnat(int X, int Y, int id, std::string file_name);
 	Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
 	~Magnat();
-	void draw();
+	void draw(Object ***map);
 	void draw(int position_x, int position_y);
 	void basic_attack(Object *** &map, std::vector <Object*>& mobs);
 };
