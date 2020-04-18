@@ -53,10 +53,11 @@ protected:
 	TERRAIN terrain;
 	int sizeX;
 	int sizeY;
-	Travel_list* pHead;
+	Travel_list* pTravel;
 public:
 	std::vector <Object*> mobs;
 	Location(std::string location_name, int X, int Y, Object***& map);
+	void read_travel_file(std::string location_name);
 	void read_info_file(std::string& location_name);
 	void read_colision_file(std::string& colision_file, std::string& mob_file, Object***& map);
 	void mob_file_read(std::string mob_file, Object***& map);

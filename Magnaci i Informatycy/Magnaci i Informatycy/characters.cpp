@@ -181,7 +181,7 @@ void Character::what_attack_should_I_draw(int animation_frames)
 		bitmap_start_y = measure*2;
 		break;
 	}
-	std::cout << bitmap_start_x;
+	//std::cout << bitmap_start_x;
 }
 
 void Character::change_texture(std::string tmp)
