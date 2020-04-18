@@ -1,9 +1,9 @@
 #include "locations.h"
 
-void add_travel(Travel_list*& pHead, std::string& name, int positionX, int positionY, int X, int Y)
+void add_travel(Travel_list*& pHead, std::string& name, int X, int Y, int toX, int toY)
 {
 	if (!pHead)
-		pHead = new Travel_list{ X, Y, name, positionX, positionY, nullptr };
+		pHead = new Travel_list{ X, Y, name, toX, toY, nullptr };
 	else
 	{
 		Travel_list* temp = pHead;
@@ -11,7 +11,7 @@ void add_travel(Travel_list*& pHead, std::string& name, int positionX, int posit
 		{
 			temp = temp->pNext;
 		}
-		temp->pNext = new Travel_list{ X, Y, name, positionX, positionY, nullptr };
+		temp->pNext = new Travel_list{ X, Y, name, toX, toY, nullptr };
 	}
 }
 
@@ -61,7 +61,7 @@ Location::Location(std::string location_name, int X, int Y, Object***& map)
 	id = 0;
 	texture = nullptr;
 	terrain = INTERIOR;
-	pHead = nullptr;
+	pTravel = nullptr;
 
 	read_info_file(location_name);
 
@@ -70,6 +70,25 @@ Location::Location(std::string location_name, int X, int Y, Object***& map)
 
 	read_colision_file(colision_file, map);
 	mob_file_read(mob_file, map);
+}
+
+void Location::read_travel_file(std::string travel_list_file)
+{
+	std::fstream file;
+	file.open(travel_list_file);
+	std::string travel_name;
+	int travel_X, travel_Y, travel_to_X, travel_to_Y = 0;
+	char trash;
+	if (file)
+	{
+		file >> travel_name >> trash;
+		while (!file.eof())
+		{
+			file >> travel_name >> trash >> travel_X >> travel_Y >> travel_to_X >> travel_to_Y >> trash;
+			add_travel(pTravel, travel_name, travel_X, travel_Y, travel_to_X, travel_to_Y);
+		}
+	}
+	file.close();
 }
 
 void Location::read_info_file(std::string& location_name)
@@ -95,12 +114,6 @@ void Location::read_info_file(std::string& location_name)
 		terrain = (TERRAIN)(read_terrain);
 		file >> sizeX >> sizeY >> check;
 		texture = al_load_bitmap(check.c_str());
-		file >> travel_name;
-		while (travel_name != "}")
-		{
-			file >> travel_positionX >> travel_positionY;
-			file >> travel_name;
-		}
 		file.close();
 	}
 }
@@ -247,6 +260,6 @@ void Location::change_mob_coordinates(int changeX, int changeY)
 
 Location::~Location()
 {
-	delete_travel_list(pHead);
+	delete_travel_list(pTravel);
 	al_destroy_bitmap(texture);
 }

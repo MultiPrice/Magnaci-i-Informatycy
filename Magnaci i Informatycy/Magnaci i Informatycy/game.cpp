@@ -34,15 +34,7 @@ void window::change_position(Object*& who, int prevX, int prevY, int nextX, int 
 bool window::player_movement() // ruch gracza na planszy
 {
 	al_get_keyboard_state(&keyboard);
-	Character* tmp = dynamic_cast<Character*>(player);
-
-	switch (events.keyboard.keycode)
-	{
-	case ALLEGRO_KEY_ESCAPE:
-		return false;
-	case ALLEGRO_KEY_SPACE:
-		std::cout << "dupa";
-	}
+	Character* tmp = dynamic_cast<Character*>(player);	
 
 	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
 	{
@@ -57,20 +49,8 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->is_moving = true;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
-			//location->change_mob_coordinates(-1, 0);
-			//which_x_in_animation(player->bitmap_start_x);
-			//player->bitmap_start_y = 0;
 		}
-		/*if (typeid(Element) == typeid(*map[player->get_X + 1][player->get_Y]))
-		{
-			if(dynamic_cast<Element*>(map[player->get_X + 1][player->get_Y])->czy_ghosted() == false)
 
-		}*/
-		/*if (typeid(personel) == typeid(*lista[i]))
-		suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();*/
-		//suma_pensji += dynamic_cast<personel*>(lista[i])->pracuj();
-		//gracz->X += 1;
-		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
 	{
@@ -80,11 +60,7 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->is_moving = true;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
-			//location->change_mob_coordinates(+1, 0);
-			//which_x_in_animation(player->bitmap_start_x);
-			//player->bitmap_start_y = 0;
 		}
-		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
 	{
@@ -94,11 +70,7 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->is_moving = true;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
-			//location->change_mob_coordinates(0, +1);
-			//which_x_in_animation(player->bitmap_start_x);
-			//player->bitmap_start_y = 0;
 		}
-		//wypisz_kurde_wszytsko(map);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
 	{
@@ -108,12 +80,10 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->is_moving = true;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
-			//location->change_mob_coordinates(0, -1);
-			//which_x_in_animation(player->bitmap_start_x);
-			//player->bitmap_start_y = 0;
 		}
-		//wypisz_kurde_wszytsko(map);
 	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_ESCAPE))
+		return false;
 	else
 	{
 		tmp->is_moving = false;
@@ -147,11 +117,11 @@ bool window::game_working()// odœwierzenie planszy
 	al_register_event_source(event_q, al_get_timer_event_source(move_timer));
 	al_start_timer(timer);
 	al_start_timer(move_timer);
-	ALLEGRO_EVENT events;
 
 	while (true)
 	{
 		al_wait_for_event(event_q, &events);
+
 		if (events.type == ALLEGRO_EVENT_TIMER)
 		{
 			if (events.timer.source == timer)
@@ -188,7 +158,6 @@ bool window::game_working()// odœwierzenie planszy
 	//	break;
 	//}
 	
-	//update_positions();
 }
 
 void window::start() // pierwsze uruchomienie planszy
