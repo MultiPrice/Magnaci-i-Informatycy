@@ -118,7 +118,7 @@ void Location::read_info_file(std::string& location_name)
 	}
 }
 
-void Location::read_colision_file(std::string& colision_file, std::string& mob_file, Object***& map)
+void Location::read_colision_file(std::string& colision_file, Object***& map)
 {
 	std::fstream file;
 	file.open(colision_file);
