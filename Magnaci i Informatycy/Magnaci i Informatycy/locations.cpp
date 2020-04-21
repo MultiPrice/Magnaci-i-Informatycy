@@ -1,7 +1,5 @@
 #include "locations.h"
 
-
-///////POPRAWA
 void add_travel(Travel_list*& pHead, std::string& name, int X, int Y, int toX, int toY)
 {
 	if (!pHead)
@@ -120,6 +118,7 @@ void Location::read_travel_file (std::string travel_list_file)
 	char trash;
 	if (file)
 	{
+		file >> travel_name >> trash;
 		while (!file.eof())
 		{
 			file >> travel_name >> trash >> travel_X >> travel_Y >> travel_to_X >> travel_to_Y >> trash;
@@ -200,7 +199,6 @@ void Location::read_colision_file(std::string& colision_file, Object***& map)
 		}
 	}
 	file.close();
-
 }
 
 void Location::mob_file_read(std::string mob_file, Object***& map)
@@ -220,12 +218,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 		int lvl;
 		int min_damage;
 		int max_damage;
-		int critical_chance;
 		int armor;
-		int strength;
-		int agility;
-		int intelligence;
-		int charisma;
 		ATTITUDE attitude;
 		int X;
 		int Y;
@@ -235,7 +228,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 			texture = al_load_bitmap(bitmap_file.c_str());
 			enums = id / 10000 % 10;
 			attitude = (ATTITUDE)(enums);
-			file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> critical_chance >> armor >> strength >> agility >> intelligence >> charisma >> trash;
+			file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> armor >> trash;
 			while (trash != "}")
 			{
 				X = stoi(trash);
@@ -243,9 +236,26 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 				switch (id / 100000)
 				{
 				case 1:
-					map[X][Y] = new Magnat(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					map[X][Y] = new Magnat(name, id, texture, hp, hp, mana, mana, lvl, min_damage, max_damage, armor, attitude, X, Y);
+					//mobs.push_back(new Magnat(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
 					mobs.push_back(map[X][Y]);
 					break;
+				/*case 2:
+					map[X][Y] = new Paladin(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					mobs.push_back(map[X][Y]);
+					break;
+				case 3:
+					map[X][Y] = new Rogue(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					mobs.push_back(map[X][Y]);
+					break;
+				case 4:
+					map[X][Y] = new Mage(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					mobs.push_back(map[X][Y]);
+					break;
+				case 5:
+					map[X][Y] = new Native(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					mobs.push_back(map[X][Y]);
+					break;*/
 				}
 
 				file >> trash;

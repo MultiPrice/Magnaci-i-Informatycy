@@ -120,6 +120,9 @@ window::window(int pwidth, int pheight)
     setting_font = al_load_font("fonts/font.ttf", (75.0 / 1920) * al_get_display_height(display), 0);
     event_queue = al_create_event_queue();
     backgroud = al_load_bitmap("bitmaps/background/sztandar.bmp");
+    HUD = al_load_bitmap("bitmaps/background/hud.png");
+    HP = al_load_bitmap("bitmaps/background/hp.png");
+    MANA = al_load_bitmap("bitmaps/background/mana.png");
     player = nullptr;
     map = nullptr;
     registration();
