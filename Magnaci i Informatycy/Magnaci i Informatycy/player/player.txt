@@ -1,4 +1,4 @@
-110000
+140000
 {
 player/player_move.png
 dupa

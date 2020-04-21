@@ -31,7 +31,7 @@ Element::Element(int X, int Y, bool ghost)
 		}*/
 }
 
-void Element::draw()
+void Element::draw(Object ***map)
 {
 }
 

@@ -173,7 +173,7 @@ bool window::game_working()// odœwierzenie planszy
 				location->draw(player->get_X(), player->get_Y());
 				location->draw_mobs(player->get_X(), player->get_Y());
 				player->draw();
-				draw_hud((dynamic_cast<Character*>(player)));
+				draw_buttons();
 				al_flip_display();
 			}
 		}

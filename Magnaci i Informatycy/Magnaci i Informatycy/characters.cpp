@@ -257,6 +257,11 @@ int Character::get_attack_type()
 	return attack_type;
 }
 
+int Character::get_attitude()
+{
+	return (int)attitude;
+}
+
 void Character::change_attack_type(int tmp)
 {
 	attack_type = tmp;
@@ -273,9 +278,23 @@ Magnat::~Magnat()
 	al_destroy_bitmap(texture);
 }
 
-void Magnat::draw()// rysuje gracza
+void Magnat::draw(Object ***map)// rysuje gracza
 {
 	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, shiftX * measure, shiftY * measure, 0);
+	int n = 0;
+	while (true)
+	{
+		if (map[positionX][positionY + n + 1] == nullptr)
+			break;
+		else
+			n++;
+	}
+	int j = 1;
+	while (n >= j)
+	{
+		dynamic_cast<Character*>(map[positionX][positionY + j])->draw(positionX - shiftX, positionY - shiftY);
+		j++;
+	}
 	//al_draw_bitmap(texture, shiftX * measure, shiftY * measure, 0);
 }
 
