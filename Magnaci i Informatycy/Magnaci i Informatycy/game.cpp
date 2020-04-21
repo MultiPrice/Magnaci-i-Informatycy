@@ -52,8 +52,8 @@ void window::draw_hud(Character* player)
 	al_draw_bitmap(HUD,0,1020,0);
 	float actual_hp = (float)player->get_hp() / (float)player->get_max_hp();
 	float actual_mana = (float)player->get_mana() / (float)player->get_max_mana();
-	al_draw_bitmap_region(HP, 0, 0, 640 * actual_hp, 40, 40, 1030, 0);
-	al_draw_bitmap_region(MANA, 640-(640*actual_mana), 0, 640 * actual_mana, 40, 1240 + (640 - (640 * actual_mana)), 1030, 0);
+	al_draw_bitmap_region(HP, 0, 0, 600 * actual_hp, 40, 40, 1030, 0);
+	al_draw_bitmap_region(MANA, 600-(600*actual_mana), 0, 600 * actual_mana, 40, 1280 + (600 - (600 * actual_mana)), 1030, 0);
 }
 
 bool window::player_movement() // ruch gracza na planszy
@@ -275,3 +275,4 @@ void window::map_clear() // mapa jest powalona i trzeba stestowac
 	}
 	delete[] map;
 }
+
