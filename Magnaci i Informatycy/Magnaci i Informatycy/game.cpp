@@ -202,7 +202,6 @@ bool window::game_working()// odœwierzenie planszy
 	al_register_event_source(event_q, al_get_timer_event_source(move_timer));
 	al_start_timer(timer);
 	al_start_timer(move_timer);
-
 	while (true)
 	{
 		al_wait_for_event(event_q, &events);
@@ -224,8 +223,6 @@ bool window::game_working()// odœwierzenie planszy
 			}
 			else if (events.timer.source == move_timer)
 			{
-				/*if (test == true)
-					wypisz_kurde_wszytsko(map);*/
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
