@@ -238,7 +238,10 @@ void Character::change_hp(int change)
 {
 	hp += change;
 	if (hp <= 0)
+	{
 		std::cout << "bohater_umiera";
+		hp = 0;
+	}
 	else if (hp > max_hp)
 		hp = max_hp;
 }
