@@ -65,7 +65,7 @@ public:
 	void read_info_file(std::string& location_name);
 	void read_colision_file(std::string& colision_file, Object***& map);
 	void mob_file_read(std::string mob_file, Object***& map);
-	void draw(Object ***map);
+	void draw(Object ***map, int max_x, int max_y);
 	void draw(int position_x, int position_y);
 	void draw_mobs(int position_x, int position_y, Object*** map);
 	void draw_portals(int position_x, int position_y, Object*** map);

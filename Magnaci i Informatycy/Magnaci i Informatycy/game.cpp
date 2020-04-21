@@ -228,7 +228,7 @@ bool window::game_working()// odœwierzenie planszy
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_portals(player->get_X(), player->get_Y(), map);
-				player->draw(map);
+				player->draw(map, location->get_sizeX(), location->get_sizeY());
 				draw_hud(dynamic_cast<Character*>(player));
 				draw_buttons();
 				al_flip_display();

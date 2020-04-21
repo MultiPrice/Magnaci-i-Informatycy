@@ -19,6 +19,7 @@
 #include "general_functions.h"
 #include "items.h"
 #include "element.h"
+#include "locations.h"
 
 enum ATTITUDE
 {
@@ -85,7 +86,7 @@ public:
 	Magnat(int X, int Y, int id, std::string file_name);
 	Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
 	~Magnat();
-	void draw(Object ***map);
+	void draw(Object ***map, int max_x, int max_y);
 	void draw(int position_x, int position_y);
 	void basic_attack(Object *** &map, std::vector <Object*>& mobs);
 };

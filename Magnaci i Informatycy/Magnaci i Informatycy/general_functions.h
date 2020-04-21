@@ -32,7 +32,7 @@ public:
 	int bitmap_start_x = 0;
 	int bitmap_start_y = 0;
 	//````````````````````````````````````````````````````
-	virtual void draw(Object ***map) = 0;
+	virtual void draw(Object ***map, int max_x, int max_y) = 0;
 	virtual void draw(int position_x, int position_y) = 0;
 	int get_X();
 	int get_Y();
