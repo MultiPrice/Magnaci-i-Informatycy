@@ -5,7 +5,7 @@ Character::Character()
 	positionX = -1000;
 	positionY = -1000;
 	this->id = 0;
-	hp = mana = lvl = min_damage = max_damage = critical_chance = armor = strength = agility = intelligence = charisma = 0;
+	hp = mana = lvl = min_damage = max_damage = armor = 0;
 	texture = nullptr;
 	attitude = FRIEND;
 	is_moving = false;
@@ -22,8 +22,9 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	name = "";
 	positionX = X;
 	positionY = Y;
-	this->id = seek_id;
-	hp = mana = lvl = min_damage = max_damage = critical_chance = armor = strength = agility = intelligence = charisma = 0;
+	id = seek_id;
+	hp = mana = lvl = min_damage = max_damage = armor = 0;
+	is_moving = false;
 	texture = nullptr;
 	attitude = FRIEND;
 	movement_cooldown = al_get_time();
@@ -35,7 +36,7 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	File_read(file_name);
 }
 
-Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
+Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y)
 {
 	this->name = name;
 	this->id = id;
@@ -45,12 +46,7 @@ Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, 
 	this->lvl = lvl;
 	this->min_damage = min_damage;
 	this->max_damage = max_damage;
-	this->critical_chance = critical_chance;
 	this->armor = armor;
-	this->strength = strength;
-	this->agility = agility;
-	this->intelligence = intelligence;
-	this->charisma = charisma;
 	this->attitude = attitude;
 	this->positionX = X;
 	this->positionY = Y;
@@ -81,7 +77,9 @@ bool Character::File_read(std::string& file_name)
 		std::string bitmap_file;
 		file >> bitmap_file;
 		texture = al_load_bitmap(bitmap_file.c_str());
-		file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> critical_chance >> armor >> strength >> agility >> intelligence >> charisma;
+		file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> armor;
+		max_hp = hp;
+		max_mana = mana;
 		file.close();
 	}
 	else return false;
@@ -95,28 +93,28 @@ void Character::what_move_should_I_draw()
 		switch (direction)
 		{
 		case UP:
-			if (bitmap_start_x == 720)
+			if (bitmap_start_x >= 720)
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
 			bitmap_start_y = 0;
 			break;
 		case RIGHT:
-			if (bitmap_start_x == 720)
+			if (bitmap_start_x >= 720)
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
 			bitmap_start_y = 240;
 			break;
 		case DOWN:
-			if (bitmap_start_x == 720)
+			if (bitmap_start_x >= 720)
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
 			bitmap_start_y = 360;
 			break;
 		case LEFT:
-			if (bitmap_start_x == 720)
+			if (bitmap_start_x >= 720)
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
@@ -153,35 +151,46 @@ void Character::what_attack_should_I_draw(int animation_frames)
 	switch (direction)
 	{
 	case UP:
-		if (bitmap_start_x == measure*1.5*animation_frames)
-			this->attack_type = 0;
+		if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
+		{
+			attack_type = 0;
+			bitmap_start_x = 0;
+		}
 		else
 			bitmap_start_x += measure * 1.5;
 		bitmap_start_y = 0;
 		break;
 	case RIGHT:
-		if (bitmap_start_x == measure * 1.5 * animation_frames)
-			this->attack_type = 0;
+		if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
+		{
+			attack_type = 0;
+			bitmap_start_x = 0;
+		}
 		else
 			bitmap_start_x += measure * 1.5;
 		bitmap_start_y = measure*4;
 		break;
 	case DOWN:
-		if (bitmap_start_x == measure * 1.5 * animation_frames)
-			this->attack_type = 0;
+		if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
+		{
+			attack_type = 0;
+			bitmap_start_x = 0;
+		}
 		else
 			bitmap_start_x += measure * 1.5;
 		bitmap_start_y = measure*6;
 		break;
 	case LEFT:
-		if (bitmap_start_x == measure * 1.5 * animation_frames)
-			this->attack_type = 0;
+		if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
+		{
+			attack_type = 0;
+			bitmap_start_x = 0;
+		}
 		else
 			bitmap_start_x += measure * 1.5;
 		bitmap_start_y = measure*2;
 		break;
 	}
-	//std::cout << bitmap_start_x;
 }
 
 void Character::change_texture(std::string tmp)
@@ -192,6 +201,21 @@ void Character::change_texture(std::string tmp)
 int Character::get_hp()
 {
 	return hp;
+}
+
+int Character::get_max_hp()
+{
+	return max_hp;
+}
+
+int Character::get_mana()
+{
+	return mana;
+}
+
+int Character::get_max_mana()
+{
+	return max_mana;
 }
 
 void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs)
@@ -210,6 +234,24 @@ void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs
 	}
 }
 
+void Character::change_hp(int change)
+{
+	hp += change;
+	if (hp <= 0)
+		std::cout << "bohater_umiera";
+	else if (hp > max_hp)
+		hp = max_hp;
+}
+
+void Character::change_mana(int change)
+{
+	mana += change;
+	if (mana < 0)
+		mana = 0;
+	else if (mana > max_mana)
+		mana = max_mana;
+}
+
 int Character::get_attack_type()
 {
 	return attack_type;
@@ -222,8 +264,8 @@ void Character::change_attack_type(int tmp)
 
 Magnat::Magnat(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
 
-Magnat::Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y)
-	: Character(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y)
+Magnat::Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y)
+	: Character(name, id, texture, hp, max_hp, mana, max_mana, lvl, min_damage, max_damage, armor, attitude, X, Y)
 {}
 
 Magnat::~Magnat()

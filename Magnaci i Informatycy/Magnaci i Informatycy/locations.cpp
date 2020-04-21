@@ -165,12 +165,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 		int lvl;
 		int min_damage;
 		int max_damage;
-		int critical_chance;
 		int armor;
-		int strength;
-		int agility;
-		int intelligence;
-		int charisma;
 		ATTITUDE attitude;
 		int X;
 		int Y;
@@ -180,7 +175,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 			texture = al_load_bitmap(bitmap_file.c_str());
 			enums = id / 10000 % 10;
 			attitude = (ATTITUDE)(enums);
-			file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> critical_chance >> armor >> strength >> agility >> intelligence >> charisma >> trash;
+			file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> armor >> trash;
 			while (trash != "}")
 			{
 				X = stoi(trash);
@@ -188,7 +183,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 				switch (id / 100000)
 				{
 				case 1:
-					map[X][Y] = new Magnat(name, id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y);
+					map[X][Y] = new Magnat(name, id, texture, hp, hp, mana, mana, lvl, min_damage, max_damage, armor, attitude, X, Y);
 					//mobs.push_back(new Magnat(id, texture, hp, mana, lvl, min_damage, max_damage, critical_chance, armor, strength, agility, intelligence, charisma, attitude, X, Y));
 					mobs.push_back(map[X][Y]);
 					break;

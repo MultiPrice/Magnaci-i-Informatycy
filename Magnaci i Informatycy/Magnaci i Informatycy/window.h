@@ -33,6 +33,9 @@ class window
     butt_list* buttons;
     butt_list* setting_buttons;
     ALLEGRO_BITMAP* backgroud;
+    ALLEGRO_BITMAP* HUD;
+    ALLEGRO_BITMAP* HP;
+    ALLEGRO_BITMAP* MANA;
     ALLEGRO_DISPLAY* display;
     ALLEGRO_EVENT_QUEUE* event_queue;
     ALLEGRO_EVENT events;
@@ -67,12 +70,15 @@ public:
     void add_functional_button(float position_x, float position_y, BUTTON_FUNCTION function);
     void add_mapping_button(float position_x, float position_y, int pbutton_number);
     void add_fader(float position_x, float position_y);
-    // funkcje przemieszczania na mapie
+    void add_fader(float position_x, float position_y, FADER_FUNCTION pfunction);
+    void add_combo(int pposition_x, int pposition_y);
+    // funkcje gry
+    bool pause_game();
+    void draw_hud(Character* player);
     bool player_movement();
     void player_attack();
     void change_position(Object*& who, int prevX, int prevY, int nextX, int nextY);
-    void add_fader(float position_x, float position_y, FADER_FUNCTION pfunction);
-    void add_combo(int pposition_x, int pposition_y);
+
 };
 
 void which_x_in_animation(int& start_x);

@@ -40,19 +40,15 @@ class Character : public Object
 protected:
 	std::string name;
 	int id;
-	int hp;// hit points
+	int hp;
+	int max_hp;
 	int mana;
+	int max_mana;
 	int lvl;
 	int min_damage;
 	int max_damage;
-	int critical_chance;
 	int armor;
-	int strength;// zwieksza dmg od broni bialej i luku, potrzebny do noszenia zbroi 
-	int agility;// szybkosc ataku, szybkosc ruchu
-	int intelligence;// zmniejsza koszt czarow, zwieksza obrazenia magiczne, odblokowywuje opcje dialogowe
-	int charisma;// gadanie i cena, odblokowywuje opcje dialogowe
 	int attack_type;
-	double frames;
 	ATTITUDE attitude;
 	std::vector<Item*> inventory;
 	Item* equipment[6];
@@ -61,13 +57,18 @@ protected:
 public:
 	Character();
 	Character(int X, int Y, int seek_id, std::string& file_name);
-	Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
+	Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
 	void what_move_should_I_draw();
 	void what_attack_should_I_draw(int animation_frames);
 	void change_texture(std::string tmp);
 	int get_hp();
+	int get_max_hp();
+	int get_mana();
+	int get_max_mana();
 	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs);
+	void change_hp(int change);
+	void change_mana(int change);
 	int get_attack_type();
 	void change_attack_type(int tmp);
 	double movement_cooldown;
@@ -80,7 +81,7 @@ class Magnat : public Character
 {
 public:
 	Magnat(int X, int Y, int id, std::string file_name);
-	Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int mana, int lvl, int min_damage, int max_damage, int critical_chance, int armor, int strength, int agility, int intelligence, int charisma, ATTITUDE attitude, int X, int Y);
+	Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
 	~Magnat();
 	void draw();
 	void draw(int position_x, int position_y);
