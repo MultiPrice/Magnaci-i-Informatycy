@@ -49,8 +49,8 @@ int Object::get_Y()
     return positionY;
 }
 
-void Object::change_coordinates(int nextX, int nextY)
+void Object::change_position(int new_X, int new_Y)
 {
-    positionX = nextX;
-    positionY = nextY;
+    positionX = new_X;
+    positionY = new_Y;
 }

@@ -36,7 +36,7 @@ public:
 	virtual void draw(int position_x, int position_y) = 0;
 	int get_X();
 	int get_Y();
-	void change_coordinates(int nextX, int nextY);
+	void change_position(int new_X, int new_Y);
 };
 
 bool al_addon();

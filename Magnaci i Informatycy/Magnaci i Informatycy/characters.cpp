@@ -232,7 +232,8 @@ Magnat::Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int ma
 
 Magnat::~Magnat()
 {
-	al_destroy_bitmap(texture);
+	//al_destroy_bitmap(texture);
+	texture = nullptr;
 }
 
 void Magnat::draw(Object ***map)// rysuje gracza
@@ -249,16 +250,13 @@ void Magnat::draw(Object ***map)// rysuje gracza
 	int j = 1;
 	while (n >= j)
 	{
-		dynamic_cast<Character*>(map[positionX][positionY + j])->draw(positionX - shiftX, positionY - shiftY);
+		map[positionX][positionY + j]->draw(positionX - shiftX, positionY - shiftY);
 		j++;
 	}
-	//al_draw_bitmap(texture, shiftX * measure, shiftY * measure, 0);
 }
 
 void Magnat::draw(int position_x, int position_y)//rysuje moba
 {
-	//al_draw_bitmap_region(this->texture, bitmap_start_x, bitmap_start_y, measure*1.5, measure*2, position_x * measure, position_y * measure, 0);
-	//al_draw_bitmap(texture, positionX * measure, positionY * measure, 0);
 	al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
