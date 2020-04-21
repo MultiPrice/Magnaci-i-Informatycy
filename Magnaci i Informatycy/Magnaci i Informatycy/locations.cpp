@@ -3,7 +3,10 @@
 void add_travel(Travel_list*& pHead, std::string& name, int X, int Y, int toX, int toY)
 {
 	if (!pHead)
+	{
 		pHead = new Travel_list{ X, Y, name, toX, toY, nullptr };
+		return;
+	}
 	else
 	{
 		Travel_list* temp = pHead;
@@ -15,6 +18,21 @@ void add_travel(Travel_list*& pHead, std::string& name, int X, int Y, int toX, i
 	}
 }
 
+void add_portals(Travel_list* &pHead, Object*** & map)
+{
+	if (!pHead)
+		return;
+	else
+	{
+		Travel_list* tym = pHead;
+		while (tym)
+		{
+			map[tym->X][tym->Y] = new Element(tym->X, tym->Y, true, true);
+			tym = tym->pNext;
+		}
+	}
+}
+
 void delete_travel_list(Travel_list*& pHead)
 {
 	while (pHead)
@@ -23,6 +41,7 @@ void delete_travel_list(Travel_list*& pHead)
 		delete pHead;
 		pHead = temp;
 	}
+	pHead = nullptr;
 }
 
 std::string find_enum_name(int enum_nr)
@@ -67,12 +86,30 @@ Location::Location(std::string location_name, int X, int Y, Object***& map)
 
 	std::string colision_file = "Locations/" + find_enum_name(terrain) + "/" + name + "/colision.txt";
 	std::string mob_file = "Locations/" + find_enum_name(terrain) + "/" + name + "/mobs.txt";
+	std::string travel_list_file = "Locations/" + find_enum_name(terrain) + "/" + name + "/travel_list.txt";
 
 	read_colision_file(colision_file, map);
 	mob_file_read(mob_file, map);
+	read_travel_file(travel_list_file);
+	add_portals(pTravel, map);
 }
 
-void Location::read_travel_file(std::string travel_list_file)
+int Location::get_sizeX()
+{
+	return sizeX;
+}
+
+int Location::get_sizeY()
+{
+	return sizeY;
+}
+
+Travel_list* Location::get_pTravel()
+{
+	return pTravel;
+}
+
+void Location::read_travel_file (std::string travel_list_file)
 {
 	std::fstream file;
 	file.open(travel_list_file);
@@ -81,14 +118,29 @@ void Location::read_travel_file(std::string travel_list_file)
 	char trash;
 	if (file)
 	{
-		file >> travel_name >> trash;
 		while (!file.eof())
 		{
 			file >> travel_name >> trash >> travel_X >> travel_Y >> travel_to_X >> travel_to_Y >> trash;
+			if (file.eof())
+			{
+				file.close();
+				return;
+			}
 			add_travel(pTravel, travel_name, travel_X, travel_Y, travel_to_X, travel_to_Y);
 		}
 	}
-	file.close();
+}
+
+std::string Location::search_travel(int wanted_X, int wanted_Y)
+{
+	Travel_list* tmp = pTravel;
+	while (tmp)
+	{
+		if (wanted_X == tmp->X && wanted_Y == tmp->Y)
+			return tmp->location_name;
+		tmp = tmp->pNext;
+	}
+	return "Error: Nie znaleziono teleporta";
 }
 
 void Location::read_info_file(std::string& location_name)
@@ -139,7 +191,7 @@ void Location::read_colision_file(std::string& colision_file, Object***& map)
 					map[j][i] = nullptr;
 					break;
 				case 'W'://wall
-					map[j][i] = new Element(j, i, false);
+					map[j][i] = new Element(j, i, false, false);
 					break;
 				}
 			}
@@ -187,7 +239,6 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 					mobs.push_back(map[X][Y]);
 					break;
 				}
-
 				file >> trash;
 			}
 		}
@@ -211,7 +262,6 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 	{
 		if (dynamic_cast<Character*>(mobs[i])->get_hp() == 0)
 			mobs.erase(mobs.begin()+i);
-		//mobs[i]->draw(position_x - shiftX, position_y - shiftY);
 		int n = 0;
 		while (true)
 		{
@@ -224,20 +274,32 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 		while (n >= j)
 		{
 			if(dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
-				dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->draw(position_x - shiftX, position_y - shiftY);
+				map[mobs[i]->get_X()][mobs[i]->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
 			j++;
 		}
+	}
+}
+
+void Location::draw_portals(int position_x, int position_y, Object*** map)
+{
+	Travel_list* tmp = pTravel;
+	while (tmp)
+	{
+		map[tmp->X][tmp->Y]->draw(position_x - shiftX, position_y - shiftY);
+		tmp = tmp->pNext;
 	}
 }
 
 void Location::change_mob_coordinates(int changeX, int changeY)
 {
 	for (int i = 0; i < mobs.size(); i++)
-		mobs[i]->change_coordinates(mobs[i]->get_X() + changeX, mobs[i]->get_Y() + changeY);
+		mobs[i]->change_position(mobs[i]->get_X() + changeX, mobs[i]->get_Y() + changeY);
 }
 
 Location::~Location()
 {
 	delete_travel_list(pTravel);
-	al_destroy_bitmap(texture);
+	//al_destroy_bitmap(texture);
+	texture = nullptr;
+	mobs.clear();
 }

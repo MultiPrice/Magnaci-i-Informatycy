@@ -26,7 +26,7 @@ void wypisz_kurde_wszytsko(Object*** twoja_stara)
 
 void window::change_position(Object*& who, int prevX, int prevY, int nextX, int nextY)
 {
-	who->change_coordinates(nextX, nextY);
+	who->change_position(nextX, nextY);
 	map[nextX][nextY] = who;
 	map[prevX][prevY] = nullptr;
 }
@@ -77,7 +77,20 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
 		}
-
+		else if (typeid(Element) == typeid(*map[player->get_X() + 1][player->get_Y()]))
+		{
+			if (dynamic_cast<Element*>(map[player->get_X() + 1][player->get_Y()])->get_ghosted() == true)
+			{
+				if (dynamic_cast<Element*>(map[player->get_X() + 1][player->get_Y()])->get_teleport() == true)
+					restart(location->search_travel(player->get_X() + 1, player->get_Y()));
+				else
+				{
+					tmp->is_moving = true;
+					tmp->what_move_should_I_draw();
+					change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
+				}
+			}
+		}
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
 	{
@@ -87,6 +100,20 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->is_moving = true;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
+		}
+		else if (typeid(Element) == typeid(*map[player->get_X() - 1][player->get_Y()]))
+		{
+			if (dynamic_cast<Element*>(map[player->get_X() - 1][player->get_Y()])->get_ghosted() == true)
+			{
+				if (dynamic_cast<Element*>(map[player->get_X() - 1][player->get_Y()])->get_teleport() == true)
+					restart(location->search_travel(player->get_X() - 1, player->get_Y()));
+				else
+				{
+					tmp->is_moving = true;
+					tmp->what_move_should_I_draw();
+					change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
+				}
+			}
 		}
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
@@ -98,6 +125,20 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
 		}
+		else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() - 1]))
+		{
+			if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() - 1])->get_ghosted() == true)
+			{
+				if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() - 1])->get_teleport() == true)
+					restart(location->search_travel(player->get_X(), player->get_Y() - 1));
+				else
+				{
+					tmp->is_moving = true;
+					tmp->what_move_should_I_draw();
+					change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
+				}
+			}
+		}
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
 	{
@@ -107,6 +148,20 @@ bool window::player_movement() // ruch gracza na planszy
 			tmp->is_moving = true;
 			tmp->what_move_should_I_draw();
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
+		}
+		else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() + 1]))
+		{
+			if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() + 1])->get_ghosted() == true)
+			{
+				if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() + 1])->get_teleport() == true)
+					restart(location->search_travel(player->get_X(), player->get_Y() + 1));
+				else
+				{
+					tmp->is_moving = true;
+					tmp->what_move_should_I_draw();
+					change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
+				}
+			}
 		}
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_ESCAPE))
@@ -147,7 +202,6 @@ bool window::game_working()// odœwierzenie planszy
 	al_register_event_source(event_q, al_get_timer_event_source(move_timer));
 	al_start_timer(timer);
 	al_start_timer(move_timer);
-
 	while (true)
 	{
 		al_wait_for_event(event_q, &events);
@@ -172,6 +226,8 @@ bool window::game_working()// odœwierzenie planszy
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
+				location->draw_mobs(player->get_X(), player->get_Y(), map);
+				location->draw_portals(player->get_X(), player->get_Y(), map);
 				player->draw(map);
 				draw_hud(dynamic_cast<Character*>(player));
 				draw_buttons();
@@ -179,17 +235,6 @@ bool window::game_working()// odœwierzenie planszy
 			}
 		}
 	}
-	//al_draw_scaled_bitmap(bitmap, 0, 0, rozmiar_dla_full_HD_szerokosc, rozmiar_dla_full_HD_wysokosc, pozycja_po_X, pozycja_po_y, przeskalowana_szerokosc, przeskalowana_wyskosc)
-	//switch (events.type)
-	//{
-	//case ALLEGRO_EVENT_TIMER:
-	//	break;
-	//case ALLEGRO_EVENT_KEY_DOWN:
-	//	break;
-	//default:
-	//	break;
-	//}
-	
 }
 
 void window::start() // pierwsze uruchomienie planszy
@@ -200,4 +245,33 @@ void window::start() // pierwsze uruchomienie planszy
 	add_functional_button(10, 10, MENU);
 	player = new Magnat(2,2, 110000, "player/player.txt");
 	location = new Location("Plains1", 0, 0, this->map);
+	test = false;
+}
+
+void window::restart(std::string location_name)
+{
+	clear();
+	al_clear_to_color(al_map_rgb(0, 150, 0));
+	add_functional_button(10, 10, MENU);
+	map[player->get_X()][player->get_Y()] = nullptr;
+	map_clear();
+	int toX = location->get_pTravel()->toX;
+	int toY = location->get_pTravel()->toY; 
+	location->~Location();
+
+	player->change_position(toX, toY);
+	location = new Location(location_name, 0, 0, this->map);
+	map[player->get_X()][player->get_Y()] = player;
+	test = true;
+}
+
+void window::map_clear() // mapa jest powalona i trzeba stestowac
+{
+	for (int i = 0; i < location->get_sizeX(); i++)
+	{
+		for (int j = 0; j < location->get_sizeY(); j++)
+				delete map[i][j];
+		delete[] map[i];
+	}
+	delete[] map;
 }

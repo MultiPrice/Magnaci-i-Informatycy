@@ -47,13 +47,15 @@ class window
     Object* player;
     Object*** map;
     Location* location;
-
+    bool test;
 public:
     friend Button;
     window(int pwidth, int pheight);
     void registration();
     void working();
     bool game_working();
+    void restart(std::string location_name);
+    void map_clear();
 
     void display_mode();
     //funkcje ustawiaj¹ce wygl¹d okna
@@ -65,6 +67,7 @@ public:
     void move();
     void clear();
     void setting_clear();
+
     //funkcje operuj¹ce przyciskami
     void draw_buttons();
     void add_functional_button(float position_x, float position_y, BUTTON_FUNCTION function);

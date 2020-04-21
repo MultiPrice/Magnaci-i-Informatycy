@@ -37,11 +37,11 @@ enum TERRAIN
 
 struct Travel_list
 {
-	int X;
-	int Y;
+	int X; // gdzie teleport
+	int Y; // gdzie teleport
 	std::string location_name;
-	int toX;
-	int toY;
+	int toX; // gdzie gracz sie pojawi w tablicy
+	int toY; // gdzie gracz sie pojawi w tablicy
 	Travel_list* pNext;
 };
 
@@ -57,13 +57,18 @@ protected:
 public:
 	std::vector <Object*> mobs;
 	Location(std::string location_name, int X, int Y, Object***& map);
+	int get_sizeX();
+	int get_sizeY();
+	Travel_list* get_pTravel();
 	void read_travel_file(std::string location_name);
+	std::string search_travel(int wanted_X, int wanted_Y);
 	void read_info_file(std::string& location_name);
 	void read_colision_file(std::string& colision_file, Object***& map);
 	void mob_file_read(std::string mob_file, Object***& map);
 	void draw(Object ***map);
 	void draw(int position_x, int position_y);
 	void draw_mobs(int position_x, int position_y, Object*** map);
+	void draw_portals(int position_x, int position_y, Object*** map);
 	void change_mob_coordinates(int changeX, int changeY);
 	~Location();
 };
