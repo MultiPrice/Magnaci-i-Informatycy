@@ -27,7 +27,7 @@ void add_portals(Travel_list* &pHead, Object*** & map)
 		Travel_list* tym = pHead;
 		while (tym)
 		{
-			map[tym->X][tym->Y] = new Element(tym->X, tym->Y, true, true);
+			map[tym->X][tym->Y] = new Element(tym->X, tym->Y, true, true, "Element/portal.png");
 			tym = tym->pNext;
 		}
 	}
@@ -191,7 +191,7 @@ void Location::read_colision_file(std::string& colision_file, Object***& map)
 					map[j][i] = nullptr;
 					break;
 				case 'W'://wall
-					map[j][i] = new Element(j, i, false, false);
+					map[j][i] = new Element(j, i, false, false, "Element/invisible.png");
 					break;
 				}
 			}
@@ -246,7 +246,7 @@ void Location::mob_file_read(std::string mob_file, Object***& map)
 	}
 }
 
-void Location::draw(Object ***map)
+void Location::draw(Object ***map, int max_x, int max_y)
 {
 	al_draw_bitmap_region(texture, positionX * measure, positionY * measure, screen_width, screen_height,0,0,0);
 }

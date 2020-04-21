@@ -2,16 +2,16 @@
 
 #include "element.h"
 
-Element::Element(int X, int Y, bool ghost, bool teleport)
+Element::Element(int X, int Y, bool ghost, bool teleport, std::string texture_name)
 {
 	positionX = X;
 	positionY = Y;
 	this->ghosted = ghost;
 	this->teleport = teleport;
-	texture = al_load_bitmap("Element/portal.png");
+	texture = al_load_bitmap(texture_name.c_str());
 }
 
-void Element::draw(Object ***map)
+void Element::draw(Object ***map, int max_x, int max_y)
 {
 }
 
