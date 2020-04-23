@@ -186,6 +186,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="action.cpp" />
     <ClCompile Include="buttons.cpp" />
     <ClCompile Include="characters.cpp" />
     <ClCompile Include="element.cpp" />
