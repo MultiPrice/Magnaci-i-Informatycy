@@ -5,16 +5,13 @@ Character::Character()
 	positionX = -1000;
 	positionY = -1000;
 	this->id = 0;
-	hp = mana = lvl = min_damage = max_damage = armor = 0;
+	hp = max_hp = max_mana = mana = lvl = min_damage = max_damage = armor = attack_type = 0;
 	texture = nullptr;
 	attitude = FRIEND;
 	is_moving = false;
 	movement_cooldown = al_get_time();
 	direction = RIGHT;
-	weapon = nullptr;
-//	equipment { nullptr, nullptr,nullptr, nullptr ,nullptr, nullptr };
-	for (int i = 0; i < 6; i++)
-		equipment[i] = nullptr;
+	inventory = new Inventory();
 }
 
 Character::Character(int X, int Y, int seek_id, std::string& file_name)
@@ -29,9 +26,7 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	attitude = FRIEND;
 	movement_cooldown = al_get_time();
 	direction = RIGHT;
-	weapon = nullptr;
-	for (int i = 0; i < 6; i++)
-		equipment[i] = nullptr;
+	inventory = new Inventory();
 
 	File_read(file_name);
 }
@@ -53,9 +48,7 @@ Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, 
 	this->is_moving = false;
 	this->attack_type = 0;
 	direction = RIGHT;
-	weapon = nullptr;
-	for (int i = 0; i < 6; i++)
-		equipment[i] = nullptr;
+	inventory = nullptr;
 	movement_cooldown = al_get_time();
 }
 
@@ -216,6 +209,11 @@ int Character::get_mana()
 int Character::get_max_mana()
 {
 	return max_mana;
+}
+
+Inventory* Character::get_inventory()
+{
+	return inventory;
 }
 
 void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs)

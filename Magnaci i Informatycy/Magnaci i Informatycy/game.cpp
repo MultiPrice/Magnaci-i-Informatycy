@@ -3,8 +3,6 @@
 #include <typeinfo>
 #include "window.h"
 
-const int FPS = 60;
-
 void wypisz_kurde_wszytsko(Object*** twoja_stara)
 {
 	system("cls");
@@ -35,11 +33,15 @@ bool window::pause_game()
 {
 	al_draw_filled_rectangle(0, 0, screen_width, screen_height, al_map_rgba(0, 0, 0, 69));
 	al_flip_display();
+	al_stop_timer(timer);
+	al_stop_timer(move_timer);
 	while (true)
 	{
 		al_get_keyboard_state(&keyboard);
 		if (al_key_down(&keyboard, ALLEGRO_KEY_R))
 		{
+			al_start_timer(timer);
+			al_start_timer(move_timer);
 			return true;
 		}
 		else if (al_key_down(&keyboard, ALLEGRO_KEY_E))
@@ -164,12 +166,19 @@ bool window::player_movement() // ruch gracza na planszy
 			}
 		}
 	}
+	else if(al_key_down(&keyboard, ALLEGRO_KEY_I))
+		tmp->get_inventory()->show_inventory();
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_ESCAPE))
 		return false;
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_H))
 		tmp->change_hp(-10);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_M))
 		tmp->change_mana(-10);
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_P))
+	{
+		Item* new_armour = new Armour(110001, "items/armour_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new_armour);
+	}
 	else
 	{
 		tmp->is_moving = false;
@@ -194,8 +203,6 @@ void window::player_attack()
 bool window::game_working()// odœwierzenie planszy 
 {
 	bool draw = true;
-	ALLEGRO_TIMER* timer = al_create_timer(6.0 / FPS);
-	ALLEGRO_TIMER* move_timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE* event_q = al_create_event_queue();
 	al_register_event_source(event_q, al_get_keyboard_event_source());
 	al_register_event_source(event_q, al_get_timer_event_source(timer));
@@ -217,8 +224,13 @@ bool window::game_working()// odœwierzenie planszy
 				else if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5)
 				{
 					if (!player_movement())
-						if(!pause_game())
+						if (!pause_game())
+						{
+							al_destroy_timer(timer);
+							al_destroy_timer(move_timer);
+							al_destroy_event_queue(event_q);
 							return false;
+						}
 				}
 			}
 			else if (events.timer.source == move_timer)
@@ -250,6 +262,8 @@ void window::start() // pierwsze uruchomienie planszy
 
 void window::restart(std::string location_name)
 {
+	al_stop_timer(timer);
+	al_stop_timer(move_timer);
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
@@ -263,6 +277,8 @@ void window::restart(std::string location_name)
 	location = new Location(location_name, 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	test = true;
+	al_start_timer(timer);
+	al_start_timer(move_timer);
 }
 
 void window::map_clear() // mapa jest powalona i trzeba stestowac

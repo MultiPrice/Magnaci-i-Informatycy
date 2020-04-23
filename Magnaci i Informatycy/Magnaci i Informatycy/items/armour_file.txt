@@ -1,3 +1,15 @@
+110001
+{
+Helm
+Nie jeden leb uratowal
+bitmaps/items/armour/helmet/item2.png
+300
+30
+12
+2
+0
+}
+
 (1/4)(1/5)XXXX
 //type of item
 //part of armor
@@ -12,18 +24,4 @@
 <Armor Points>
 <Speed>
 <Magic Resistance>
-}
-
-Example:
-110001
-{
-Helm
-Nie jeden leb uratowal
-textures/items/armour/helmet/helm.png
-300
-30
-12
-2
-0
-0
 }

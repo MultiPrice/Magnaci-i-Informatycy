@@ -52,11 +52,12 @@ protected:
 	int armor;
 	int attack_type;
 	ATTITUDE attitude;
-	std::vector<Item*> inventory;
-	Item* equipment[6];
-	Weapon* weapon;
+	Inventory* inventory;
 
 public:
+	double movement_cooldown;
+	DIRECTION direction;
+	bool is_moving;
 	Character();
 	Character(int X, int Y, int seek_id, std::string& file_name);
 	Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
@@ -68,15 +69,13 @@ public:
 	int get_max_hp();
 	int get_mana();
 	int get_max_mana();
+	Inventory* get_inventory();
 	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs);
 	void change_hp(int change);
 	void change_mana(int change);
 	int get_attack_type();
 	int get_attitude();
 	void change_attack_type(int tmp);
-	double movement_cooldown;
-	DIRECTION direction;
-	bool is_moving;
 	virtual void basic_attack(Object*** &map, std::vector <Object*>& mobs) = 0;
 };
 

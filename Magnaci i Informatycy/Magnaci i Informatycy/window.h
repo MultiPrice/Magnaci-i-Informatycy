@@ -42,6 +42,8 @@ class window
     ALLEGRO_FONT* header_font;
     ALLEGRO_FONT* setting_font;
     ALLEGRO_KEYBOARD_STATE keyboard;
+    ALLEGRO_TIMER* timer;
+    ALLEGRO_TIMER* move_timer;
 
 
     Object* player;

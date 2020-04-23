@@ -15,69 +15,58 @@
 
 #include "items.h"
 
-bool Armour::File_read(std::string& file_name) 
+bool Armour::File_read(std::string file_name) 
 {
-
-	//File variable
 	std::fstream file;
 	file.open(file_name);
-
-	int seek_id;				//To compare IDs from list with needed
-	int enums;					//To read code information to enums
-	std::string temp;			//Temp string to skip unneeded item
-
-	//Checks whenever file exists and was opened
 	if (file)
 	{
-		//Loops until find needed item
-		file >> seek_id;
-		while (seek_id != id);
+		int seek_id;
+		int enums;
+		std::string tmp;
+
+		file >> seek_id; //szukamy wskazanego id
+		while (seek_id != id)
 		{
-			for (int i = 0; i < 11; i++)
-				file >> temp;
+			for (int i = 0; i < 10; i++)
+				file >> tmp;
 			file >> seek_id;
 		}
-
-		//Decode first leters of ID into variables
-		enums = seek_id / 100000;
-		item = (ITEM)(enums - 1);
+		enums = seek_id / 100000; //na podstawie id z pliku ustalany jest rodzaj przedmiodu
+		item_type = (ITEM_TYPE)(enums - 1);
 		enums = seek_id / 10000 % 10;
 		armour_type = (ARMOUR_TYPE)(enums - 1);
 
-		//False if doesn't have brackets
-		file >> temp;
-		if (temp != "{")
-			return false;
+		file >> tmp >> name;
+		std::getline(file, description);
+		std::getline(file, description);
 
-		//Puts values into variables
-		file >> temp;
-		name = temp;
-
-		//"-" means no description
-		file >> temp;
-		if (temp == "-") {
+		if (description == "-") //brak opisu
 			description = "";
-		}
-		else {
-			description = temp;
-		}
-
-		file >> temp;
-		texture = al_load_bitmap(temp.c_str());
-		file >> cost >> min_lvl >> hero_class >> armor_points >> speed >> magic_resistance;
+		file >> tmp;
+		texture = al_load_bitmap(tmp.c_str());
+		file >> cost >> min_lvl >> hero_class >> armor_points >> speed;
 	}
-	else return false;
+	else
+		return false;
+	file.close();
 	return true;
 }
 
+int Armour::get_armour()
+{
+	return armor_points;
+}
 
-Armour::Armour(int id, std::string& file_name) {
+
+Armour::Armour(int id, std::string file_name) {
 
 	this->id = id;
-	min_lvl = hero_class = armor_points = speed = magic_resistance = 0;
+	min_lvl = hero_class = armor_points = speed = 0;
 	armour_type = (ARMOUR_TYPE)(0);
 
-	File_read(file_name);
+	if (!File_read(file_name))
+		std::cout << "blad odczytu z pliku armour";
 }
 
 //------------------------------------------------------------
@@ -106,7 +95,7 @@ bool Weapon::File_read(std::string& file_name) {
 
 		//Decode first leters of ID into variables
 		enums = seek_id / 100000;
-		item = (ITEM)(enums - 1);
+		item_type = (ITEM_TYPE)(enums - 1);
 		enums = seek_id / 10000 % 10;
 		weapon_type = (WEAPON_TYPE)(enums - 1);
 
@@ -141,9 +130,14 @@ bool Weapon::File_read(std::string& file_name) {
 	return true;
 }
 
-int Weapon::get_damage()
+int Weapon::get_min_damage()
 {
-	return rand() % (max_damage - min_damage) + min_damage;
+	return min_damage;
+}
+
+int Weapon::get_max_damage()
+{
+	return max_damage;
 }
 
 
@@ -182,9 +176,7 @@ bool Food::File_read(std::string& file_name) {
 
 		//Decode first leters of ID into variables
 		enums = seek_id / 100000;
-		item = (ITEM)(enums - 1);
-		enums = seek_id / 10000 % 10;
-		food_type = (FOOD_TYPE)(enums - 1);
+		item_type = (ITEM_TYPE)(enums - 1);
 
 		//False if doesn't have brackets
 		file >> temp;
@@ -231,7 +223,6 @@ Food::Food(int id, std::string& file_name) {
 	this->id = id;
 	health = 0;
 	tp_dest = "";
-	food_type = (FOOD_TYPE)(0);
 
 	File_read(file_name);
 }
@@ -262,9 +253,8 @@ bool Special::File_read(std::string& file_name) {
 
 		//Decode first leters of ID into variables
 		enums = seek_id / 100000;
-		item = (ITEM)(enums - 1);
+		item_type = (ITEM_TYPE)(enums - 1);
 		enums = seek_id / 10000 % 10;
-		//special_type = (SPECIAL_TYPE)(enums - 1);
 
 		//False if doesn't have brackets
 		file >> temp;
@@ -303,4 +293,59 @@ Special::Special(int id, std::string& file_name) {
 	this->id = id;
 
 	File_read(file_name);
+}
+
+Inventory::Inventory()
+{
+	for (int i = 0; i < 7; i++)
+		equipment[i] = nullptr;
+	backpack = al_load_bitmap("bitmaps/items/inventory_backpack.png");
+	background = al_load_bitmap("bitmaps/items/inventory_background.png");
+	player = al_load_bitmap("player/player_move.png");
+	item_in_backpack_x = item_in_backpack_y = 0;
+}
+
+Inventory::~Inventory()
+{
+	al_destroy_bitmap(backpack);
+	al_destroy_bitmap(background);
+}
+
+void Inventory::show_inventory()
+{
+	al_draw_bitmap(background, 0, 0, 0);
+	al_draw_bitmap(backpack, screen_width/2+measure, 0, 0);
+	al_draw_tinted_scaled_rotated_bitmap_region(player, 0, measure * 6, measure*1.5, measure*2, al_map_rgb(255, 255, 255), 0, 0, 150, 60, 8, 8, 0, 0);
+	item_in_backpack_x = 1080;
+	item_in_backpack_y = measure * 2;
+	for (int i = 0; i < 6; i++)
+	{
+		if(equipment[i])
+			equipment[i]->draw_in_inventory(item_in_backpack_x, item_in_backpack_y);
+		item_in_backpack_x += measure * 2;
+	}
+	item_in_backpack_x = 1080;
+	item_in_backpack_y = measure * 5;
+	for (int i = 0; i < inventory.size(); i++)
+	{
+		inventory[i]->draw_in_inventory(item_in_backpack_x, item_in_backpack_y);
+		item_in_backpack_x += measure * 2;
+		if (item_in_backpack_x > 1080 + 780)
+		{
+			item_in_backpack_x = 1080;
+			item_in_backpack_y += measure * 2;
+		}
+	}
+	al_flip_display();
+	al_rest(3);
+}
+
+void Inventory::add_item_to_inventory(Item* new_item)
+{
+	inventory.push_back(new_item);
+}
+
+void Item::draw_in_inventory(int x, int y)
+{
+	al_draw_bitmap(texture, x, y, 0);
 }
