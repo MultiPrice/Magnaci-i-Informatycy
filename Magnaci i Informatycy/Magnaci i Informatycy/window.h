@@ -11,6 +11,7 @@
 #include "general_functions.h"
 #include "characters.h"
 #include "locations.h"
+#include "action.h"
 
 
 struct butt_list
@@ -48,6 +49,7 @@ class window
     Object*** map;
     Location* location;
     bool test;
+    std::vector <Action*> action;
 public:
     friend Button;
     window(int pwidth, int pheight);
@@ -75,13 +77,14 @@ public:
     void add_fader(float position_x, float position_y);
     void add_fader(float position_x, float position_y, FADER_FUNCTION pfunction);
     void add_combo(int pposition_x, int pposition_y);
+
     // funkcje gry
     bool pause_game();
     void draw_hud(Character* player);
     bool player_movement();
     void player_attack();
     void change_position(Object*& who, int prevX, int prevY, int nextX, int nextY);
-
+    void draw_actions();
 };
 
 void which_x_in_animation(int& start_x);

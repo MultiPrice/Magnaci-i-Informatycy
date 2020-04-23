@@ -24,11 +24,22 @@ void wypisz_kurde_wszytsko(Object*** twoja_stara)
 	}
 }
 
+
+
 void window::change_position(Object*& who, int prevX, int prevY, int nextX, int nextY)
 {
 	who->change_position(nextX, nextY);
 	map[nextX][nextY] = who;
 	map[prevX][prevY] = nullptr;
+}
+
+void window::draw_actions()
+{
+	for (int i = 0; i < action.size(); i++)
+	{
+		if (action[i]->make_action(map, location->get_sizeX(), location->get_sizeY(), player->get_X(), player->get_Y(), location->mobs) == false)
+			action.erase(action.begin() + i);
+	}
 }
 
 bool window::pause_game()
@@ -67,6 +78,14 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->bitmap_start_x = 0;
 		tmp->change_texture("player/player_attack.png");
 		tmp->basic_attack(map, location->mobs);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_1))
+	{
+		tmp->change_attack_type(2);
+		tmp->bitmap_start_x = 0;
+		tmp->change_texture("player/player_attack.png");
+		action.push_back(new Wind(tmp->get_X(), tmp->get_Y(), "player/player_action1.png", "fireball", 20, 20, 5, 8, 10, tmp->direction, false));
+		//tmp->basic_attack(map, location->mobs);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
@@ -188,6 +207,11 @@ void window::player_attack()
 		if (!tmp->get_attack_type())
 			tmp->change_texture("player/player_move.png");
 		break;
+	case 2: // skill1 
+		tmp->what_attack_should_I_draw(5);
+		if (!tmp->get_attack_type())
+			tmp->change_texture("player/player_move.png");
+		break;
 	}
 }
 
@@ -225,6 +249,7 @@ bool window::game_working()// odœwierzenie planszy
 			{
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
+				draw_actions();
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_portals(player->get_X(), player->get_Y(), map);
