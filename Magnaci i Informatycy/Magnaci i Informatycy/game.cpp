@@ -22,8 +22,6 @@ void wypisz_kurde_wszytsko(Object*** twoja_stara)
 	}
 }
 
-
-
 void window::change_position(Object*& who, int prevX, int prevY, int nextX, int nextY)
 {
 	who->change_position(nextX, nextY);
@@ -31,13 +29,11 @@ void window::change_position(Object*& who, int prevX, int prevY, int nextX, int 
 	map[prevX][prevY] = nullptr;
 }
 
-void window::draw_actions()
+void window::draw_actions(int position_x, int position_y)
 {
-	for (int i = 0; i < action.size(); i++)
-	{
-		if (action[i]->make_action(map, location->get_sizeX(), location->get_sizeY(), player->get_X(), player->get_Y(), location->mobs) == false)
-			action.erase(action.begin() + i);
-	}
+	for(int i = 0; i < action.size(); i++)
+		if(action[i]->get_cast_time() <= 0)
+			action[i]->get_representation()->draw(position_x - shiftX, position_y - shiftY - 1);
 }
 
 bool window::pause_game()
@@ -243,6 +239,8 @@ bool window::game_working()// odœwierzenie planszy
 			{
 				if (dynamic_cast<Character*>(player)->get_attack_type())
 				{
+					for (int i = 0; i < action.size(); i++)
+						action[i]->prepare_action();
 					player_attack();
 				}
 				else if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5)
@@ -256,12 +254,20 @@ bool window::game_working()// odœwierzenie planszy
 							return false;
 						}
 				}
+				for (int i = 0; i < action.size(); i++)
+				{
+					if (!action[i]->make_action(map, location->get_sizeX(), location->get_sizeY(), player->get_X(), player->get_Y(), location->mobs))
+					{
+						action.erase(action.begin() + i);
+						i--;
+					}
+				}
 			}
 			else if (events.timer.source == move_timer)
 			{
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
-				draw_actions();
+				draw_actions(player->get_X(), player->get_Y());
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_portals(player->get_X(), player->get_Y(), map);

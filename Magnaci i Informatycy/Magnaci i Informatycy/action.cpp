@@ -10,6 +10,26 @@ Action::Action(std::string name, int damage, int cost, double cast_time, double 
 	representation = nullptr;
 }
 
+void Action::prepare_action()
+{
+	cast_time--;
+}
+
+int Action::get_cast_time()
+{
+	return cast_time;
+}
+
+Element* Action::get_representation()
+{
+	return representation;
+}
+
+Action::~Action()
+{
+	delete representation;
+}
+
 Wind::Wind(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, DIRECTION direction, bool piercing)
 	: Action(name, damage, cost, cast_time, duration, cooldown)
 {
@@ -33,6 +53,12 @@ Wind::Wind(int positionX, int positionY, std::string texture_file, std::string n
 
 bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs)
 {
+	if (cast_time > 0)
+		return true;
+	if (duration <= 0)
+		return false;
+	else
+		duration--;
 	switch (direction)
 	{
 	case UP:
@@ -52,7 +78,7 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
+			//representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X(), representation->get_Y() - 1);
 		}
 		else
@@ -75,7 +101,7 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
+		//	representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X(), representation->get_Y() + 1);
 		}
 		else
@@ -98,7 +124,7 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
+			//representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X() + 1, representation->get_Y());
 		}
 		else
@@ -121,11 +147,16 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
+			//representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X() - 1, representation->get_Y());
 		}
 		else
 			return false;
 		return true;
 	}
+}
+
+Wind::~Wind()
+{
+	delete representation;
 }

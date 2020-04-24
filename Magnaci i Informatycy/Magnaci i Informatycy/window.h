@@ -86,7 +86,7 @@ public:
     bool player_movement();
     void player_attack();
     void change_position(Object*& who, int prevX, int prevY, int nextX, int nextY);
-    void draw_actions();
+    void draw_actions(int position_x, int position_y);
 };
 
 void which_x_in_animation(int& start_x);

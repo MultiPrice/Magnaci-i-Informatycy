@@ -30,6 +30,10 @@ protected:
 public:
 	Action(std::string name, int damage, int cost, double cast_time, double duration, double cooldown);
 	virtual bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs) = 0;
+	void prepare_action();
+	int get_cast_time();
+	Element* get_representation();
+	~Action();
 };
 
 class AoE : public Action
@@ -47,6 +51,7 @@ protected:
 public:
 	Wind(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, DIRECTION direction, bool piercing);
 	bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs);
+	~Wind();
 };
 
 class Self : public Action
