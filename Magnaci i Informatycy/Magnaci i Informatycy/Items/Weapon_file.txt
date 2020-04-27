@@ -1,3 +1,17 @@
+120001
+{
+glock-18
+I tak podniesiesz USP
+bitmaps/items/weapon/one_handed/glock.png
+800
+1
+13 
+5
+10
+6
+}
+
+Example:
 (1/4)(1/7)XXXX
 //type of item
 //type of weapon
@@ -12,18 +26,4 @@
 <Min damage>
 <Max damage>
 <Attack Speed>
-}
-
-Example:
-210001
-{
-Siekacz
-Ostrzejszy niz kebab z ostrym
-textures/items/weapon/sword/siekacz.png
-800
-35
-13 
-5
-8
-6
 }
