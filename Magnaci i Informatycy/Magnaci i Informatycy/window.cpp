@@ -3,8 +3,6 @@
 #include "window.h"
 #include "characters.h"
 
-const int FPS = 60;
-
 butt_list* add(Button* el, butt_list* buttons)
 {
     if (!buttons)

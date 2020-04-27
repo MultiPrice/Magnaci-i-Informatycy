@@ -26,18 +26,28 @@ protected:
 	double cast_time;
 	double duration;
 	double cooldown;
+	int speed;
+	int countdown;
 	Element* representation;
 public:
-	Action(std::string name, int damage, int cost, double cast_time, double duration, double cooldown);
-	virtual bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs) = 0;
+	Action(std::string name, int damage, int cost, double cast_time, double duration, double cooldown, int speed, Object *& player);
+	virtual bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player) = 0;
+	void prepare_action();
+	int get_cast_time();
+	Element* get_representation();
+	~Action();
 };
 
 class AoE : public Action
 {
 protected:
-
+	DIRECTION direction;
+	int center_x;
+	int center_y;
 public:
-	void choose_location();
+	AoE(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction, int effect_dash_x, int effect_dash_y);
+	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player);
+	~AoE();
 };
 
 class Wind : public Action
@@ -45,13 +55,19 @@ class Wind : public Action
 protected:
 	DIRECTION direction;
 public:
-	Wind(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, DIRECTION direction, bool piercing);
-	bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs);
+	Wind(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction);
+	bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player);
+	~Wind();
 };
 
 class Self : public Action
 {
+protected:
+	bool over_time;
+	bool check;
 public:
-
+	Self(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, bool over_time);
+	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player);
+	~Self();
 };
 

@@ -1,17 +1,137 @@
 #include "action.h"
 
-Action::Action(std::string name, int damage, int cost, double cast_time, double duration, double cooldown)
+Action::Action(std::string name, int damage, int cost, double cast_time, double duration, double cooldown, int speed, Object*& player)
 {
 	this->name = name;
 	this->damage = damage;
+	this->cost = cost;
 	this->cast_time = cast_time;
 	this->duration = duration;
 	this->cooldown = cooldown;
+	this->speed = speed;
 	representation = nullptr;
+	dynamic_cast<Character*>(player)->change_mana(-cost);
 }
 
-Wind::Wind(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, DIRECTION direction, bool piercing)
-	: Action(name, damage, cost, cast_time, duration, cooldown)
+void Action::prepare_action()
+{
+	cast_time--;
+}
+
+int Action::get_cast_time()
+{
+	return cast_time;
+}
+
+Element* Action::get_representation()
+{
+	return representation;
+}
+
+Action::~Action()
+{
+	delete representation;
+}
+
+AoE::AoE(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction, int effect_dash_x, int effect_dash_y)
+	: Action(name, damage, cost, cast_time, duration, cooldown, speed, player)
+{
+	this->direction = direction;
+	switch (direction)
+	{
+	case UP:
+		center_x = positionX;
+		center_y = positionY - 1;
+		representation = new Element(positionX + effect_dash_x, positionY - 1 + effect_dash_y, piercing, false, texture_file);
+		break;
+	case DOWN:
+		center_x = positionX;
+		center_y = positionY + 1;
+		representation = new Element(positionX + effect_dash_x, positionY + 1 + effect_dash_y, piercing, false, texture_file);
+		break;
+	case RIGHT:
+		center_x = positionX + 1;
+		center_y = positionY;
+		representation = new Element(positionX + effect_dash_x + 1, positionY + effect_dash_y, piercing, false, texture_file);
+		break;
+	case LEFT:
+		center_x = positionX - 1;
+		center_y = positionY;
+		representation = new Element(positionX + effect_dash_x - 1, positionY + effect_dash_y, piercing, false, texture_file);
+		break;
+	}
+}
+
+bool AoE::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector<Object*>& mobs, Object* player)
+{
+	if (cast_time > 0)
+		return true;
+	if (countdown % speed != 0)
+	{
+		countdown++;
+		return true;
+	}
+	countdown++;
+	if (duration <= 0)
+		return false;
+	else
+		duration--;
+	
+	for (int i = center_x - 1; i <= center_x + 1; i++)
+	{
+		if (i > 0 && i < size_x)
+		{
+			if (center_y - 3 > 0)
+				if (map[i][center_y - 3] != nullptr)
+					if (typeid(Element) != typeid(*map[i][center_y - 3]))
+						dynamic_cast<Character*>(map[i][center_y - 3])->get_damage(damage, map, mobs);
+			if (center_y + 3 < size_y)
+					if (map[i][center_y + 3] != nullptr)
+						if (typeid(Element) != typeid(*map[i][center_y + 3]))
+							dynamic_cast<Character*>(map[i][center_y + 3])->get_damage(damage, map, mobs);
+		}
+	}
+	for (int i = center_x - 3; i <= center_x + 3; i++)
+	{
+		if (i > 0 && i < size_x)
+		{
+			if (center_y - 1 > 0)
+				if (map[i][center_y - 1] != nullptr)
+					if (typeid(Element) != typeid(*map[i][center_y - 1]))
+						dynamic_cast<Character*>(map[i][center_y - 1])->get_damage(damage, map, mobs);
+			if (center_y + 1 < size_y)
+				if (map[i][center_y + 1] != nullptr)
+					if (typeid(Element) != typeid(*map[i][center_y + 1]))
+						dynamic_cast<Character*>(map[i][center_y + 1])->get_damage(damage, map, mobs);
+				if (map[i][center_y] != nullptr)
+					if (typeid(Element) != typeid(*map[i][center_y ]))
+						dynamic_cast<Character*>(map[i][center_y ])->get_damage(damage, map, mobs);
+		}
+	}
+	for (int i = center_x - 2; i <= center_x + 2; i++)
+	{
+		if (i > 0 && i < size_x)
+		{
+			if (center_y - 2 > 0)
+				if (map[i][center_y - 2] != nullptr)
+					if (typeid(Element) != typeid(*map[i][center_y - 2]))
+						dynamic_cast<Character*>(map[i][center_y - 2])->get_damage(damage, map, mobs);
+			if (center_y + 2 < size_y)
+				if (map[i][center_y + 2] != nullptr)
+					if (typeid(Element) != typeid(*map[i][center_y + 2]))
+						dynamic_cast<Character*>(map[i][center_y + 2])->get_damage(damage, map, mobs);
+		}
+	}
+	return true;
+}
+
+AoE::~AoE()
+{
+	delete representation;
+}
+
+Wind::Wind(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction)
+	: Action(name, damage, cost, cast_time, duration, cooldown, speed, player)
 {
 	this->direction = direction;
 	switch (direction)
@@ -31,8 +151,20 @@ Wind::Wind(int positionX, int positionY, std::string texture_file, std::string n
 	}
 }
 
-bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs)
+bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object *player)
 {
+	if (cast_time > 0)
+		return true;
+	if (countdown % speed != 0)
+	{
+		countdown++;
+		return true;
+	}
+	countdown++;
+	if (duration <= 0)
+		return false;
+	else
+		duration--;
 	switch (direction)
 	{
 	case UP:
@@ -52,7 +184,6 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X(), representation->get_Y() - 1);
 		}
 		else
@@ -75,7 +206,6 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X(), representation->get_Y() + 1);
 		}
 		else
@@ -98,7 +228,6 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X() + 1, representation->get_Y());
 		}
 		else
@@ -121,11 +250,61 @@ bool Wind::make_action(Object*** &map, int size_x, int size_y, int position_x, i
 						return false;
 				}
 			}
-			representation->draw(position_x - shiftX, position_y - shiftY);
 			representation->change_position(representation->get_X() - 1, representation->get_Y());
 		}
 		else
 			return false;
 		return true;
 	}
+}
+
+Wind::~Wind()
+{
+	delete representation;
+}
+
+Self::Self(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, bool over_time)
+	: Action(name, damage, cost, cast_time, duration, cooldown, speed, player)
+{
+	representation = new Element(positionX, positionY - 1, piercing, false, texture_file);
+	check = false;
+	this->over_time = over_time;
+}
+
+bool Self::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector<Object*>& mobs, Object *player)
+{
+	if (cast_time > 0)
+		return true;
+	representation->change_position(player->get_X(), player->get_Y() - 1);
+	if (countdown % speed != 0)
+	{
+		countdown++;
+		return true;
+	}
+	countdown++;
+	if (duration <= 0)
+		return false;
+	else
+		duration--;
+	
+	if (!over_time)
+	{
+		if (!check)
+		{
+			dynamic_cast<Character*>(player)->change_hp(damage);
+			check = true;
+		}
+	}
+	else
+	{
+		if (!check)
+			check = true;
+		dynamic_cast<Character*>(player)->change_hp(damage);
+	}
+	return true;
+}
+
+Self::~Self()
+{
+	delete representation;
 }
