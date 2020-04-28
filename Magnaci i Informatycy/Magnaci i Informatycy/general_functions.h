@@ -38,6 +38,8 @@ public:
 	int get_X();
 	int get_Y();
 	void change_position(int new_X, int new_Y);
+	void change_texture(std::string new_texture_file);
+	ALLEGRO_BITMAP* get_texture();
 };
 
 bool al_addon();
