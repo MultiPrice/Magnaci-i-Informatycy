@@ -333,8 +333,9 @@ Breath::Breath(int positionX, int positionY, std::string texture_file, std::stri
 void Breath::split(int positionX, int positionY) // NARAZIE NA SZTYWNO
 {
 	check = true;
-	duration = 0;
+	duration = 1;
 	speed = 80;
+	countdown = 0;
 	switch (direction)
 	{
 	case UP:
