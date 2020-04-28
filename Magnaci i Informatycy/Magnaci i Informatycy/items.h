@@ -22,7 +22,7 @@
 //Type of item
 enum class ITEM_TYPE
 {
-	WEAPON = 0,
+	WEAPON = 1,
 	ARMOUR,
 	FOOD,
 	SPECIAL
@@ -31,17 +31,17 @@ enum class ITEM_TYPE
 //Type of gear-up
 enum class ARMOUR_TYPE
 {
-	HELMET = 2,
+	HELMET = 1,
 	CHESTPLATE,
 	BOOTS,
-	RING,
-	AMULET
+	AMULET,
+	RING
 };
 
 //Type of weapon
 enum class WEAPON_TYPE
 {
-	TWO_HANDED,
+	TWO_HANDED = 1,
 	ONE_HANDED,
 	SHIELD,
 	BOW,
@@ -60,23 +60,26 @@ protected:
 	std::string name;					//Item name
 	std::string description;			//Item possible description
 	ITEM_TYPE item_type;
+	int inventory_x;
+	int inventory_y;
 
 public:
 	virtual bool File_read(std::string file_name) = 0;
-	void draw_in_inventory(int x, int y);
+	void draw_in_inventory();
+	int get_inventory_x();
+	int get_inventory_y();
+	void change_inventory_x(int new_x);
+	void change_inventory_y(int new_y);
 };
 
 
 class Armour : public Item
 {
 protected:
-	int armor_points;			//Points of armour
-	int speed;					//Spped or downturn
-
-	//Proporties of wearable items
 	int min_lvl;
 	int hero_class; //Coded binary
-
+	int armor_points;			//Points of armour
+	int speed;					//Spped or downturn
 	ARMOUR_TYPE armour_type;	//Type of armour (use ENUM)
 public:
 	Armour(int id, std::string file_name);	//Constuctor of Armour
@@ -89,15 +92,12 @@ public:
 class Weapon : public Item
 {
 protected:
+	int min_lvl;
+	int hero_class; //Coded binary
 	//Proporties of weapons
 	int min_damage;
 	int max_damage;
 	int attack_speed;
-
-	//Proporties of wearable items
-	int min_lvl;
-	int hero_class; //Coded binary
-
 	WEAPON_TYPE weapon_type;	//Type of weapon (use ENUM)
 public:
 	Weapon(int id, std::string& file_name);	//Constuctor of Weapon
@@ -139,11 +139,17 @@ protected:
 	ALLEGRO_BITMAP* backpack;
 	ALLEGRO_BITMAP* background;
 	ALLEGRO_BITMAP* player;
-	int item_in_backpack_x;		//bitmap start x
-	int item_in_backpack_y;		//bitmap start y
+	ALLEGRO_BITMAP* grill;
 public:
 	Inventory();
 	~Inventory();
 	void show_inventory();
 	void add_item_to_inventory(Item* new_item);
+	void add_item_to_inventory_x_y(Item* new_item);
+	Item* I_want_take_this_item(int sought_x, int sought_y);
+	Item* I_want_swap_this_item(int sought_x, int sought_y, Item* holding_item);
+	int is_there_an_item(int sought_x, int sought_y);
+	Item* I_want_take_this_equipment(int sought_x, int sought_y);
+	Item* I_want_equip_this_item(int sought_x, int sought_y, Item* holding_item);
+	int is_there_an_equipment(int sought_x, int sought_y);
 };

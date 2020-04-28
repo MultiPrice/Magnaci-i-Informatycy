@@ -36,6 +36,68 @@ void window::draw_actions(int position_x, int position_y)
 			action[i]->get_representation()->draw(position_x - shiftX, position_y - shiftY - 1);
 }
 
+void window::inventory()
+{
+	al_stop_timer(timer);
+	al_stop_timer(move_timer);
+	int mouse_inv_x = 0;
+	int mouse_inv_y = 0;
+	Character* tmp = dynamic_cast<Character*>(player);
+	ALLEGRO_BITMAP* cursor = al_load_bitmap("bitmaps/background/mouse_cursor.png");
+	Item* holding_item = nullptr;
+	Item* swap_item;
+	al_hide_mouse_cursor(display);
+	while (true)
+	{
+		al_wait_for_event(event_queue, &events);
+		if (events.type == ALLEGRO_EVENT_MOUSE_AXES)
+		{
+			mouse_inv_x = events.mouse.x;
+			mouse_inv_y = events.mouse.y;
+			if (holding_item)
+			{
+				holding_item->change_inventory_x(mouse_inv_x - 0.5 * measure);
+				holding_item->change_inventory_y(mouse_inv_y - 0.5 * measure);
+			}
+		}
+		else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+		{
+			if (events.mouse.button & 1)
+			{
+				if (holding_item)
+				{
+					holding_item = tmp->get_inventory()->I_want_equip_this_item(mouse_inv_x, mouse_inv_y, holding_item);
+					if(holding_item)
+						holding_item = tmp->get_inventory()->I_want_swap_this_item(mouse_inv_x, mouse_inv_y, holding_item);
+				}
+				else
+				{
+					holding_item = tmp->get_inventory()->I_want_take_this_equipment(mouse_inv_x, mouse_inv_y);
+					if(!holding_item)
+						holding_item = tmp->get_inventory()->I_want_take_this_item(mouse_inv_x, mouse_inv_y);
+				}
+			}
+			else if (events.mouse.button & 2)
+				break;
+		}
+		else if(events.type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			std::cout << "1";
+		}
+		tmp->get_inventory()->show_inventory();
+		if(holding_item)
+			holding_item->draw_in_inventory();
+		al_draw_bitmap(cursor, mouse_inv_x, mouse_inv_y, 0);
+		al_flip_display();
+	}
+	if (holding_item)
+		tmp->get_inventory()->add_item_to_inventory(holding_item);
+	al_destroy_bitmap(cursor);
+	al_show_mouse_cursor(display);
+	al_start_timer(timer);
+	al_start_timer(move_timer);
+}
+
 bool window::pause_game()
 {
 	al_draw_filled_rectangle(0, 0, screen_width, screen_height, al_map_rgba(0, 0, 0, 69));
@@ -202,7 +264,7 @@ bool window::player_movement() // ruch gracza na planszy
 		}
 	}
 	else if(al_key_down(&keyboard, ALLEGRO_KEY_I))
-		tmp->get_inventory()->show_inventory();
+		inventory();
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_ESCAPE))
 		return false;
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_H))
@@ -211,8 +273,13 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->change_mana(-10);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_P))
 	{
-		Item* new_armour = new Armour(110001, "items/armour_file.txt");
+		Item* new_armour = new Armour(210001, "items/armour_file.txt");
 		tmp->get_inventory()->add_item_to_inventory(new_armour);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_O))
+	{
+	Item* new_armour = new Armour(120001, "items/weapon_file.txt");
+	tmp->get_inventory()->add_item_to_inventory(new_armour);
 	}
 	else
 	{
