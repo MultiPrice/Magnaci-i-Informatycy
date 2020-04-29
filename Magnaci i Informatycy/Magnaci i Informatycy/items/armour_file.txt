@@ -1,13 +1,57 @@
 210001
 {
-Helm
-Nie jeden leb uratowal
-bitmaps/items/armour/helmet/item2.png
-300
-30
-12
-2
-0
+Szturmleb
+Zwieksza celnosc dwukrotnie
+bitmaps/items/armour/helmet/helmet.png
+1
+1
+1
+1
+1
+}
+220001
+{
+Turbo-Klata
+TORSO OF SHIRTLESS MUSCULAR MAN WITH USA AMERICAN FLAG PAINTED ON NAKED CHEST
+bitmaps/items/armour/chestplate/chestplate.png
+1
+1
+1
+1
+1
+}
+230001
+{
+LEG(O)S
+Przyznaj sie ze zawsze chciales takie miec
+bitmaps/items/armour/boots/boots.png
+1
+1
+1
+1
+1
+}
+240001
+{
+crying-amulet
+Nie to nie jest zart
+bitmaps/items/armour/amulet/amulet.png
+1
+1
+1
+1
+1
+}
+250001
+{
+LOTR
+Jeden by wszystkimi rzadzic
+bitmaps/items/armour/ring/ring.png
+1
+1
+1
+1
+1
 }
 
 (1/4)(1/5)XXXX

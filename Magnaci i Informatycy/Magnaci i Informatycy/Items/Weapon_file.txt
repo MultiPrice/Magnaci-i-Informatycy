@@ -1,4 +1,4 @@
-120001
+110001
 {
 glock-18
 I tak podniesiesz USP

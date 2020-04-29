@@ -45,6 +45,8 @@ void window::inventory()
 	Character* tmp = dynamic_cast<Character*>(player);
 	ALLEGRO_BITMAP* cursor = al_load_bitmap("bitmaps/background/mouse_cursor.png");
 	Item* holding_item = nullptr;
+	int prev_x;
+	int prev_y;
 	Item* swap_item;
 	al_hide_mouse_cursor(display);
 	while (true)
@@ -68,13 +70,13 @@ void window::inventory()
 				{
 					holding_item = tmp->get_inventory()->I_want_equip_this_item(mouse_inv_x, mouse_inv_y, holding_item);
 					if(holding_item)
-						holding_item = tmp->get_inventory()->I_want_swap_this_item(mouse_inv_x, mouse_inv_y, holding_item);
+						holding_item = tmp->get_inventory()->I_want_swap_this_item(mouse_inv_x, mouse_inv_y, holding_item, prev_x, prev_y);
 				}
 				else
 				{
 					holding_item = tmp->get_inventory()->I_want_take_this_equipment(mouse_inv_x, mouse_inv_y);
 					if(!holding_item)
-						holding_item = tmp->get_inventory()->I_want_take_this_item(mouse_inv_x, mouse_inv_y);
+						holding_item = tmp->get_inventory()->I_want_take_this_item(mouse_inv_x, mouse_inv_y, prev_x, prev_y);
 				}
 			}
 			else if (events.mouse.button & 2)
@@ -264,15 +266,35 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->change_hp(-10);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_M))
 		tmp->change_mana(-10);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_P))
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F1))
 	{
-		Item* new_armour = new Armour(210001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_armour);
+		Item* new_weapon = new Armour(110001, "items/weapon_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new_weapon);
 	}
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_O))
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F2))
 	{
-	Item* new_armour = new Armour(120001, "items/weapon_file.txt");
-	tmp->get_inventory()->add_item_to_inventory(new_armour);
+		Item* new_helmet = new Armour(210001, "items/armour_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new_helmet);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F3))
+	{
+		Item* new_chestplate = new Armour(220001, "items/armour_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new_chestplate);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F4))
+	{
+		Item* new_boots = new Armour(230001, "items/armour_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new_boots);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F5))
+	{
+		Item* new_amulet = new Armour(240001, "items/armour_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new_amulet);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F6))
+	{
+		Item* new_ring = new Armour(250001, "items/armour_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new_ring);
 	}
 	else
 	{
@@ -394,7 +416,9 @@ void window::restart(std::string location_name)
 	int toX = location->get_pTravel()->toX;
 	int toY = location->get_pTravel()->toY; 
 	location->~Location();
-
+	for (int i = 0; i < action.size(); i++)
+		action[i]->~Action();
+	action.clear();
 	player->change_position(toX, toY);
 	location = new Location(location_name, 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;

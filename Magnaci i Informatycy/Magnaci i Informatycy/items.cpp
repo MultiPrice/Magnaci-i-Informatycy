@@ -30,6 +30,11 @@ int Item::get_inventory_y()
 	return inventory_y;
 }
 
+int Item::get_item_id()
+{
+	return id;
+}
+
 void Item::change_inventory_x(int new_x)
 {
 	inventory_x = new_x;
@@ -47,20 +52,17 @@ bool Armour::File_read(std::string file_name)
 	if (file)
 	{
 		int seek_id;
-		int enums;
 		std::string tmp;
 
 		file >> seek_id; //szukamy wskazanego id
 		while (seek_id != id)
 		{
+			std::getline(file, tmp);
 			for (int i = 0; i < 10; i++)
-				file >> tmp;
+				std::getline(file, tmp);
+				
 			file >> seek_id;
 		}
-		enums = seek_id / 100000; //na podstawie id z pliku ustalany jest rodzaj przedmiodu
-		item_type = (ITEM_TYPE)(enums);
-		enums = seek_id / 10000 % 10;
-		armour_type = (ARMOUR_TYPE)(enums);
 
 		file >> tmp >> name;
 		std::getline(file, description);
@@ -89,7 +91,6 @@ Armour::Armour(int id, std::string file_name) {
 
 	this->id = id;
 	min_lvl = hero_class = armor_points = speed = 0;
-	armour_type = (ARMOUR_TYPE)(0);
 
 	if (!File_read(file_name))
 		std::cout << "blad odczytu z pliku armour";
@@ -105,7 +106,6 @@ bool Weapon::File_read(std::string& file_name) {
 	if (file)
 	{
 		int seek_id;
-		int enums;
 		std::string tmp;
 
 		file >> seek_id; //szukamy wskazanego id
@@ -115,10 +115,6 @@ bool Weapon::File_read(std::string& file_name) {
 				file >> tmp;
 			file >> seek_id;
 		}
-		enums = seek_id / 100000; //na podstawie id z pliku ustalany jest rodzaj przedmiodu
-		item_type = (ITEM_TYPE)(enums);
-		enums = seek_id / 10000 % 10;
-		weapon_type = (WEAPON_TYPE)(enums);
 
 		file >> tmp >> name;
 		std::getline(file, description);
@@ -152,7 +148,6 @@ Weapon::Weapon(int id, std::string& file_name) {
 
 	this->id = id;
 	min_lvl = hero_class = min_damage = max_damage = attack_speed = 0;
-	weapon_type = (WEAPON_TYPE)(0);
 
 	File_read(file_name);
 }
@@ -166,7 +161,6 @@ bool Food::File_read(std::string& file_name) {
 	file.open(file_name);
 
 	int seek_id;				//To compare IDs from list with needed
-	int enums;					//To read code information to enums
 	std::string temp;			//Temp string to skip unneeded item
 
 	//Checks whenever file exists and was opened
@@ -180,10 +174,6 @@ bool Food::File_read(std::string& file_name) {
 				file >> temp;
 			file >> seek_id;
 		}
-
-		//Decode first leters of ID into variables
-		enums = seek_id / 100000;
-		item_type = (ITEM_TYPE)(enums - 1);
 
 		//False if doesn't have brackets
 		file >> temp;
@@ -206,14 +196,6 @@ bool Food::File_read(std::string& file_name) {
 		file >> temp;
 		texture = al_load_bitmap(temp.c_str());
 		file >> cost;
-
-		//Determinates whenever item is food/potion or teleport
-		if (enums < 4) {
-			file >> health;
-		}
-		else {
-			file >> tp_dest;
-		}
 
 		//False if doesn't have brackets
 		file >> temp;
@@ -243,7 +225,6 @@ bool Special::File_read(std::string& file_name) {
 	file.open(file_name);
 
 	int seek_id;				//To compare IDs from list with needed
-	int enums;					//To read code information to enums
 	std::string temp;			//Temp string to skip unneeded item
 
 	//Checks whenever file exists and was opened
@@ -259,9 +240,6 @@ bool Special::File_read(std::string& file_name) {
 		}
 
 		//Decode first leters of ID into variables
-		enums = seek_id / 100000;
-		item_type = (ITEM_TYPE)(enums - 1);
-		enums = seek_id / 10000 % 10;
 
 		//False if doesn't have brackets
 		file >> temp;
@@ -394,25 +372,29 @@ void Inventory::add_item_to_inventory_x_y(Item* new_item)
 	}
 }
 
-Item* Inventory::I_want_take_this_item(int sought_x, int sought_y)
+Item* Inventory::I_want_take_this_item(int sought_x, int sought_y, int& prev_x, int& prev_y)
 {
 	int licznik = is_there_an_item(sought_x, sought_y);
 	if(licznik<0)
 		return nullptr;
 	else
 	{
+		prev_x = inventory[licznik]->get_inventory_x();
+		prev_y = inventory[licznik]->get_inventory_y();
 		Item* tmp = inventory[licznik];
 		inventory[licznik] = nullptr;
 		return tmp;
 	}
 }
 
-Item* Inventory::I_want_swap_this_item(int sought_x, int sought_y, Item* holding_item)
+Item* Inventory::I_want_swap_this_item(int sought_x, int sought_y, Item* holding_item, int& prev_x, int& prev_y)
 {
 	int licznik = is_there_an_item(sought_x, sought_y);
 	if (licznik < -1)
 	{
-		add_item_to_inventory(holding_item);
+		holding_item->change_inventory_x(prev_x);
+		holding_item->change_inventory_y(prev_y);
+		add_item_to_inventory_x_y(holding_item);
 		return nullptr;
 	}
 	else if (licznik < 0)
@@ -446,16 +428,20 @@ Item* Inventory::I_want_take_this_equipment(int sought_x, int sought_y)
 Item* Inventory::I_want_equip_this_item(int sought_x, int sought_y, Item* holding_item)
 {
 	int licznik = is_there_an_equipment(sought_x, sought_y);
-	std::cout << licznik;
 	if (licznik < 0)
 		return holding_item;
 	else
 	{
-		holding_item->change_inventory_x(sought_x - (sought_x % measure));
-		holding_item->change_inventory_y(sought_y - (sought_y % measure));
-		Item* tmp_item = equipment[licznik];
-		equipment[licznik] = holding_item;
-		return tmp_item;
+		if (can_I_equip_this(licznik, holding_item))
+		{
+			holding_item->change_inventory_x(sought_x - (sought_x % measure));
+			holding_item->change_inventory_y(sought_y - (sought_y % measure));
+			Item* tmp_item = equipment[licznik];
+			equipment[licznik] = holding_item;
+			return tmp_item;
+		}
+		else
+			return holding_item;
 	}
 }
 
@@ -475,6 +461,26 @@ int Inventory::is_there_an_equipment(int sought_x, int sought_y)
 		}
 	}
 	return -1;
+}
+
+bool Inventory::can_I_equip_this(int licznik, Item* holding_item)
+{
+	switch (holding_item->get_item_id() / 100000)
+	{
+	case 1: //weapon
+		if (licznik == 1 && (holding_item->get_item_id() / 10000) % 10 == 2) //jezeli tarcza na prawa reke
+			return false;
+		else if (licznik == 0 || licznik == 1) //jezeli slot broni
+			return true;
+		else
+			return false;
+	case 2: //armour
+		if (licznik == (holding_item->get_item_id() / 10000) % 10 + 1) //jezeli odpowiedni slow w eq
+			return true;
+		else
+			return false;
+	}
+	return false;
 }
 
 int Inventory::is_there_an_item(int sought_x, int sought_y)

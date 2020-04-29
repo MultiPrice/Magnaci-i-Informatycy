@@ -31,6 +31,7 @@ Element* Action::get_representation()
 Action::~Action()
 {
 	delete representation;
+	std::cout << "xdxddxdxdxd ";
 }
 
 AoE::AoE(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction, int effect_dash_x, int effect_dash_y)

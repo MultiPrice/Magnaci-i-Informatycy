@@ -41,12 +41,10 @@ enum class ARMOUR_TYPE
 //Type of weapon
 enum class WEAPON_TYPE
 {
-	TWO_HANDED = 1,
-	ONE_HANDED,
+	ONE_HANDED = 1,
 	SHIELD,
+	TWO_HANDED,
 	BOW,
-	ARROW,
-	DAGGER,
 	STAFF
 };
 
@@ -59,7 +57,6 @@ protected:
 	int cost;						//Item cost, Item Id
 	std::string name;					//Item name
 	std::string description;			//Item possible description
-	ITEM_TYPE item_type;
 	int inventory_x;
 	int inventory_y;
 
@@ -68,6 +65,7 @@ public:
 	void draw_in_inventory();
 	int get_inventory_x();
 	int get_inventory_y();
+	int get_item_id();
 	void change_inventory_x(int new_x);
 	void change_inventory_y(int new_y);
 };
@@ -80,7 +78,6 @@ protected:
 	int hero_class; //Coded binary
 	int armor_points;			//Points of armour
 	int speed;					//Spped or downturn
-	ARMOUR_TYPE armour_type;	//Type of armour (use ENUM)
 public:
 	Armour(int id, std::string file_name);	//Constuctor of Armour
 	bool File_read(std::string file_name);	//Reads armour list file and returns true if finds needed value
@@ -98,7 +95,6 @@ protected:
 	int min_damage;
 	int max_damage;
 	int attack_speed;
-	WEAPON_TYPE weapon_type;	//Type of weapon (use ENUM)
 public:
 	Weapon(int id, std::string& file_name);	//Constuctor of Weapon
 	bool File_read(std::string& file_name);	//Reads weapon list file and returns true if finds needed value
@@ -146,10 +142,11 @@ public:
 	void show_inventory();
 	void add_item_to_inventory(Item* new_item);
 	void add_item_to_inventory_x_y(Item* new_item);
-	Item* I_want_take_this_item(int sought_x, int sought_y);
-	Item* I_want_swap_this_item(int sought_x, int sought_y, Item* holding_item);
+	Item* I_want_take_this_item(int sought_x, int sought_y, int &prev_x, int &prev_y);
+	Item* I_want_swap_this_item(int sought_x, int sought_y, Item* holding_item, int& prev_x, int& prev_y);
 	int is_there_an_item(int sought_x, int sought_y);
 	Item* I_want_take_this_equipment(int sought_x, int sought_y);
 	Item* I_want_equip_this_item(int sought_x, int sought_y, Item* holding_item);
 	int is_there_an_equipment(int sought_x, int sought_y);
+	bool can_I_equip_this(int licznik, Item* holding_item);
 };
