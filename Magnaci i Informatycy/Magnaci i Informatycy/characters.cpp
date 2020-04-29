@@ -282,7 +282,7 @@ Magnat::~Magnat()
 
 void Magnat::draw(Object ***map, int max_x, int max_y)// rysuje gracza
 {
-	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, shiftX * measure, shiftY * measure, 0);
+	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, shiftX * measure - (0.23 * measure), shiftY * measure, 0);
 	int n = 0;
 	while (true)
 	{

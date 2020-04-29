@@ -41,7 +41,6 @@ public:
 class AoE : public Action
 {
 protected:
-	DIRECTION direction;
 	int center_x;
 	int center_y;
 public:
@@ -69,5 +68,19 @@ public:
 	Self(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, bool over_time);
 	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player);
 	~Self();
+};
+
+class Breath : public Action
+{
+protected:
+	DIRECTION direction;
+	int center_x;
+	int center_y;
+	bool check;
+public:
+	Breath(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction);
+	void split(int positionX, int positionY);
+	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player);
+	~Breath();
 };
 

@@ -30,6 +30,7 @@ bool Element::get_teleport()
 	return teleport;
 }
 
+
 Element::~Element()
 {
 	//al_destroy_bitmap(texture);

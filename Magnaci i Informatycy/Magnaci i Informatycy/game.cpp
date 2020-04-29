@@ -146,21 +146,28 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->change_attack_type(2);
 		tmp->bitmap_start_x = 0;
 		tmp->change_texture("player/player_attack.png");
-		action.push_back(new Wind(tmp->get_X(), tmp->get_Y(), "player/player_action1.png", "fireball", 20, 20, 5, 8, 10, false, 10, player, tmp->direction));
+		action.push_back(new Wind(tmp->get_X(), tmp->get_Y(), "player/player_action1.png", "fireball", 20, 10, 5, 8, 0, false, 6, player, tmp->direction));
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_2))
 	{
 		tmp->change_attack_type(3);
 		tmp->bitmap_start_x = 0;
 		tmp->change_texture("player/player_attack.png");
-		action.push_back(new Self(tmp->get_X(), tmp->get_Y(), "player/player_action2.png", "heal", 5, 20, 5, 10, 10, false, 18, player, true));
+		action.push_back(new Self(tmp->get_X(), tmp->get_Y(), "player/player_action2.png", "heal", 5, 10, 5, 10, 0, false, 18, player, true));
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_3))
 	{
 		tmp->change_attack_type(4);
 		tmp->bitmap_start_x = 0;
 		tmp->change_texture("player/player_attack.png");
-		action.push_back(new AoE(tmp->get_X(), tmp->get_Y(), "player/player_action3.png", "heal", 5, 20, 5, 10, 10, false, 18, player, tmp->direction, -3, -3));
+		action.push_back(new AoE(tmp->get_X(), tmp->get_Y(), "player/player_action3.png", "AoE Dmg", 5, 10, 5, 10, 0, false, 18, player, tmp->direction, -3, -3));
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_4))
+	{
+		tmp->change_attack_type(5);
+		tmp->bitmap_start_x = 0;
+		tmp->change_texture("player/player_attack.png");
+		action.push_back(new Breath(tmp->get_X(), tmp->get_Y(), "player/player_action4", "Breath", 20, 10, 5, 8, 0, false, 6, player, tmp->direction));
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 	{
@@ -329,6 +336,11 @@ void window::player_attack()
 		if (!tmp->get_attack_type())
 			tmp->change_texture("player/player_move.png");
 		break;
+	case 5: // Breath Dmg
+		tmp->what_attack_should_I_draw(5);
+		if (!tmp->get_attack_type())
+			tmp->change_texture("player/player_move.png");
+		break;
 	}
 }
 
@@ -366,6 +378,8 @@ bool window::game_working()// odœwierzenie planszy
 							return false;
 						}
 				}
+				std::cout << std::endl;
+				location->mob_movement(player, map);
 			}
 			else if (events.timer.source == move_timer)
 			{
@@ -380,7 +394,6 @@ bool window::game_working()// odœwierzenie planszy
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
 				draw_actions(player->get_X(), player->get_Y());
-				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_portals(player->get_X(), player->get_Y(), map);
 				player->draw(map, location->get_sizeX(), location->get_sizeY());

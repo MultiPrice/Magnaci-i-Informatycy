@@ -54,3 +54,14 @@ void Object::change_position(int new_X, int new_Y)
     positionX = new_X;
     positionY = new_Y;
 }
+
+void Object::change_texture(std::string new_texture_file)
+{
+    texture = nullptr;
+    texture = al_load_bitmap(new_texture_file.c_str());
+}
+
+ALLEGRO_BITMAP* Object::get_texture()
+{
+    return texture;
+}
