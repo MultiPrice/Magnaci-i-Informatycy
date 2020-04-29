@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <allegro5/bitmap.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_ttf.h>
@@ -69,6 +70,6 @@ public:
 	void draw(int position_x, int position_y);
 	void draw_mobs(int position_x, int position_y, Object*** map);
 	void draw_portals(int position_x, int position_y, Object*** map);
-	void change_mob_coordinates(int changeX, int changeY);
+	void mob_movement(Object* player, Object*** map);
 	~Location();
 };

@@ -273,7 +273,9 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 		int j = 0;
 		while (n >= j)
 		{
-			if(dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
+			if (typeid(Element) == typeid(*map[mobs[i]->get_X()][mobs[i]->get_Y() + j]))
+				map[mobs[i]->get_X()][mobs[i]->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
+			else if(dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
 				map[mobs[i]->get_X()][mobs[i]->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
 			j++;
 		}
@@ -290,10 +292,139 @@ void Location::draw_portals(int position_x, int position_y, Object*** map)
 	}
 }
 
-void Location::change_mob_coordinates(int changeX, int changeY)
+void Location::mob_movement(Object* player, Object*** map)
 {
+	bool up, down, right, left;
+	bool first, second, third, fourth;
+	double distance;
+	float x2, y2;
 	for (int i = 0; i < mobs.size(); i++)
-		mobs[i]->change_position(mobs[i]->get_X() + changeX, mobs[i]->get_Y() + changeY);
+	{
+		x2 = player->get_X() - mobs[i]->get_X();
+		y2 = player->get_Y() - mobs[i]->get_Y();
+		distance = sqrt(x2 * x2 + y2 * y2);
+
+		if (distance < screen_height / measure / 2)
+		{
+			map[mobs[i]->get_X()][mobs[i]->get_Y()] = nullptr;
+			up = left = right = down = false;
+			first = second = third = fourth = false;
+
+			if (map[mobs[i]->get_X()][mobs[i]->get_Y() - 1] == nullptr)
+			{
+				x2 = player->get_X() - mobs[i]->get_X();
+				y2 = player->get_Y() - (mobs[i]->get_Y() - 1);
+				if (distance > sqrt(x2 * x2 + y2 * y2))
+					up = true;
+			}
+			if (map[mobs[i]->get_X()][mobs[i]->get_Y() + 1] == nullptr)
+			{
+				x2 = player->get_X() - mobs[i]->get_X();
+				y2 = player->get_Y() - (mobs[i]->get_Y() + 1);
+				if (distance > sqrt(x2 * x2 + y2 * y2))
+					down = true;
+			}
+			if (map[mobs[i]->get_X() + 1][mobs[i]->get_Y()] == nullptr)
+			{
+				x2 = player->get_X() - (mobs[i]->get_X() + 1);
+				y2 = player->get_Y() - mobs[i]->get_Y();
+				if (distance > sqrt(x2 * x2 + y2 * y2))
+					right = true;
+			}
+			if (map[mobs[i]->get_X() - 1][mobs[i]->get_Y()] == nullptr)
+			{
+				x2 = player->get_X() - (mobs[i]->get_X() - 1);
+				y2 = player->get_Y() - mobs[i]->get_Y();
+				if (distance > sqrt(x2 * x2 + y2 * y2))
+					left = true;
+			}
+
+			if ((player->get_X() > mobs[i]->get_X()))
+			{
+				if ((player->get_Y() > mobs[i]->get_Y()))
+					fourth = true;
+				else
+					first = true;
+			}
+			else
+			{
+				if ((player->get_Y() > mobs[i]->get_Y()))
+					third = true;
+				else
+					second = true;
+			}
+
+			if (first)
+			{
+				if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+				{
+					if (right)
+						mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+					else if (up)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+				}
+				else
+				{
+					if (up)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+					else if (right)
+						mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+				}
+			}
+			else if (second)
+			{
+				if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+				{
+					if (left)
+						mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+					else if (up)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+				}
+				else
+				{
+					if (up)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+					else if (left)
+						mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+				}
+			}
+			else if (third)
+			{
+				if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+				{
+					if (left)
+						mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+					else if (down)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+				}
+				else
+				{
+					if (down)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+					else if (left)
+						mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+				}
+			}
+			else if (fourth)
+			{
+				if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+				{
+					if (right)
+						mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+					else if (down)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+				}
+				else
+				{
+					if (down)
+						mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+					else if (right)
+						mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+				}
+			}
+			map[mobs[i]->get_X()][mobs[i]->get_Y()] = mobs[i];
+		}
+	}
 }
 
 Location::~Location()
