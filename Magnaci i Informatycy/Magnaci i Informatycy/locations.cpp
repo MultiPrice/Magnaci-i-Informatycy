@@ -73,6 +73,14 @@ std::string find_enum_name(int enum_nr)
 	}
 }
 
+Dead_mobs::Dead_mobs(Object* mob, int duration)
+{
+	this->mob = mob;
+	this->duration = duration;
+}
+
+
+
 Location::Location(std::string location_name, int X, int Y, Object***& map)
 {
 	positionX = X;
@@ -260,11 +268,11 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 {
 	for (int i = 0; i < mobs.size(); i++)
 	{
-		if (dynamic_cast<Character*>(mobs[i])->get_hp() == 0)
-			mobs.erase(mobs.begin()+i);
 		int n = 0;
 		while (true)
 		{
+			if (mobs[i]->get_Y() + n + 1 >= sizeY)
+				break;
 			if (map[mobs[i]->get_X()][mobs[i]->get_Y() + n + 1] == nullptr)
 				break;
 			else
@@ -278,6 +286,43 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 			else if(dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
 				map[mobs[i]->get_X()][mobs[i]->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
 			j++;
+		}
+	}
+}
+
+void Location::draw_dead_mobs(int position_x, int position_y, Object*** map)
+{
+	for (int i = 0; i < dead_mobs.size(); i++)
+	{
+		if (dead_mobs[i]->duration <= 0)
+		{
+			map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y()] = nullptr;
+			dead_mobs.erase(dead_mobs.begin() + i);
+			i--;
+
+		}
+		else
+		{
+			dead_mobs[i]->duration--;
+			int n = 0;
+			while (true)
+			{
+				if (dead_mobs[i]->mob->get_Y() + n + 1 >= sizeY)
+					break;
+				if (map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + n + 1] == nullptr)
+					break;
+				else
+					n++;
+			}
+			int j = 0;
+			while (n >= j)
+			{
+				if (typeid(Element) == typeid(*map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j]))
+					map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
+				else if (dynamic_cast<Character*>(map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j])->get_attitude() != 4)
+					map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
+				j++;
+			}
 		}
 	}
 }
@@ -432,5 +477,12 @@ Location::~Location()
 	delete_travel_list(pTravel);
 	//al_destroy_bitmap(texture);
 	texture = nullptr;
+	//for (int i = 0; i < mobs.size(); i++)
+	//	delete mobs[i];
 	mobs.clear();
+	//for (int i = 0; i < dead_mobs.size(); i++)
+	//	delete dead_mobs[i];
+	dead_mobs.clear();
 }
+
+

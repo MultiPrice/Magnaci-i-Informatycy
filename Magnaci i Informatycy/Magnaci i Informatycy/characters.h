@@ -18,8 +18,8 @@
 
 #include "general_functions.h"
 #include "items.h"
-#include "element.h"
 #include "locations.h"
+#include "element.h"
 
 enum ATTITUDE
 {
@@ -69,14 +69,15 @@ public:
 	int get_max_hp();
 	int get_mana();
 	int get_max_mana();
+	std::string get_name();
 	Inventory* get_inventory();
-	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs);
+	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs, std::vector <struct Dead_mobs*> & dead_mobs);
 	void change_hp(int change);
 	void change_mana(int change);
 	int get_attack_type();
 	int get_attitude();
 	void change_attack_type(int tmp);
-	virtual void basic_attack(Object*** &map, std::vector <Object*>& mobs) = 0;
+	virtual void basic_attack(Object*** &map, std::vector <Object*>& mobs, std::vector <struct Dead_mobs*> & dead_mobs) = 0;
 };
 
 class Magnat : public Character
@@ -87,7 +88,7 @@ public:
 	~Magnat();
 	void draw(Object ***map, int max_x, int max_y);
 	void draw(int position_x, int position_y);
-	void basic_attack(Object *** &map, std::vector <Object*>& mobs);
+	void basic_attack(Object *** &map, std::vector <Object*>& mobs, std::vector <struct Dead_mobs*> & dead_mobs);
 };
 
 class Informatyk : public Character
