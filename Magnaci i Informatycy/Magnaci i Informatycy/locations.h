@@ -58,7 +58,6 @@ class Location : public Object
 {
 protected:
 	int id;
-	std::string name;
 	TERRAIN terrain;
 	int sizeX;
 	int sizeY;
@@ -66,9 +65,11 @@ protected:
 public:
 	std::vector <Object*> mobs;
 	std::vector <Dead_mobs*> dead_mobs;
+	std::vector <Object*> elements;
 	Location(std::string location_name, int X, int Y, Object***& map);
 	int get_sizeX();
 	int get_sizeY();
+	Object* get_mob(std::string name);
 	Travel_list* get_pTravel();
 	void read_travel_file(std::string location_name);
 	std::string search_travel(int wanted_X, int wanted_Y);

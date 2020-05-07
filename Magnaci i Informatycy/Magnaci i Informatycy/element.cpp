@@ -2,12 +2,13 @@
 
 #include "element.h"
 
-Element::Element(int X, int Y, bool ghost, bool teleport, std::string texture_name)
+Element::Element(int X, int Y, bool ghost, bool teleport, std::string texture_name, std::string name)
 {
 	positionX = X;
 	positionY = Y;
 	this->ghosted = ghost;
 	this->teleport = teleport;
+	this->name = name;
 	texture = al_load_bitmap(texture_name.c_str());
 }
 
@@ -29,7 +30,6 @@ bool Element::get_teleport()
 {
 	return teleport;
 }
-
 
 Element::~Element()
 {

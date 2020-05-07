@@ -27,7 +27,7 @@ void add_portals(Travel_list* &pHead, Object*** & map)
 		Travel_list* tym = pHead;
 		while (tym)
 		{
-			map[tym->X][tym->Y] = new Element(tym->X, tym->Y, true, true, "Element/portal.png");
+			map[tym->X][tym->Y] = new Element(tym->X, tym->Y, true, true, "Element/portal.png", "portal");
 			tym = tym->pNext;
 		}
 	}
@@ -110,6 +110,14 @@ int Location::get_sizeX()
 int Location::get_sizeY()
 {
 	return sizeY;
+}
+
+Object* Location::get_mob(std::string name)
+{
+	for (int i = 0; i < mobs.size(); i++)
+		if (mobs[i]->get_name() == name)
+			return mobs[i];
+	return nullptr;
 }
 
 Travel_list* Location::get_pTravel()
@@ -199,7 +207,7 @@ void Location::read_colision_file(std::string& colision_file, Object***& map)
 					map[j][i] = nullptr;
 					break;
 				case 'W'://wall
-					map[j][i] = new Element(j, i, false, false, "Element/invisible.png");
+					map[j][i] = new Element(j, i, false, false, "Element/invisible.png", "invisible");
 					break;
 				}
 			}
@@ -296,33 +304,13 @@ void Location::draw_dead_mobs(int position_x, int position_y, Object*** map)
 	{
 		if (dead_mobs[i]->duration <= 0)
 		{
-			map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y()] = nullptr;
 			dead_mobs.erase(dead_mobs.begin() + i);
 			i--;
-
 		}
 		else
 		{
+			dead_mobs[i]->mob->draw(position_x - shiftX, position_y - shiftY);
 			dead_mobs[i]->duration--;
-			int n = 0;
-			while (true)
-			{
-				if (dead_mobs[i]->mob->get_Y() + n + 1 >= sizeY)
-					break;
-				if (map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + n + 1] == nullptr)
-					break;
-				else
-					n++;
-			}
-			int j = 0;
-			while (n >= j)
-			{
-				if (typeid(Element) == typeid(*map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j]))
-					map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
-				else if (dynamic_cast<Character*>(map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j])->get_attitude() != 4)
-					map[dead_mobs[i]->mob->get_X()][dead_mobs[i]->mob->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
-				j++;
-			}
 		}
 	}
 }

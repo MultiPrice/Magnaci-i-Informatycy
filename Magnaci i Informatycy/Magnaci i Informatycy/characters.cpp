@@ -211,11 +211,6 @@ int Character::get_max_mana()
 	return max_mana;
 }
 
-std::string Character::get_name()
-{
-	return name;
-}
-
 Inventory* Character::get_inventory()
 {
 	return inventory;
@@ -232,10 +227,10 @@ void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs
 		for (int i = 0; i < mobs.size(); i++)
 			if (dynamic_cast<Character*>(mobs[i])->get_hp() <= 0)
 			{
-				std::string dead_bitmap_file_name = "mob/mob2.png";
-				dead_mobs.push_back(new Dead_mobs(new Element(mobs[i]->get_X(), mobs[i]->get_Y(), false, false, dead_bitmap_file_name), 180));
+				std::string dead_bitmap_file_name = "mob/" + name + "_dead.png";
+				dead_mobs.push_back(new Dead_mobs(new Element(mobs[i]->get_X(), mobs[i]->get_Y(), true, false, dead_bitmap_file_name, "trup"), 600));
 				mobs.erase(mobs.begin() + i);
-				map[dead_mobs[dead_mobs.size() - 1]->mob->get_X()][dead_mobs[dead_mobs.size() - 1]->mob->get_Y()] = dead_mobs[dead_mobs.size() - 1]->mob;
+				//map[dead_mobs[dead_mobs.size() - 1]->mob->get_X()][dead_mobs[dead_mobs.size() - 1]->mob->get_Y()] = dead_mobs[dead_mobs.size() - 1]->mob;
 			}
 	}
 }

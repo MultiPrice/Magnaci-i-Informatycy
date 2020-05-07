@@ -40,7 +40,6 @@ enum DIRECTION
 class Character : public Object
 {
 protected:
-	std::string name;
 	int id;
 	int hp;
 	int max_hp;
@@ -69,7 +68,6 @@ public:
 	int get_max_hp();
 	int get_mana();
 	int get_max_mana();
-	std::string get_name();
 	Inventory* get_inventory();
 	void get_damage(int dmg, Object***& map, std::vector <Object*>& mobs, std::vector <struct Dead_mobs*> & dead_mobs);
 	void change_hp(int change);

@@ -41,22 +41,22 @@ AoE::AoE(int positionX, int positionY, std::string texture_file, std::string nam
 	case UP:
 		center_x = positionX;
 		center_y = positionY - 1;
-		representation = new Element(positionX + effect_dash_x, positionY - 1 + effect_dash_y, piercing, false, texture_file);
+		representation = new Element(positionX + effect_dash_x, positionY - 1 + effect_dash_y, piercing, false, texture_file, name);
 		break;
 	case DOWN:
 		center_x = positionX;
 		center_y = positionY + 1;
-		representation = new Element(positionX + effect_dash_x, positionY + 1 + effect_dash_y, piercing, false, texture_file);
+		representation = new Element(positionX + effect_dash_x, positionY + 1 + effect_dash_y, piercing, false, texture_file, name);
 		break;
 	case RIGHT:
 		center_x = positionX + 1;
 		center_y = positionY;
-		representation = new Element(positionX + effect_dash_x + 1, positionY + effect_dash_y, piercing, false, texture_file);
+		representation = new Element(positionX + effect_dash_x + 1, positionY + effect_dash_y, piercing, false, texture_file, name);
 		break;
 	case LEFT:
 		center_x = positionX - 1;
 		center_y = positionY;
-		representation = new Element(positionX + effect_dash_x - 1, positionY + effect_dash_y, piercing, false, texture_file);
+		representation = new Element(positionX + effect_dash_x - 1, positionY + effect_dash_y, piercing, false, texture_file, name);
 		break;
 	}
 }
@@ -136,16 +136,16 @@ Wind::Wind(int positionX, int positionY, std::string texture_file, std::string n
 	switch (direction)
 	{
 	case UP:
-		representation = new Element(positionX, positionY - 1, piercing, false, texture_file);
+		representation = new Element(positionX, positionY - 1, piercing, false, texture_file, name);
 		break;
 	case DOWN:
-		representation = new Element(positionX, positionY + 1, piercing, false, texture_file);
+		representation = new Element(positionX, positionY + 1, piercing, false, texture_file, name);
 		break;
 	case RIGHT:
-		representation = new Element(positionX + 1, positionY, piercing, false, texture_file);
+		representation = new Element(positionX + 1, positionY, piercing, false, texture_file, name);
 		break;
 	case LEFT:
-		representation = new Element(positionX - 1, positionY, piercing, false, texture_file);
+		representation = new Element(positionX - 1, positionY, piercing, false, texture_file, name);
 		break;
 	}
 }
@@ -265,7 +265,7 @@ Wind::~Wind()
 Self::Self(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, bool over_time)
 	: Action(name, damage, cost, cast_time, duration, cooldown, speed, player)
 {
-	representation = new Element(positionX, positionY - 1, piercing, false, texture_file);
+	representation = new Element(positionX, positionY - 1, piercing, false, texture_file, name);
 	check = false;
 	this->over_time = over_time;
 }
@@ -316,16 +316,16 @@ Breath::Breath(int positionX, int positionY, std::string texture_file, std::stri
 	switch (direction)
 	{
 	case UP:
-		representation = new Element(positionX, positionY - 1, piercing, false, texture_file + "-1-1.png");
+		representation = new Element(positionX, positionY - 1, piercing, false, texture_file + "-1-1.png", name);
 		break;
 	case DOWN:
-		representation = new Element(positionX, positionY + 1, piercing, false, texture_file + "-1-2.png");
+		representation = new Element(positionX, positionY + 1, piercing, false, texture_file + "-1-2.png", name);
 		break;
 	case RIGHT:
-		representation = new Element(positionX + 1, positionY, piercing, false, texture_file + "-1-3.png");
+		representation = new Element(positionX + 1, positionY, piercing, false, texture_file + "-1-3.png", name);
 		break;
 	case LEFT:
-		representation = new Element(positionX - 1, positionY, piercing, false, texture_file + "-1-4.png");
+		representation = new Element(positionX - 1, positionY, piercing, false, texture_file + "-1-4.png", name);
 		break;
 	}
 }

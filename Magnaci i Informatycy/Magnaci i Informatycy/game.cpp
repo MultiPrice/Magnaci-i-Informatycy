@@ -392,9 +392,9 @@ bool window::game_working()// odœwierzenie planszy
 				}
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
+				location->draw_dead_mobs(player->get_X(), player->get_Y(), map);
 				draw_actions(player->get_X(), player->get_Y());
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
-				location->draw_dead_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_portals(player->get_X(), player->get_Y(), map);
 				player->draw(map, location->get_sizeX(), location->get_sizeY());
 				draw_hud(dynamic_cast<Character*>(player));

@@ -49,6 +49,11 @@ int Object::get_Y()
     return positionY;
 }
 
+std::string Object::get_name()
+{
+	return name;
+}
+
 void Object::change_position(int new_X, int new_Y)
 {
     positionX = new_X;
