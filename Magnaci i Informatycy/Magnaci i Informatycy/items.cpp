@@ -60,7 +60,6 @@ bool Armour::File_read(std::string file_name)
 			std::getline(file, tmp);
 			for (int i = 0; i < 10; i++)
 				std::getline(file, tmp);
-				
 			file >> seek_id;
 		}
 
@@ -87,8 +86,8 @@ int Armour::get_armour()
 }
 
 
-Armour::Armour(int id, std::string file_name) {
-
+Armour::Armour(int id, std::string file_name)
+{
 	this->id = id;
 	min_lvl = hero_class = armor_points = speed = 0;
 
@@ -98,9 +97,8 @@ Armour::Armour(int id, std::string file_name) {
 
 //------------------------------------------------------------
 
-bool Weapon::File_read(std::string& file_name) {
-
-
+bool Weapon::File_read(std::string file_name)
+{
 	std::fstream file;
 	file.open(file_name);
 	if (file)
@@ -109,10 +107,12 @@ bool Weapon::File_read(std::string& file_name) {
 		std::string tmp;
 
 		file >> seek_id; //szukamy wskazanego id
+		std::cout << seek_id;
 		while (seek_id != id)
 		{
-			for (int i = 0; i < 10; i++)
-				file >> tmp;
+			std::getline(file, tmp);
+			for (int i = 0; i < 11; i++)
+				std::getline(file, tmp);
 			file >> seek_id;
 		}
 
@@ -144,12 +144,13 @@ int Weapon::get_max_damage()
 }
 
 
-Weapon::Weapon(int id, std::string& file_name) {
-
+Weapon::Weapon(int id, std::string file_name)
+{
 	this->id = id;
 	min_lvl = hero_class = min_damage = max_damage = attack_speed = 0;
 
-	File_read(file_name);
+	if (!File_read(file_name))
+		std::cout << "blad odczytu z pliku armour";
 }
 
 //----------------------------------------------------
@@ -350,6 +351,8 @@ void Inventory::add_item_to_inventory(Item* new_item)
 
 void Inventory::add_item_to_inventory_x_y(Item* new_item)
 {
+	//new_item->change_inventory_x(new_item->get_inventory_x() - (new_item->get_inventory_x() % measure));
+	//new_item->change_inventory_y(new_item->get_inventory_y() - (new_item->get_inventory_y() % measure));
 	int x = new_item->get_inventory_x();
 	int y = new_item->get_inventory_y();
 	int tmp_x = 1080, tmp_y = measure * 5;
@@ -406,6 +409,8 @@ Item* Inventory::I_want_swap_this_item(int sought_x, int sought_y, Item* holding
 	}
 	else
 	{
+		holding_item->change_inventory_x(sought_x - (sought_x % measure));
+		holding_item->change_inventory_y(sought_y - (sought_y % measure));
 		Item* tmp_item = inventory[licznik];
 		inventory[licznik] = holding_item;
 		return tmp_item;
@@ -465,17 +470,34 @@ int Inventory::is_there_an_equipment(int sought_x, int sought_y)
 
 bool Inventory::can_I_equip_this(int licznik, Item* holding_item)
 {
+	int id = (holding_item->get_item_id() / 10000) % 10;
 	switch (holding_item->get_item_id() / 100000)
 	{
 	case 1: //weapon
-		if (licznik == 1 && (holding_item->get_item_id() / 10000) % 10 == 2) //jezeli tarcza na prawa reke
-			return false;
-		else if (licznik == 0 || licznik == 1) //jezeli slot broni
-			return true;
+		if (licznik == 0 || licznik == 1) //jezeli slot broni
+		{
+			if (licznik == 1 && id == 2) //jezeli tarcza na prawa reke
+				return false;
+			else if (id >= 3 && equipment[0] && equipment[1]) //je¿eli droñ dwurêczna i oba sloty zajête
+			{
+				int pom = 0;
+				for (int i = 0; i < inventory.size(); i++)
+				{
+					if (!inventory[i])
+					{
+						pom++;
+						if (pom == 2) //je¿eli dwa wolne miejsca w inventory
+							return true;
+					}
+				}
+			}
+			else
+				return true;
+		}
 		else
 			return false;
 	case 2: //armour
-		if (licznik == (holding_item->get_item_id() / 10000) % 10 + 1) //jezeli odpowiedni slow w eq
+		if (licznik == id + 1) //jezeli odpowiedni slow w eq
 			return true;
 		else
 			return false;

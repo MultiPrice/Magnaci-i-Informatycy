@@ -96,8 +96,8 @@ protected:
 	int max_damage;
 	int attack_speed;
 public:
-	Weapon(int id, std::string& file_name);	//Constuctor of Weapon
-	bool File_read(std::string& file_name);	//Reads weapon list file and returns true if finds needed value
+	Weapon(int id, std::string file_name);	//Constuctor of Weapon
+	bool File_read(std::string file_name);	//Reads weapon list file and returns true if finds needed value
 	int get_min_damage();
 	int get_max_damage();
 };

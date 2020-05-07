@@ -1,6 +1,6 @@
 130000
 {
-mob/mob1.png
+mob/mob1_move.png
 TWOJA_STARA
 2
 10

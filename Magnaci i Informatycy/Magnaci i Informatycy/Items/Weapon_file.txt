@@ -3,12 +3,24 @@
 glock-18
 I tak podniesiesz USP
 bitmaps/items/weapon/one_handed/glock.png
-800
 1
-13 
-5
-10
-6
+1
+1
+1
+1
+1
+}
+130001
+{
+uriziel
+Lepszego nie znajdziesz
+bitmaps/items/weapon/two_handed/uriziel.png
+1
+1
+1 
+1
+1
+1
 }
 
 Example:

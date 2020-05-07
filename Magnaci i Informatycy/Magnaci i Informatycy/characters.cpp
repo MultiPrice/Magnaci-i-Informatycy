@@ -47,7 +47,7 @@ Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, 
 	this->positionY = Y;
 	this->is_moving = false;
 	this->attack_type = 0;
-	direction = RIGHT;
+	direction = DOWN;
 	inventory = nullptr;
 	movement_cooldown = al_get_time();
 }
@@ -280,9 +280,9 @@ Magnat::~Magnat()
 	texture = nullptr;
 }
 
-void Magnat::draw(Object ***map, int max_x, int max_y)// rysuje gracza
+void Magnat::draw(Object ***map, int max_x, int max_y) // rysuje gracza
 {
-	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, shiftX * measure - (0.23 * measure), shiftY * measure, 0);
+	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, shiftX * measure - (0.25 * measure), shiftY * measure, 0);
 	int n = 0;
 	while (true)
 	{
@@ -301,9 +301,10 @@ void Magnat::draw(Object ***map, int max_x, int max_y)// rysuje gracza
 	}
 }
 
-void Magnat::draw(int position_x, int position_y)//rysuje moba
+void Magnat::draw(int position_x, int position_y) //rysuje moba
 {
-	al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
+	al_draw_bitmap_region(texture, bitmap_start_x, bitmap_start_y, measure * 1.5, measure * 2, (positionX - position_x) * measure - (0.25 * measure), (positionY - position_y) * measure, 0);
+	//al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
 void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs)

@@ -88,6 +88,7 @@ public:
     void change_position(Object*& who, int prevX, int prevY, int nextX, int nextY);
     void draw_actions(int position_x, int position_y);
     void inventory();
+    void guests();
 };
 
 void which_x_in_animation(int& start_x);
