@@ -28,6 +28,7 @@ protected:
 	int positionX;
 	int positionY;
 	ALLEGRO_BITMAP* texture;
+	std::string name;
 public:
 	//````````````````````````````````````````````````````
 	int bitmap_start_x = 0;
@@ -37,6 +38,7 @@ public:
 	virtual void draw(int position_x, int position_y) = 0;
 	int get_X();
 	int get_Y();
+	std::string get_name();
 	void change_position(int new_X, int new_Y);
 	void change_texture(std::string new_texture_file);
 	ALLEGRO_BITMAP* get_texture();

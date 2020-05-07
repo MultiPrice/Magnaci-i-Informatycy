@@ -27,7 +27,7 @@ void add_portals(Travel_list* &pHead, Object*** & map)
 		Travel_list* tym = pHead;
 		while (tym)
 		{
-			map[tym->X][tym->Y] = new Element(tym->X, tym->Y, true, true, "Element/portal.png");
+			map[tym->X][tym->Y] = new Element(tym->X, tym->Y, true, true, "Element/portal.png", "portal");
 			tym = tym->pNext;
 		}
 	}
@@ -73,6 +73,14 @@ std::string find_enum_name(int enum_nr)
 	}
 }
 
+Dead_mobs::Dead_mobs(Object* mob, int duration)
+{
+	this->mob = mob;
+	this->duration = duration;
+}
+
+
+
 Location::Location(std::string location_name, int X, int Y, Object***& map)
 {
 	positionX = X;
@@ -102,6 +110,14 @@ int Location::get_sizeX()
 int Location::get_sizeY()
 {
 	return sizeY;
+}
+
+Object* Location::get_mob(std::string name)
+{
+	for (int i = 0; i < mobs.size(); i++)
+		if (mobs[i]->get_name() == name)
+			return mobs[i];
+	return nullptr;
 }
 
 Travel_list* Location::get_pTravel()
@@ -191,7 +207,7 @@ void Location::read_colision_file(std::string& colision_file, Object***& map)
 					map[j][i] = nullptr;
 					break;
 				case 'W'://wall
-					map[j][i] = new Element(j, i, false, false, "Element/invisible.png");
+					map[j][i] = new Element(j, i, false, false, "Element/invisible.png", "invisible");
 					break;
 				}
 			}
@@ -260,11 +276,11 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 {
 	for (int i = 0; i < mobs.size(); i++)
 	{
-		if (dynamic_cast<Character*>(mobs[i])->get_hp() == 0)
-			mobs.erase(mobs.begin()+i);
 		int n = 0;
 		while (true)
 		{
+			if (mobs[i]->get_Y() + n + 1 >= sizeY)
+				break;
 			if (map[mobs[i]->get_X()][mobs[i]->get_Y() + n + 1] == nullptr)
 				break;
 			else
@@ -278,6 +294,23 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 			else if(dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
 				map[mobs[i]->get_X()][mobs[i]->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
 			j++;
+		}
+	}
+}
+
+void Location::draw_dead_mobs(int position_x, int position_y, Object*** map)
+{
+	for (int i = 0; i < dead_mobs.size(); i++)
+	{
+		if (dead_mobs[i]->duration <= 0)
+		{
+			dead_mobs.erase(dead_mobs.begin() + i);
+			i--;
+		}
+		else
+		{
+			dead_mobs[i]->mob->draw(position_x - shiftX, position_y - shiftY);
+			dead_mobs[i]->duration--;
 		}
 	}
 }
@@ -492,5 +525,12 @@ Location::~Location()
 	delete_travel_list(pTravel);
 	//al_destroy_bitmap(texture);
 	texture = nullptr;
+	//for (int i = 0; i < mobs.size(); i++)
+	//	delete mobs[i];
 	mobs.clear();
+	//for (int i = 0; i < dead_mobs.size(); i++)
+	//	delete dead_mobs[i];
+	dead_mobs.clear();
 }
+
+

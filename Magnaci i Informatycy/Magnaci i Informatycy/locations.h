@@ -46,20 +46,30 @@ struct Travel_list
 	Travel_list* pNext;
 };
 
+struct Dead_mobs
+{
+	Object* mob; 
+	int duration; // jak dlugo mob zostanie
+
+	Dead_mobs(Object* mob, int duration);
+};
+
 class Location : public Object
 {
 protected:
 	int id;
-	std::string name;
 	TERRAIN terrain;
 	int sizeX;
 	int sizeY;
 	Travel_list* pTravel;
 public:
 	std::vector <Object*> mobs;
+	std::vector <Dead_mobs*> dead_mobs;
+	std::vector <Object*> elements;
 	Location(std::string location_name, int X, int Y, Object***& map);
 	int get_sizeX();
 	int get_sizeY();
+	Object* get_mob(std::string name);
 	Travel_list* get_pTravel();
 	void read_travel_file(std::string location_name);
 	std::string search_travel(int wanted_X, int wanted_Y);
@@ -69,6 +79,7 @@ public:
 	void draw(Object ***map, int max_x, int max_y);
 	void draw(int position_x, int position_y);
 	void draw_mobs(int position_x, int position_y, Object*** map);
+	void draw_dead_mobs(int position_x, int position_y, Object*** map);
 	void draw_portals(int position_x, int position_y, Object*** map);
 	void mob_movement(Object* player, Object*** map);
 	~Location();

@@ -216,7 +216,7 @@ Inventory* Character::get_inventory()
 	return inventory;
 }
 
-void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs)
+void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs, std::vector <struct Dead_mobs*> &dead_mobs)
 {
 	if (armor > dmg)
 		return;
@@ -225,10 +225,13 @@ void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs
 	{
 		map[positionX][positionY] = nullptr;
 		for (int i = 0; i < mobs.size(); i++)
-		{
 			if (dynamic_cast<Character*>(mobs[i])->get_hp() <= 0)
+			{
+				std::string dead_bitmap_file_name = "mob/" + name + "_dead.png";
+				dead_mobs.push_back(new Dead_mobs(new Element(mobs[i]->get_X(), mobs[i]->get_Y(), true, false, dead_bitmap_file_name, "trup"), 600));
 				mobs.erase(mobs.begin() + i);
-		}
+				//map[dead_mobs[dead_mobs.size() - 1]->mob->get_X()][dead_mobs[dead_mobs.size() - 1]->mob->get_Y()] = dead_mobs[dead_mobs.size() - 1]->mob;
+			}
 	}
 }
 
@@ -307,7 +310,7 @@ void Magnat::draw(int position_x, int position_y) //rysuje moba
 	//al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
-void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs)
+void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs, std::vector <struct Dead_mobs*>& dead_mobs)
 {
 	int damage = rand() % (max_damage - min_damage) + min_damage;
 	switch (direction)
@@ -317,14 +320,14 @@ void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs)
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
 				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
-					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs);
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs, dead_mobs);
 		}
 		break;
 	case RIGHT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
 			if (map[positionX + 1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Element))
-				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, map, mobs);
+				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, map, mobs, dead_mobs);
 		}
 		break;
 	case DOWN:
@@ -332,14 +335,14 @@ void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs)
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
 				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
-					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs);
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs, dead_mobs);
 		}
 		break;
 	case LEFT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
 			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX - 1][i]) != typeid(Element))
-				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, map, mobs);
+				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, map, mobs, dead_mobs);
 		}
 		break;
 	}

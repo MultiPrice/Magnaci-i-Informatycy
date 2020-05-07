@@ -12,6 +12,7 @@
 #include "characters.h"
 #include "locations.h"
 #include "action.h"
+#include "quest.h"
 
 
 struct butt_list
@@ -52,6 +53,7 @@ class window
     Location* location;
     bool test;
     std::vector <Action*> action;
+    std::vector <Quest_list*> quest_line;
 public:
     friend Button;
     window(int pwidth, int pheight);

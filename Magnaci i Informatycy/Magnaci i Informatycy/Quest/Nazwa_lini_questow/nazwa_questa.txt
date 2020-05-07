@@ -1,0 +1,20 @@
+nazwa_questa
+{
+target_name
+target_class (jako liczba 0 - Character, 1 - Element, 2 - Location)
+target_location_name
+TYPE_objectivu
+ilosc_powtorzen
++
+target_name2
+target_class (jako liczba 0 - Character, 1 - Element, 2 - Location)
+target_location_name
+TYPE_objectivu
+ilosc_powtorzen
++
+...
+...
+...
+...
+...
+}

@@ -1,7 +1,7 @@
 130000
 {
-mob/mob1_move.png
-TWOJA_STARA
+mob/mob1.png
+mob1
 2
 10
 1

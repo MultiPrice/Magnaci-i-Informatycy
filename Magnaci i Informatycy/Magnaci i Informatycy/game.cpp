@@ -169,7 +169,7 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->change_attack_type(1);
 		tmp->bitmap_start_x = 0;
 		tmp->change_texture("player/player_attack.png");
-		tmp->basic_attack(map, location->mobs);
+		tmp->basic_attack(map, location->mobs, location->dead_mobs);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_1))
 	{
@@ -415,14 +415,13 @@ bool window::game_working()// odœwierzenie planszy
 							return false;
 						}
 				}
-				std::cout << std::endl;
 				location->mob_movement(player, map);
 			}
 			else if (events.timer.source == move_timer)
 			{
 				for (int i = 0; i < action.size(); i++)
 				{
-					if (!action[i]->make_action(map, location->get_sizeX(), location->get_sizeY(), player->get_X(), player->get_Y(), location->mobs, player))
+					if (!action[i]->make_action(map, location->get_sizeX(), location->get_sizeY(), player->get_X(), player->get_Y(), location->mobs, player, location->dead_mobs))
 					{
 						action.erase(action.begin() + i);
 						i--;
@@ -430,6 +429,7 @@ bool window::game_working()// odœwierzenie planszy
 				}
 				al_clear_to_color(al_map_rgb(0, 0, 0));
 				location->draw(player->get_X(), player->get_Y());
+				location->draw_dead_mobs(player->get_X(), player->get_Y(), map);
 				draw_actions(player->get_X(), player->get_Y());
 				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_portals(player->get_X(), player->get_Y(), map);
