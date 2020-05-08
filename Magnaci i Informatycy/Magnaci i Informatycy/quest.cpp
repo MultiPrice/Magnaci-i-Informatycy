@@ -130,13 +130,6 @@ Quest_line::Quest_line(std::string quest_line_name, std::string start_quest_name
 	player = al_load_bitmap("player/player_move.png");
 }
 
-Quest_list::~Quest_list()
-{
-	al_destroy_bitmap(quest_bitmap);
-	al_destroy_bitmap(background);
-	al_destroy_bitmap(player);
-}
-
 void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_name)
 {
 	std::string file_name = "Quest/" + quest_line_name + "/" + quest_name + ".txt";
@@ -189,18 +182,18 @@ void Quest_line::add_quest(std::string name, std::string target_name, std::strin
 	}
 }
 
-void Quest_list::show_quests()
+void Quest_line::show_quests()
 {
 	al_draw_bitmap(background, 0, 0, 0);
 	al_draw_bitmap(quest_bitmap, screen_width / 2 + measure, 0, 0);
 	al_draw_tinted_scaled_rotated_bitmap_region(player, 0, measure * 6, measure * 1.5, measure * 2, al_map_rgb(255, 255, 255), 0, 0, 150, 60, 8, 8, 0, 0);
 	for (int i = 0; i <quest->get_objectives().size(); i++) // wypisywanie questow
 	{
-		std::cout << "dupa \n";
+		//std::cout << "dupa \n";
 	}
 }
 
-void Quest_list::take_next_quest()
+bool Quest_line::take_next_quest()
 {
 	quest->~Quest();
 	if (next_quest_name == "")
@@ -222,5 +215,8 @@ Quest* Quest_line::get_quest()
 
 Quest_line::~Quest_line()
 {
+	al_destroy_bitmap(quest_bitmap);
+	al_destroy_bitmap(background);
+	al_destroy_bitmap(player);
 	quest->~Quest();
 }
