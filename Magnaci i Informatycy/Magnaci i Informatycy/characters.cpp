@@ -216,7 +216,7 @@ Inventory* Character::get_inventory()
 	return inventory;
 }
 
-void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs, std::vector <struct Dead_mobs*> &dead_mobs)
+void Character::get_damage(int dmg, Object *** &map, Location* location, std::vector <Quest_line*>& quest_line)
 {
 	if (armor > dmg)
 		return;
@@ -224,13 +224,34 @@ void Character::get_damage(int dmg, Object *** &map, std::vector <Object*> &mobs
 	if (hp <= 0)
 	{
 		map[positionX][positionY] = nullptr;
-		for (int i = 0; i < mobs.size(); i++)
-			if (dynamic_cast<Character*>(mobs[i])->get_hp() <= 0)
+		for (int i = 0; i < location->mobs.size(); i++)
+			if (dynamic_cast<Character*>(location->mobs[i])->get_hp() <= 0)
 			{
+				for (int h = 0; h < quest_line.size(); h++)
+					for (int j = 0; j < quest_line[h]->get_quest()->objective.size(); j++)
+						if (quest_line[h]->get_quest()->objective[j]->check_objective(location))
+							if(quest_line[h]->get_quest()->objective[j]->get_to_do() == KILL)
+								if (location->mobs[i]->get_name() == quest_line[h]->get_quest()->objective[j]->get_target_name())
+									if (quest_line[h]->get_quest()->objective[j]->is_it_done())
+									{
+										quest_line[h]->get_quest()->objective.erase(quest_line[h]->get_quest()->objective.begin() + j);
+										std::cout << "Zrobiono objectiva" << std::endl;
+										if (quest_line[h]->get_quest()->objective.empty())
+										{
+											std::cout << "Zrobiono questa" << std::endl;
+											if (!quest_line[h]->take_next_quest())
+											{
+												quest_line[h]->~Quest_line();
+												quest_line.erase(quest_line.begin() + h);
+												h--;
+												break;
+											}
+										}
+									}
 				std::string dead_bitmap_file_name = "mob/" + name + "_dead.png";
-				dead_mobs.push_back(new Dead_mobs(new Element(mobs[i]->get_X(), mobs[i]->get_Y(), true, false, dead_bitmap_file_name, "trup"), 600));
-				mobs.erase(mobs.begin() + i);
-				//map[dead_mobs[dead_mobs.size() - 1]->mob->get_X()][dead_mobs[dead_mobs.size() - 1]->mob->get_Y()] = dead_mobs[dead_mobs.size() - 1]->mob;
+				location->dead_mobs.push_back(new Dead_mobs(new Element(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, false, dead_bitmap_file_name, "trup"), 600));
+				location->mobs.erase(location->mobs.begin() + i);
+				return;
 			}
 	}
 }
@@ -310,7 +331,7 @@ void Magnat::draw(int position_x, int position_y) //rysuje moba
 	//al_draw_bitmap(texture, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
-void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs, std::vector <struct Dead_mobs*>& dead_mobs)
+void Magnat::basic_attack(Object***& map, Location* location, std::vector <Quest_line*> quest_line)
 {
 	int damage = rand() % (max_damage - min_damage) + min_damage;
 	switch (direction)
@@ -320,14 +341,14 @@ void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs, std::vect
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
 				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
-					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs, dead_mobs);
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;
 	case RIGHT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
 			if (map[positionX + 1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Element))
-				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, map, mobs, dead_mobs);
+				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;
 	case DOWN:
@@ -335,14 +356,14 @@ void Magnat::basic_attack(Object***& map, std::vector <Object*>& mobs, std::vect
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
 				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
-					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, mobs, dead_mobs);
+					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;
 	case LEFT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
 			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX - 1][i]) != typeid(Element))
-				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, map, mobs, dead_mobs);
+				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;
 	}
