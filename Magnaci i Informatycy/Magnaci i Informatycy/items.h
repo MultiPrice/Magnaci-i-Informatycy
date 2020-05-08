@@ -148,5 +148,6 @@ public:
 	Item* I_want_take_this_equipment(int sought_x, int sought_y);
 	Item* I_want_equip_this_item(int sought_x, int sought_y, Item* holding_item);
 	int is_there_an_equipment(int sought_x, int sought_y);
-	bool can_I_equip_this(int licznik, Item* holding_item);
+	int can_I_equip_this(int licznik, Item* holding_item);
+	void add_bonus();
 };

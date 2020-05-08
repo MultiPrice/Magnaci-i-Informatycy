@@ -523,10 +523,10 @@ void Location::mob_movement(Object* player, Object*** map)
 Location::~Location()
 {
 	delete_travel_list(pTravel);
-	//al_destroy_bitmap(texture);
+	al_destroy_bitmap(texture);
 	texture = nullptr;
 	//for (int i = 0; i < mobs.size(); i++)
-	//	delete mobs[i];
+		//dynamic_cast<Character*>(mobs[i])->~Character();
 	mobs.clear();
 	//for (int i = 0; i < dead_mobs.size(); i++)
 	//	delete dead_mobs[i];

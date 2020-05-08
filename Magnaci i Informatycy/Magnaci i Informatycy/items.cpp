@@ -437,16 +437,34 @@ Item* Inventory::I_want_equip_this_item(int sought_x, int sought_y, Item* holdin
 		return holding_item;
 	else
 	{
-		if (can_I_equip_this(licznik, holding_item))
+		int tmp_case = can_I_equip_this(licznik, holding_item);
+		Item* tmp_item = nullptr;
+		switch (tmp_case)
 		{
+		case -1:
+			return holding_item;
+		case 0:
 			holding_item->change_inventory_x(sought_x - (sought_x % measure));
 			holding_item->change_inventory_y(sought_y - (sought_y % measure));
-			Item* tmp_item = equipment[licznik];
+			tmp_item = equipment[licznik];
+			equipment[licznik] = holding_item;
+			return tmp_item;
+		case 1:
+			holding_item->change_inventory_x(sought_x - (sought_x % measure));
+			holding_item->change_inventory_y(sought_y - (sought_y % measure));
+			add_item_to_inventory(equipment[1]);
+			equipment[1] = nullptr;
+			tmp_item = equipment[0];
+			equipment[0] = holding_item;
+			return tmp_item;
+		case 2:
+			holding_item->change_inventory_x(sought_x - (sought_x % measure));
+			holding_item->change_inventory_y(sought_y - (sought_y % measure));
+			tmp_item = equipment[0];
+			equipment[0] = nullptr;
 			equipment[licznik] = holding_item;
 			return tmp_item;
 		}
-		else
-			return holding_item;
 	}
 }
 
@@ -468,7 +486,7 @@ int Inventory::is_there_an_equipment(int sought_x, int sought_y)
 	return -1;
 }
 
-bool Inventory::can_I_equip_this(int licznik, Item* holding_item)
+int Inventory::can_I_equip_this(int licznik, Item* holding_item)
 {
 	int id = (holding_item->get_item_id() / 10000) % 10;
 	switch (holding_item->get_item_id() / 100000)
@@ -477,7 +495,7 @@ bool Inventory::can_I_equip_this(int licznik, Item* holding_item)
 		if (licznik == 0 || licznik == 1) //jezeli slot broni
 		{
 			if (licznik == 1 && id == 2) //jezeli tarcza na prawa reke
-				return false;
+				return -1;
 			else if (id >= 3 && equipment[0] && equipment[1]) //je¿eli droñ dwurêczna i oba sloty zajête
 			{
 				int pom = 0;
@@ -487,22 +505,25 @@ bool Inventory::can_I_equip_this(int licznik, Item* holding_item)
 					{
 						pom++;
 						if (pom == 2) //je¿eli dwa wolne miejsca w inventory
-							return true;
+							return 1;
 					}
 				}
+				return -1;
 			}
-			else
-				return true;
+			else if (id == 1 && equipment[0] && (equipment[0]->get_item_id() / 10000) % 10 >= 3) //jezeli broñ jednorêczna a jest za³o¿ona dwurêczna
+				return 2;
+			else //je¿eli po prostu gitówa
+				return 0;
 		}
 		else
-			return false;
+			return -1;
 	case 2: //armour
 		if (licznik == id + 1) //jezeli odpowiedni slow w eq
-			return true;
+			return 0;
 		else
-			return false;
+			return -1;
 	}
-	return false;
+	return -1;
 }
 
 int Inventory::is_there_an_item(int sought_x, int sought_y)

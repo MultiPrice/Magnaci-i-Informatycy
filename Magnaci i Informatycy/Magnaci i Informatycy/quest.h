@@ -73,6 +73,7 @@ public:
 
 	Quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class);
 	std::string get_name();
+	std::vector <Objective*> get_objectives();
 	void add_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class);
 };
 
@@ -82,9 +83,14 @@ protected:
 	std::string name;
 	Quest* quest;
 	std::string next_quest_name;
+	ALLEGRO_BITMAP* quest_bitmap;
+	ALLEGRO_BITMAP* background;
+	ALLEGRO_BITMAP* player;
 public:
 	Quest_list(std::string quest_line_name, std::string start_quest_name);
+	~Quest_list();
 	void quest_file_read(std::string quest_line_name, std::string quest_name);
 	void add_quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class);
+	void show_quests();
 	void take_next_quest();
 };

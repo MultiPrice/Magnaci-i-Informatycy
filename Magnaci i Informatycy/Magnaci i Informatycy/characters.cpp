@@ -279,7 +279,7 @@ Magnat::Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int ma
 
 Magnat::~Magnat()
 {
-	//al_destroy_bitmap(texture);
+	al_destroy_bitmap(texture);
 	texture = nullptr;
 }
 

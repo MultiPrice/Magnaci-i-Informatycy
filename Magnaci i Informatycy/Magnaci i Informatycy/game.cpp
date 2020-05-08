@@ -86,6 +86,7 @@ void window::inventory()
 		{
 			std::cout << "1";
 		}
+		al_clear_to_color(al_map_rgb(0, 0, 0));
 		tmp->get_inventory()->show_inventory();
 		if(holding_item)
 			holding_item->draw_in_inventory();
@@ -119,7 +120,8 @@ void window::guests()
 		else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
 			if (events.mouse.button & 2)
 				break;
-		
+		al_clear_to_color(al_map_rgb(0, 0, 0));
+		quest_line[0]->show_quests();
 		al_draw_bitmap(cursor, mouse_inv_x, mouse_inv_y, 0);
 		al_flip_display();
 	}
