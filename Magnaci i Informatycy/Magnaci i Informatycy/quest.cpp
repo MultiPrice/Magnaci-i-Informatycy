@@ -6,7 +6,32 @@ Objective::Objective(std::string target_name, std::string target_location_name, 
 	this->target_location_name = target_location_name;
 	this->to_do = to_do;
 	this->how_many = how_many;
-	check = false;
+}
+
+bool Objective::check_objective(Location* location)
+{
+	if (location->get_name() == target_location_name)
+		return true;
+	else
+		return false;
+}
+
+std::string Objective::get_target_name()
+{
+	return this->target_name;
+}
+
+bool Objective::is_it_done()
+{
+	how_many--;
+	if (how_many == 0)
+		return true;
+	return false;
+}
+
+TYPE Objective::get_to_do()
+{
+	return to_do;
 }
 
 Character_objective::Character_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many)
@@ -14,37 +39,37 @@ Character_objective::Character_objective(std::string target_name, std::string ta
 {
 }
 
-void Character_objective::check_objective(Location* location)
-{
-	if (location->get_name() == target_location_name)
-		for (int i = 0; i < location->mobs.size(); i++)
-			if (target_name == location->mobs[i]->get_name())
-				check = true;
-}
+//void Character_objective::check_objective(Location* location)
+//{
+//	if (location->get_name() == target_location_name)
+//		check = true;
+//	else
+//		check = false;
+//}
 
 Element_objective::Element_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many)
 	:Objective(target_name, target_location_name, to_do, how_many)
 {
 }
 
-void Element_objective::check_objective(Location* location)
-{
-	if (location->get_name() == target_location_name)
-		for (int i = 0; i < location->elements.size(); i++)
-			if (target_name == location->elements[i]->get_name())
-				check = true;
-}
+//void Element_objective::check_objective(Location* location)
+//{
+//	if (location->get_name() == target_location_name)
+//		check = true;
+//	else
+//		check = false;
+//}
 
 Location_objective::Location_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many)
 	: Objective(target_name, target_location_name, to_do, how_many)
 {
 }
 
-void Location_objective::check_objective(Location* location)
-{
-	if (location->get_name() == target_location_name)
-		check = true;
-}
+//void Location_objective::check_objective(Location* location)
+//{
+//	if (location->get_name() == target_location_name)
+//		check = true;
+//}
 
 Quest::Quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class)
 {
@@ -55,10 +80,10 @@ Quest::Quest(std::string name, std::string target_name, std::string target_locat
 		objective.push_back(new Character_objective(target_name, target_location_name, to_do, how_many));
 		break;
 	case 1: // Element
-		
+		objective.push_back(new Element_objective(target_name, target_location_name, to_do, how_many));
 		break;
 	case 2: // Location
-		
+		objective.push_back(new Location_objective(target_name, target_location_name, to_do, how_many));
 		break;
 	}
 }
@@ -76,15 +101,20 @@ void Quest::add_objective(std::string target_name, std::string target_location_n
 		objective.push_back(new Character_objective(target_name, target_location_name, to_do, how_many));
 		break;
 	case 1: // Element
-
+		objective.push_back(new Element_objective(target_name, target_location_name, to_do, how_many));
 		break;
 	case 2: // Location
-
+		objective.push_back(new Location_objective(target_name, target_location_name, to_do, how_many));
 		break;
 	}
 }
 
-Quest_list::Quest_list(std::string quest_line_name, std::string start_quest_name)
+Quest::~Quest()
+{
+	objective.clear();
+}
+
+Quest_line::Quest_line(std::string quest_line_name, std::string start_quest_name)
 {
 	this->name = quest_line_name;
 	quest = nullptr;
@@ -92,7 +122,7 @@ Quest_list::Quest_list(std::string quest_line_name, std::string start_quest_name
 	quest_file_read(quest_line_name, start_quest_name);
 }
 
-void Quest_list::quest_file_read(std::string quest_line_name, std::string quest_name)
+void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_name)
 {
 	std::string file_name = "Quest/" + quest_line_name + "/" + quest_name + ".txt";
 	std::fstream file;
@@ -131,18 +161,40 @@ void Quest_list::quest_file_read(std::string quest_line_name, std::string quest_
 	}
 }
 
-void Quest_list::add_quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class)
+void Quest_line::add_quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class)
 {
 	if (!quest)
 		quest = new Quest(name, target_name, target_location_name, to_do, how_many, what_class);
-	else
+	else if(quest->get_name() == name)
 		quest->add_objective(target_name, target_location_name, to_do, how_many, what_class);
+	else
+	{
+		//quest = nullptr;
+		quest = new Quest(name, target_name, target_location_name, to_do, how_many, what_class);
+	}
 }
 
-void Quest_list::take_next_quest()
+bool Quest_line::take_next_quest()
 {
-	delete quest;
+	quest->~Quest();
 	if (next_quest_name == "")
-		return;
+	{
+		std::cout << "Koniec lini questow" << std::endl;
+		return false;
+	}
 	quest_file_read(name, next_quest_name);
+	std::cout << "Rozpoczales nowego qt" << std::endl;
+	/*std::cout << quest->get_name() << std::endl;
+	std::cout << quest->objective[0]->get_target_name() << std::endl;*/
+	return true;
+}
+
+Quest* Quest_line::get_quest()
+{
+	return quest;
+}
+
+Quest_line::~Quest_line()
+{
+	quest->~Quest();
 }

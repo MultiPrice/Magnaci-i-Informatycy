@@ -169,7 +169,7 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->change_attack_type(1);
 		tmp->bitmap_start_x = 0;
 		tmp->change_texture("player/player_attack.png");
-		tmp->basic_attack(map, location->mobs, location->dead_mobs);
+		tmp->basic_attack(map, location, quest_line);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_1))
 	{
@@ -337,8 +337,13 @@ bool window::player_movement() // ruch gracza na planszy
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F7))
 	{
-	Item* new__weapon_2 = new Weapon(130001, "items/weapon_file.txt");
-	tmp->get_inventory()->add_item_to_inventory(new__weapon_2);
+		Item* new__weapon_2 = new Weapon(130001, "items/weapon_file.txt");
+		tmp->get_inventory()->add_item_to_inventory(new__weapon_2);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_BACKSPACE))
+	{
+		quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
+		std::cout << "Rozpoczales linie questow" << std::endl;
 	}
 	else
 	{
@@ -421,7 +426,7 @@ bool window::game_working()// odœwierzenie planszy
 			{
 				for (int i = 0; i < action.size(); i++)
 				{
-					if (!action[i]->make_action(map, location->get_sizeX(), location->get_sizeY(), player->get_X(), player->get_Y(), location->mobs, player, location->dead_mobs))
+					if (!action[i]->make_action(map, location->get_sizeX(), location->get_sizeY(), player->get_X(), player->get_Y(), player, location, quest_line))
 					{
 						action.erase(action.begin() + i);
 						i--;
@@ -472,7 +477,26 @@ void window::restart(std::string location_name)
 	player->change_position(toX, toY);
 	location = new Location(location_name, 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
-	test = true;
+	for (int i = 0; i < quest_line.size(); i++)
+		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+			if(quest_line[i]->get_quest()->objective[j]->get_to_do() == GO_TO)
+				if(location_name == quest_line[i]->get_quest()->objective[j]->get_target_name())
+					if (quest_line[i]->get_quest()->objective[j]->is_it_done())
+					{
+						quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
+						std::cout << "Zrobiono objectiva" << std::endl;
+						if (quest_line[i]->get_quest()->objective.empty())
+						{
+							std::cout << "Zrobiono questa" << std::endl;
+							if (!quest_line[i]->take_next_quest())
+							{
+								quest_line[i]->~Quest_line();
+								quest_line.erase(quest_line.begin() + i);
+								i--;
+								break;
+							}
+						}
+					}
 	al_start_timer(timer);
 	al_start_timer(move_timer);
 }

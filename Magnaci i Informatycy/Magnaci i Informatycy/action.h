@@ -31,7 +31,7 @@ protected:
 	Element* representation;
 public:
 	Action(std::string name, int damage, int cost, double cast_time, double duration, double cooldown, int speed, Object *& player);
-	virtual bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player, std::vector <Dead_mobs*>& dead_mobs) = 0;
+	virtual bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line) = 0;
 	void prepare_action();
 	int get_cast_time();
 	Element* get_representation();
@@ -45,7 +45,7 @@ protected:
 	int center_y;
 public:
 	AoE(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction, int effect_dash_x, int effect_dash_y);
-	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player, std::vector <Dead_mobs*>& dead_mobs);
+	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line);
 	~AoE();
 };
 
@@ -55,7 +55,7 @@ protected:
 	DIRECTION direction;
 public:
 	Wind(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction);
-	bool make_action(Object*** &map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player, std::vector <Dead_mobs*>& dead_mobs);
+	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line);
 	~Wind();
 };
 
@@ -66,7 +66,7 @@ protected:
 	bool check;
 public:
 	Self(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, bool over_time);
-	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player, std::vector <Dead_mobs*>& dead_mobs);
+	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line);
 	~Self();
 };
 
@@ -80,7 +80,7 @@ protected:
 public:
 	Breath(int positionX, int positionY, std::string texture_file, std::string name, int damage, int cost, double cast_time, double duration, double cooldown, bool piercing, int speed, Object*& player, DIRECTION direction);
 	void split(int positionX, int positionY);
-	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, std::vector <Object*>& mobs, Object* player, std::vector <Dead_mobs*>& dead_mobs);
+	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line);
 	~Breath();
 };
 
