@@ -17,7 +17,6 @@
 #include <allegro5/allegro_native_dialog.h>
 
 #include "element.h"
-#include "locations.h"
 #include "characters.h"
 #include "general_functions.h"
 

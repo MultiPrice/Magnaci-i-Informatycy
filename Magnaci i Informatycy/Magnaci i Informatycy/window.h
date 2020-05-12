@@ -24,6 +24,12 @@ struct butt_list
     butt_list* prev = nullptr;
 };
 
+struct drop_element
+{
+    int item_id;
+    int drop_percent;
+};
+
 butt_list* add(Button* el, butt_list* buttons);
 butt_list* remove(Button* el, butt_list* buttons);              //usuwa przycisk
 butt_list* remove_from_list(Button* el, butt_list* buttons);     //wyrzuca przycisk z listy ale nie usuwa przycisku
@@ -95,6 +101,7 @@ public:
     void draw_actions(int position_x, int position_y);
     void inventory();
     void guests();
+    Inventory* drop(std::string drop_name);
     void dialogue_file_read(int character_id);
 };
 

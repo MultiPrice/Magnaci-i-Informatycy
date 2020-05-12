@@ -2,7 +2,29 @@
 {
 Szturmleb
 Zwieksza celnosc dwukrotnie
-bitmaps/items/armour/helmet/helmet.png
+bitmaps/items/armour/helmet/szturmleb.png
+1
+1
+1
+1
+1
+}
+210002
+{
+Helmofon
+4 pancerni i pies tez takie mieli
+bitmaps/items/armour/helmet/helmofon.png
+1
+1
+1
+1
+1
+}
+210003
+{
+Angry_face
+Zlosc pieknosci szkodzi
+bitmaps/items/armour/helmet/angry_face.png
 1
 1
 1
@@ -13,7 +35,29 @@ bitmaps/items/armour/helmet/helmet.png
 {
 Turbo-Klata
 TORSO OF SHIRTLESS MUSCULAR MAN WITH USA AMERICAN FLAG PAINTED ON NAKED CHEST
-bitmaps/items/armour/chestplate/chestplate.png
+bitmaps/items/armour/chestplate/turbo_klata.png
+1
+1
+1
+1
+1
+}
+220002
+{
+Raf_Simons_ny_sweater
+Ziomus wez pls kup mi taki - Pocot997
+bitmaps/items/armour/chestplate/rf_ny.png
+1
+1
+1
+1
+1
+}
+220003
+{
+NAJLEPSZA_ZBROJA_W_GRZE
+POLAND FIRST TO FIGHT
+bitmaps/items/armour/chestplate/rf_ny.png
 1
 1
 1
@@ -24,7 +68,18 @@ bitmaps/items/armour/chestplate/chestplate.png
 {
 LEG(O)S
 Przyznaj sie ze zawsze chciales takie miec
-bitmaps/items/armour/boots/boots.png
+bitmaps/items/armour/boots/legos.png
+1
+1
+1
+1
+1
+}
+230002
+{
+Smieszne_buty
+"W tym semestrze bede chodzil na wyklady"
+bitmaps/items/armour/boots/kaluny.png
 1
 1
 1
@@ -35,7 +90,18 @@ bitmaps/items/armour/boots/boots.png
 {
 crying-amulet
 Nie to nie jest zart
-bitmaps/items/armour/amulet/amulet.png
+bitmaps/items/armour/amulet/crying_amulet.png
+1
+1
+1
+1
+1
+}
+240002
+{
+Drogi_naszyjnik
+W sumie to bym go sprzedal zamiast nosic
+bitmaps/items/armour/amulet/dolar.png
 1
 1
 1
@@ -46,7 +112,18 @@ bitmaps/items/armour/amulet/amulet.png
 {
 LOTR
 Jeden by wszystkimi rzadzic
-bitmaps/items/armour/ring/ring.png
+bitmaps/items/armour/ring/lotr.png
+1
+1
+1
+1
+1
+}
+250002
+{
+Biedronka
+Tylko biedronka nie ma ogonka
+bitmaps/items/armour/ring/biedronka.png
 1
 1
 1
