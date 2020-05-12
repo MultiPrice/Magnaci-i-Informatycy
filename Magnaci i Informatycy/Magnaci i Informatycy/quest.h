@@ -31,14 +31,15 @@ enum TYPE
 class Objective
 {
 protected:
-	std::string target_name;
+	int target_id;
 	std::string target_location_name;
 	TYPE to_do;
 	int how_many;
 public:
-	Objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many);
+	Objective(int target_id, std::string target_location_name, TYPE to_do, int how_many);
 	bool check_objective(class Location* location);
-	std::string get_target_name();
+	int get_target_id();
+	std::string get_target_location();
 	bool is_it_done();
 	TYPE get_to_do();
 };
@@ -47,21 +48,21 @@ class Character_objective : public Objective
 {
 protected:
 public:
-	Character_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many);
+	Character_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many);
 	//void check_objective(Location* location);
 };
 
 class Element_objective : public Objective
 {
 public:
-	Element_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many);
+	Element_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many);
 //	void check_objective(Location* location);
 };
 
 class Location_objective : public Objective
 {
 public:
-	Location_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many);
+	Location_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many);
 //	void check_objective(Location* location);
 };
 
@@ -73,10 +74,10 @@ protected:
 public:
 	std::vector<Objective*> objective;
 
-	Quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class);
+	Quest(std::string name, int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class);
 	std::string get_name();
 	std::vector <Objective*> get_objectives();
-	void add_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class);
+	void add_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class);
 	~Quest();
 };
 
@@ -92,8 +93,9 @@ protected:
 public:
 	Quest_line(std::string quest_line_name, std::string start_quest_name);
 	void quest_file_read(std::string quest_line_name, std::string quest_name);
-	void add_quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class);
+	void add_quest(std::string name, int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class);
 	bool take_next_quest();
+	std::string get_name();
 	Quest* get_quest();
 	~Quest_line();
 	void show_quests();

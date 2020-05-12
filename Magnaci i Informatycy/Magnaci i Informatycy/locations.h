@@ -68,6 +68,7 @@ public:
 	Location(std::string location_name, int X, int Y, Object***& map);
 	int get_sizeX();
 	int get_sizeY();
+	int get_id();
 	Object* get_mob(std::string name);
 	std::string get_terrain_name();
 	Travel_list* get_pTravel();

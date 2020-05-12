@@ -134,17 +134,47 @@ void window::guests()
 	al_start_timer(draw_timer);
 }
 
-void window::dialogue_file_read(int character_id)
+void window::dialogue_file_read(int character_id, std::string file_name)
 {
 	std::fstream file;
-	std::string file_name = "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogue.txt";
 	file.open(file_name);
 	if (file)
 	{
-		while (file)
+		std::string linia, linia2;
+		std::getline(file, linia);
+		while (linia != std::to_string(character_id))
 		{
-			//fgf
+			std::getline(file, linia);
 		}
+		std::getline(file, linia);
+		std::getline(file, linia);
+		bool check = false;
+		int tmp_index = 0;
+		while (linia != "}")
+		{
+			std::getline(file, linia2);
+			if (linia[0] == '#')
+			{
+				check = false;
+				for (int i = 0; i < dialogue.size(); i++)
+					if (dialogue[i]->question == linia)
+					{
+						check = true;
+						tmp_index = i;
+					}
+				if(!check)
+					dialogue.push_back(new Question(linia, stoi(linia2)));
+			}
+			else
+			{
+				if (!check)
+					dialogue[dialogue.size() - 1]->add_answer(linia, stoi(linia2));
+				else 
+					dialogue[tmp_index]->add_answer(linia, stoi(linia2));
+			}
+			std::getline(file, linia);
+		}
+		file.close();
 	}
 }
 
@@ -458,7 +488,46 @@ bool window::player_movement() // ruch gracza na planszy
 
 			break;
 		case 3:
-
+			switch (tmp->direction)
+			{
+			case UP:
+				for (int i = 0; i < quest_line.size(); i++)
+					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
+							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id())
+								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
+				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
+				show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id());
+				break;
+			case DOWN:
+				for (int i = 0; i < quest_line.size(); i++)
+					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
+							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id())
+								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
+				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
+				show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id());
+				break;
+			case RIGHT:
+				for (int i = 0; i < quest_line.size(); i++)
+					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
+							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id())
+								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
+				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
+				show_dialogue(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id());
+				break;
+			case LEFT:
+				for (int i = 0; i < quest_line.size(); i++)
+					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
+							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id())
+								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
+				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
+				show_dialogue(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id());
+				break;
+			}
+			dialogue.clear();
 			break;
 		}
 	}
@@ -587,6 +656,7 @@ void window::restart(std::string location_name)
 	map_clear();
 	int toX = location->get_pTravel()->toX;
 	int toY = location->get_pTravel()->toY; 
+	int location_id = location->get_id();
 	location->~Location();
 	for (int i = 0; i < action.size(); i++)
 		action[i]->~Action();
@@ -597,7 +667,7 @@ void window::restart(std::string location_name)
 	for (int i = 0; i < quest_line.size(); i++)
 		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
 			if(quest_line[i]->get_quest()->objective[j]->get_to_do() == GO_TO)
-				if(location_name == quest_line[i]->get_quest()->objective[j]->get_target_name())
+				if(location_id == quest_line[i]->get_quest()->objective[j]->get_target_id())
 					if (quest_line[i]->get_quest()->objective[j]->is_it_done())
 					{
 						quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
@@ -618,13 +688,29 @@ void window::restart(std::string location_name)
 	al_start_timer(draw_timer);
 }
 
-
-
-void window::show_dialogue()
+int window::check_answer(int mouse_x, int mouse_y, Question * question)
 {
+	if (mouse_x < screen_width / 2 + measure * 3)
+		return -1;
+	if (mouse_y < measure * 2)
+		return -1;
+	for (int i = 0; i < question->all_answers.size(); i++)
+		if (mouse_y >= measure * (2 + i) && mouse_y < measure * (3 + i))
+			return question->all_answers[i]->next_question_id;
+	return -1;
+}
+
+
+
+void window::show_dialogue(int character_id)
+{
+	al_stop_timer(draw_timer);
 	al_stop_timer(movement_timer);
-	int mouse_inv_x = 0;
-	int mouse_inv_y = 0;
+	int mouse_x = 0;
+	int mouse_y = 0;
+	int actual_question = 0;
+	int actual_index = 0;
+	bool quest_check = false;
 	Character* tmp = dynamic_cast<Character*>(player);
 	ALLEGRO_BITMAP* cursor = al_load_bitmap("bitmaps/background/mouse_cursor.png");
 	al_hide_mouse_cursor(display);
@@ -633,21 +719,29 @@ void window::show_dialogue()
 		al_wait_for_event(event_queue, &events);
 		if (events.type == ALLEGRO_EVENT_MOUSE_AXES)
 		{
-			mouse_inv_x = events.mouse.x;
-			mouse_inv_y = events.mouse.y;
+			mouse_x = events.mouse.x;
+			mouse_y = events.mouse.y;
 		}
 		else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
 		{
 			if (events.mouse.button & 1) //LPM
 			{
-
+				actual_question = check_answer(mouse_x, mouse_y, dialogue[actual_index]);
+				if (actual_question == 0)
+					break;
+				if (actual_question > 0)
+					for (int i = 0; i < dialogue.size(); i++)
+						if (actual_question == dialogue[i]->id)
+							actual_index = i;
+				if (actual_question > 100)
+					quest_check = true;
 			}
 			else if (events.mouse.button & 2) //PPM
 				break;
 		}
 		else if (events.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
-			std::cout << "1";
+			//break;
 		}
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 		location->draw(player->get_X(), player->get_Y());
@@ -657,14 +751,45 @@ void window::show_dialogue()
 		location->draw_portals(player->get_X(), player->get_Y(), map);
 		player->draw(map, location->get_sizeX(), location->get_sizeY());
 		draw_hud(dynamic_cast<Character*>(player));
-		show_dialogue();
-		al_draw_bitmap(cursor, mouse_inv_x, mouse_inv_y, 0);
+		draw_dialogue(dialogue[actual_index]);
+		al_draw_bitmap(cursor, mouse_x, mouse_y, 0);
 		al_flip_display();
 	}
+	if (quest_check)
+		for (int i = 0; i < quest_line.size(); i++)
+			for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+				if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
+					if (quest_line[i]->get_quest()->objective[j]->get_target_id() == character_id)
+						if (quest_line[i]->get_quest()->objective[j]->get_target_location() == location->get_name())
+							if (quest_line[i]->get_quest()->objective[j]->is_it_done())
+							{
+								quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
+								std::cout << "Zrobiono objectiva" << std::endl;
+								if (quest_line[i]->get_quest()->objective.empty())
+								{
+									std::cout << "Zrobiono questa" << std::endl;
+									if (!quest_line[i]->take_next_quest())
+									{
+										quest_line[i]->~Quest_line();
+										quest_line.erase(quest_line.begin() + i);
+										i--;
+										break;
+									}
+								}
+							}
+		
 	al_destroy_bitmap(cursor);
 	al_show_mouse_cursor(display);
 	al_start_timer(movement_timer);
-	
+	al_start_timer(draw_timer);
+}
+
+void window::draw_dialogue(Question* question)
+{
+	al_draw_bitmap(dialogue_window, screen_width / 2 + measure * 3, 0, 0);
+	al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure, 0, question->question.c_str());
+	for(int i = 0; i < question->all_answers.size(); i++)
+		al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (2 + i), 0, question->all_answers[i]->answer.c_str());
 }
 
 void window::map_clear() // mapa jest powalona i trzeba stestowac

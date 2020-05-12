@@ -1,8 +1,8 @@
 #include "quest.h"
 
-Objective::Objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many)
+Objective::Objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
 {
-	this->target_name = target_name;
+	this->target_id = target_id;
 	this->target_location_name = target_location_name;
 	this->to_do = to_do;
 	this->how_many = how_many;
@@ -16,9 +16,14 @@ bool Objective::check_objective(Location* location)
 		return false;
 }
 
-std::string Objective::get_target_name()
+int Objective::get_target_id()
 {
-	return this->target_name;
+	return this->target_id;
+}
+
+std::string Objective::get_target_location()
+{
+	return target_location_name;
 }
 
 bool Objective::is_it_done()
@@ -34,8 +39,8 @@ TYPE Objective::get_to_do()
 	return to_do;
 }
 
-Character_objective::Character_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many)
-	:Objective(target_name, target_location_name, to_do, how_many)
+Character_objective::Character_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
+	:Objective(target_id, target_location_name, to_do, how_many)
 {
 }
 
@@ -47,8 +52,8 @@ Character_objective::Character_objective(std::string target_name, std::string ta
 //		check = false;
 //}
 
-Element_objective::Element_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many)
-	:Objective(target_name, target_location_name, to_do, how_many)
+Element_objective::Element_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
+	:Objective(target_id, target_location_name, to_do, how_many)
 {
 }
 
@@ -60,8 +65,8 @@ Element_objective::Element_objective(std::string target_name, std::string target
 //		check = false;
 //}
 
-Location_objective::Location_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many)
-	: Objective(target_name, target_location_name, to_do, how_many)
+Location_objective::Location_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
+	: Objective(target_id, target_location_name, to_do, how_many)
 {
 }
 
@@ -71,19 +76,19 @@ Location_objective::Location_objective(std::string target_name, std::string targ
 //		check = true;
 //}
 
-Quest::Quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class)
+Quest::Quest(std::string name, int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class)
 {
 	this->name = name;
 	switch (what_class)
 	{
 	case 0: // Character
-		objective.push_back(new Character_objective(target_name, target_location_name, to_do, how_many));
+		objective.push_back(new Character_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	case 1: // Element
-		objective.push_back(new Element_objective(target_name, target_location_name, to_do, how_many));
+		objective.push_back(new Element_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	case 2: // Location
-		objective.push_back(new Location_objective(target_name, target_location_name, to_do, how_many));
+		objective.push_back(new Location_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	}
 }
@@ -98,18 +103,18 @@ std::vector<Objective*> Quest::get_objectives()
 	return objective;
 }
 
-void Quest::add_objective(std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class)
+void Quest::add_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class)
 {
 	switch (what_class)
 	{
 	case 0: // Character
-		objective.push_back(new Character_objective(target_name, target_location_name, to_do, how_many));
+		objective.push_back(new Character_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	case 1: // Element
-		objective.push_back(new Element_objective(target_name, target_location_name, to_do, how_many));
+		objective.push_back(new Element_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	case 2: // Location
-		objective.push_back(new Location_objective(target_name, target_location_name, to_do, how_many));
+		objective.push_back(new Location_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	}
 }
@@ -140,10 +145,10 @@ void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_
 		std::string trash;
 		std::getline(file, trash);
 		std::getline(file, trash);
-		std::string object_name, class_type, enum_type, how_many, location_name;
+		std::string object_id, class_type, enum_type, how_many, location_name;
 		while (file)
 		{
-			std::getline(file, object_name);
+			std::getline(file, object_id);
 			std::getline(file, class_type);
 			std::getline(file, location_name);
 			std::getline(file, enum_type);
@@ -152,13 +157,13 @@ void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_
 			switch (stoi(class_type))
 			{
 			case 0: // Character 
-				add_quest(quest_name, object_name, location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 0);
+				add_quest(quest_name, stoi(object_id), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 0);
 				break;
 			case 1: // Element
-				add_quest(quest_name, object_name, location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 1);
+				add_quest(quest_name, stoi(object_id), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 1);
 				break;
 			case 2: // Location
-				add_quest(quest_name, object_name, location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 2);
+				add_quest(quest_name, stoi(object_id), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 2);
 				break;
 			}
 			if (trash == "}")
@@ -169,16 +174,16 @@ void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_
 	}
 }
 
-void Quest_line::add_quest(std::string name, std::string target_name, std::string target_location_name, TYPE to_do, int how_many, int what_class)
+void Quest_line::add_quest(std::string name, int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class)
 {
 	if (!quest)
-		quest = new Quest(name, target_name, target_location_name, to_do, how_many, what_class);
+		quest = new Quest(name, target_id, target_location_name, to_do, how_many, what_class);
 	else if(quest->get_name() == name)
-		quest->add_objective(target_name, target_location_name, to_do, how_many, what_class);
+		quest->add_objective(target_id, target_location_name, to_do, how_many, what_class);
 	else
 	{
 		//quest = nullptr;
-		quest = new Quest(name, target_name, target_location_name, to_do, how_many, what_class);
+		quest = new Quest(name, target_id, target_location_name, to_do, how_many, what_class);
 	}
 }
 
@@ -206,6 +211,11 @@ bool Quest_line::take_next_quest()
 	/*std::cout << quest->get_name() << std::endl;
 	std::cout << quest->objective[0]->get_target_name() << std::endl;*/
 	return true;
+}
+
+std::string Quest_line::get_name()
+{
+	return name;
 }
 
 Quest* Quest_line::get_quest()

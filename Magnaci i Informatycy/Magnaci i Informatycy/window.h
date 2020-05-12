@@ -46,6 +46,7 @@ class window
     ALLEGRO_BITMAP* HUD;
     ALLEGRO_BITMAP* HP;
     ALLEGRO_BITMAP* MANA;
+    ALLEGRO_BITMAP* dialogue_window;
     ALLEGRO_DISPLAY* display;
     ALLEGRO_EVENT_QUEUE* event_queue;
     ALLEGRO_EVENT events;
@@ -70,7 +71,9 @@ public:
     void working();
     bool game_working();
     void restart(std::string location_name);
-    void show_dialogue();
+    int check_answer(int mouse_x, int mouse_y, Question* question);
+    void show_dialogue(int character_id);
+    void draw_dialogue(Question* question);
     void map_clear();
 
     void display_mode();
@@ -102,7 +105,7 @@ public:
     void inventory();
     void guests();
     Inventory* drop(std::string drop_name);
-    void dialogue_file_read(int character_id);
+    void dialogue_file_read(int character_id, std::string file_name);
 };
 
 void which_x_in_animation(int& start_x);

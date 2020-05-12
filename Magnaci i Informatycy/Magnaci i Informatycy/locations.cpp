@@ -112,6 +112,11 @@ int Location::get_sizeY()
 	return sizeY;
 }
 
+int Location::get_id()
+{
+	return id;
+}
+
 Object* Location::get_mob(std::string name)
 {
 	for (int i = 0; i < mobs.size(); i++)
@@ -207,8 +212,9 @@ void Location::read_info_file(std::string& location_name)
 		}
 		file >> trash;
 		name = check;
-		file >> read_terrain;
-		terrain = (TERRAIN)(read_terrain);
+		file >> id;
+		//file >> read_terrain;
+		terrain = (TERRAIN)(id / 10);
 		file >> sizeX >> sizeY >> check;
 		texture = al_load_bitmap(check.c_str());
 		file.close();

@@ -70,6 +70,7 @@ public:
 	int get_mana();
 	int get_max_mana();
 	int get_armour();
+	int get_id();
 	Inventory* get_inventory();
 	void get_damage(int dmg, Object***& map, class Location* location, std::vector <class Quest_line*>& quest_line);
 	void change_hp(int change);
