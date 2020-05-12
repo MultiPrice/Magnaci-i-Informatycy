@@ -10,11 +10,47 @@ bitmaps/items/weapon/one_handed/glock.png
 1
 1
 }
+110002
+{
+patelnia
+Uwazaj zeby nie zniszczyc teflonu
+bitmaps/items/weapon/one_handed/patelnia.png
+1
+1
+1
+1
+1
+1
+}
+110003
+{
+rekawica
+Tytytyyy tytytyyy tytytyyyy ty ty ty tytyty
+bitmaps/items/weapon/one_handed/rekawica.png
+1
+1
+1
+1
+1
+1
+}
 130001
 {
 uriziel
 Lepszego nie znajdziesz
 bitmaps/items/weapon/two_handed/uriziel.png
+1
+1
+1 
+1
+1
+1
+}
+130002
+{
+Miecz_Mariusza_Pudzianowskiego
+On go trzyma jedna reka ale Ty potrzebujesz dwoch
+bitmaps/items/weapon/two_handed/miecz_mariusza.png
 1
 1
 1 

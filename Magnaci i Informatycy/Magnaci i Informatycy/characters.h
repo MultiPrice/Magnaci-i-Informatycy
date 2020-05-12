@@ -49,7 +49,7 @@ protected:
 	int lvl;
 	int min_damage;
 	int max_damage;
-	int armor;
+	int armour;
 	int attack_type;
 	ATTITUDE attitude;
 	Inventory* inventory;
@@ -69,6 +69,7 @@ public:
 	int get_max_hp();
 	int get_mana();
 	int get_max_mana();
+	int get_armour();
 	Inventory* get_inventory();
 	void get_damage(int dmg, Object***& map, class Location* location, std::vector <class Quest_line*>& quest_line);
 	void change_hp(int change);
@@ -77,6 +78,8 @@ public:
 	int get_attitude();
 	void change_attack_type(int tmp);
 	virtual void basic_attack(Object***& map, class Location* location, std::vector <class Quest_line*> quest_line) = 0;
+	void add_bonuses();
+	void remove_bonuses();
 };
 
 class Magnat : public Character

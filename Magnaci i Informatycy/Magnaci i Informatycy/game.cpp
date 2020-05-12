@@ -43,6 +43,7 @@ void window::inventory()
 	int mouse_inv_x = 0;
 	int mouse_inv_y = 0;
 	Character* tmp = dynamic_cast<Character*>(player);
+	tmp->remove_bonuses();
 	ALLEGRO_BITMAP* cursor = al_load_bitmap("bitmaps/background/mouse_cursor.png");
 	Item* holding_item = nullptr;
 	int prev_x;
@@ -95,6 +96,7 @@ void window::inventory()
 	}
 	if (holding_item)
 		tmp->get_inventory()->add_item_to_inventory(holding_item);
+	tmp->add_bonuses();
 	al_destroy_bitmap(cursor);
 	al_show_mouse_cursor(display);
 	al_start_timer(timer);
@@ -130,6 +132,65 @@ void window::guests()
 	al_show_mouse_cursor(display);
 	al_start_timer(timer);
 	al_start_timer(move_timer);
+}
+
+Inventory* window::drop(std::string drop_name)
+{
+	Inventory* new_inventory = new Inventory();
+	std::vector<drop_element*> what_can_I_drop;
+	Item* new_item;
+	std::fstream file;
+	file.open("mob/drop.txt");
+	if (file)
+	{
+		std::string tmp_name;
+		std::string tmp_drop_id;
+		int tmp_drop_percent = 0;
+		file >> tmp_name;
+		if (tmp_name != drop_name)
+		{
+			file >> tmp_name;
+			while (tmp_name != drop_name)
+				file >> tmp_drop_id >> tmp_name;
+		}
+
+		file >> tmp_name;
+		while (true)
+		{
+			file >> tmp_drop_id >> tmp_drop_percent;
+			std::cout << tmp_drop_id << " " << tmp_drop_percent << " ";
+			if (tmp_drop_id == "}")
+				break;
+			what_can_I_drop.push_back(new drop_element{ stoi(tmp_drop_id), tmp_drop_percent });
+		}
+		int drawn = rand() % 100 + 1;
+		int sum = 0;
+		Character* player_tmp = dynamic_cast<Character*>(player);
+		for (int i = rand() % 3; i > 0; i--)
+		{
+			for(int j = 0; j < what_can_I_drop.size(); j++)
+			{
+				sum += what_can_I_drop[j]->drop_percent;
+				if (drawn <= sum)
+				{
+					switch (what_can_I_drop[j]->item_id/100000)
+					{
+					case 1: //weapon
+						player_tmp->get_inventory()->add_item_to_inventory(new Weapon(what_can_I_drop[j]->item_id, "items/weapon_file.txt"));
+						break;
+					case 2: //armour
+						player_tmp->get_inventory()->add_item_to_inventory(new Armour(what_can_I_drop[j]->item_id, "items/armour_file.txt"));
+						break;
+					}
+				}
+			}
+		}
+	}
+	else
+		return nullptr;
+	file.close();
+	//new_inventory->add_item_to_inventory(new_item);
+	return new_inventory;
 }
 
 bool window::pause_game()
@@ -341,6 +402,14 @@ bool window::player_movement() // ruch gracza na planszy
 	{
 		Item* new__weapon_2 = new Weapon(130001, "items/weapon_file.txt");
 		tmp->get_inventory()->add_item_to_inventory(new__weapon_2);
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F8))
+	{
+		drop("mob1");
+	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F9))
+	{
+		drop("mob2");
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_BACKSPACE))
 	{

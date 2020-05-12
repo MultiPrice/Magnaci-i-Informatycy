@@ -306,6 +306,11 @@ Inventory::~Inventory()
 	inventory.clear();
 }
 
+Item* Inventory::get_equipment(int i)
+{
+	return equipment[i];
+}
+
 void Inventory::show_inventory()
 {
 	al_draw_bitmap(background, 0, 0, 0);
@@ -351,8 +356,6 @@ void Inventory::add_item_to_inventory(Item* new_item)
 
 void Inventory::add_item_to_inventory_x_y(Item* new_item)
 {
-	//new_item->change_inventory_x(new_item->get_inventory_x() - (new_item->get_inventory_x() % measure));
-	//new_item->change_inventory_y(new_item->get_inventory_y() - (new_item->get_inventory_y() % measure));
 	int x = new_item->get_inventory_x();
 	int y = new_item->get_inventory_y();
 	int tmp_x = 1080, tmp_y = measure * 5;
@@ -441,15 +444,15 @@ Item* Inventory::I_want_equip_this_item(int sought_x, int sought_y, Item* holdin
 		Item* tmp_item = nullptr;
 		switch (tmp_case)
 		{
-		case -1:
+		case -1: //je¿eli siê nie da
 			return holding_item;
-		case 0:
+		case 0: //je¿eli po prostu gitówa
 			holding_item->change_inventory_x(sought_x - (sought_x % measure));
 			holding_item->change_inventory_y(sought_y - (sought_y % measure));
 			tmp_item = equipment[licznik];
 			equipment[licznik] = holding_item;
 			return tmp_item;
-		case 1:
+		case 1:  //je¿eli droñ dwurêczna i oba sloty zajête
 			holding_item->change_inventory_x(sought_x - (sought_x % measure));
 			holding_item->change_inventory_y(sought_y - (sought_y % measure));
 			add_item_to_inventory(equipment[1]);
@@ -457,13 +460,30 @@ Item* Inventory::I_want_equip_this_item(int sought_x, int sought_y, Item* holdin
 			tmp_item = equipment[0];
 			equipment[0] = holding_item;
 			return tmp_item;
-		case 2:
+		case 2: //jezeli broñ jednorêczna a jest za³o¿ona dwurêczna
 			holding_item->change_inventory_x(sought_x - (sought_x % measure));
 			holding_item->change_inventory_y(sought_y - (sought_y % measure));
 			tmp_item = equipment[0];
 			equipment[0] = nullptr;
 			equipment[licznik] = holding_item;
 			return tmp_item;
+		case 3: //je¿eli broñ dwurêczna
+			holding_item->change_inventory_x(1080);
+			holding_item->change_inventory_y(measure * 2);
+			if (equipment[0])
+			{
+				tmp_item = equipment[0];
+				equipment[0] = holding_item;
+				return tmp_item;
+			}
+			if (equipment[1])
+			{
+				tmp_item = equipment[1];
+				equipment[1] = nullptr;
+				equipment[0] = holding_item;
+				return tmp_item;
+			}
+
 		}
 	}
 }
@@ -512,6 +532,8 @@ int Inventory::can_I_equip_this(int licznik, Item* holding_item)
 			}
 			else if (id == 1 && equipment[0] && (equipment[0]->get_item_id() / 10000) % 10 >= 3) //jezeli broñ jednorêczna a jest za³o¿ona dwurêczna
 				return 2;
+			else if (id >= 3) //je¿eli broñ dwurêczna
+				return 3;
 			else //je¿eli po prostu gitówa
 				return 0;
 		}

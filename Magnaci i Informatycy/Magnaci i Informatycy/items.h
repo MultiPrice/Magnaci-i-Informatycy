@@ -139,6 +139,7 @@ protected:
 public:
 	Inventory();
 	~Inventory();
+	Item* get_equipment(int i);
 	void show_inventory();
 	void add_item_to_inventory(Item* new_item);
 	void add_item_to_inventory_x_y(Item* new_item);
@@ -149,5 +150,4 @@ public:
 	Item* I_want_equip_this_item(int sought_x, int sought_y, Item* holding_item);
 	int is_there_an_equipment(int sought_x, int sought_y);
 	int can_I_equip_this(int licznik, Item* holding_item);
-	void add_bonus();
 };

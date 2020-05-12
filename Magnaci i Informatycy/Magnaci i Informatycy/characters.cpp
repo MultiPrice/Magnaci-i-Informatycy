@@ -5,7 +5,7 @@ Character::Character()
 	positionX = -1000;
 	positionY = -1000;
 	this->id = 0;
-	hp = max_hp = max_mana = mana = lvl = min_damage = max_damage = armor = attack_type = 0;
+	hp = max_hp = max_mana = mana = lvl = min_damage = max_damage = armour = attack_type = 0;
 	texture = nullptr;
 	attitude = FRIEND;
 	is_moving = false;
@@ -20,7 +20,7 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	positionX = X;
 	positionY = Y;
 	id = seek_id;
-	hp = mana = lvl = min_damage = max_damage = armor = 0;
+	hp = mana = lvl = min_damage = max_damage = armour = 0;
 	is_moving = false;
 	texture = nullptr;
 	attitude = FRIEND;
@@ -41,7 +41,7 @@ Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, 
 	this->lvl = lvl;
 	this->min_damage = min_damage;
 	this->max_damage = max_damage;
-	this->armor = armor;
+	this->armour = armor;
 	this->attitude = attitude;
 	this->positionX = X;
 	this->positionY = Y;
@@ -70,7 +70,7 @@ bool Character::File_read(std::string& file_name)
 		std::string bitmap_file;
 		file >> bitmap_file;
 		texture = al_load_bitmap(bitmap_file.c_str());
-		file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> armor;
+		file >> name >> hp >> mana >> lvl >> min_damage >> max_damage >> armour;
 		max_hp = hp;
 		max_mana = mana;
 		file.close();
@@ -211,6 +211,11 @@ int Character::get_max_mana()
 	return max_mana;
 }
 
+int Character::get_armour()
+{
+	return armour;
+}
+
 Inventory* Character::get_inventory()
 {
 	return inventory;
@@ -218,9 +223,9 @@ Inventory* Character::get_inventory()
 
 void Character::get_damage(int dmg, Object *** &map, Location* location, std::vector <Quest_line*>& quest_line)
 {
-	if (armor > dmg)
+	if (armour > dmg)
 		return;
-	hp = (hp + armor) - dmg;
+	hp = (hp + armour) - dmg;
 	if (hp <= 0)
 	{
 		map[positionX][positionY] = nullptr;
@@ -290,6 +295,50 @@ int Character::get_attitude()
 void Character::change_attack_type(int tmp)
 {
 	attack_type = tmp;
+}
+
+void Character::add_bonuses()
+{
+	Item* new_item;
+	for(int i = 0; i < 7; i++)
+	{
+		if (new_item = inventory->get_equipment(i))
+		{
+			if (new_item->get_item_id() / 100000 == 1) //weapon
+			{
+				Weapon* weapon_tmp = dynamic_cast<Weapon*>(new_item);
+				min_damage += weapon_tmp->get_min_damage();
+				max_damage += weapon_tmp->get_max_damage();
+			}
+			else if (new_item->get_item_id() / 100000 == 2) //armour
+			{
+				Armour* armour_tmp = dynamic_cast<Armour*>(new_item);
+				armour += armour_tmp->get_armour();
+			}
+		}
+	}
+}
+
+void Character::remove_bonuses()
+{
+	Item* old_item;
+	for (int i = 0; i < 7; i++)
+	{
+		if (old_item = inventory->get_equipment(i))
+		{
+			if (old_item->get_item_id() / 100000 == 1) //weapon
+			{
+				Weapon* weapon_tmp = dynamic_cast<Weapon*>(old_item);
+				min_damage -= weapon_tmp->get_min_damage();
+				max_damage -= weapon_tmp->get_max_damage();
+			}
+			else if (old_item->get_item_id() / 100000 == 2) //armour
+			{
+				Armour* armour_tmp = dynamic_cast<Armour*>(old_item);
+				armour -= armour_tmp->get_armour();
+			}
+		}
+	}
 }
 
 Magnat::Magnat(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
