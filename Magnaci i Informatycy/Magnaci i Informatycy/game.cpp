@@ -619,6 +619,7 @@ void window::restart(std::string location_name)
 }
 
 
+
 void window::show_dialogue()
 {
 	al_stop_timer(movement_timer);
