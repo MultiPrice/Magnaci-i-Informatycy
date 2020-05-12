@@ -2,12 +2,11 @@
 
 #include "element.h"
 
-Element::Element(int X, int Y, bool ghost, bool teleport, std::string texture_name, std::string name)
+Element::Element(int X, int Y, bool ghost, std::string texture_name, std::string name)
 {
 	positionX = X;
 	positionY = Y;
 	this->ghosted = ghost;
-	this->teleport = teleport;
 	this->name = name;
 	texture = al_load_bitmap(texture_name.c_str());
 }
@@ -26,13 +25,56 @@ bool Element::get_ghosted()
 	return ghosted;
 }
 
-bool Element::get_teleport()
-{
-	return teleport;
-}
-
 Element::~Element()
 {
 	//al_destroy_bitmap(texture);
+	texture = nullptr;
+}
+
+Teleport::Teleport(int X, int Y, bool ghost, std::string texture_name, std::string name)
+	:Element(X, Y, ghost, texture_name, name)
+{
+
+}
+
+int Teleport::interaction()
+{
+	return 1;
+}
+
+Teleport::~Teleport()
+{
+	texture = nullptr;
+}
+
+Container::Container(int X, int Y, bool ghost, std::string texture_name, std::string name)
+	: Element(X, Y, ghost, texture_name, name)
+{
+
+}
+
+int Container::interaction()
+{
+	return 2;
+}
+
+Container::~Container()
+{
+	texture = nullptr;
+}
+
+Other_element::Other_element(int X, int Y, bool ghost, std::string texture_name, std::string name)
+	: Element(X, Y, ghost, texture_name, name)
+{
+
+}
+
+int Other_element::interaction()
+{
+	return 0;
+}
+
+Other_element::~Other_element()
+{
 	texture = nullptr;
 }

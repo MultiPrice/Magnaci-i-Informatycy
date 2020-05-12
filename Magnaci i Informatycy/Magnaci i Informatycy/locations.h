@@ -70,6 +70,7 @@ public:
 	int get_sizeX();
 	int get_sizeY();
 	Object* get_mob(std::string name);
+	std::string get_terrain_name();
 	Travel_list* get_pTravel();
 	void read_travel_file(std::string location_name);
 	std::string search_travel(int wanted_X, int wanted_Y);
@@ -82,5 +83,6 @@ public:
 	void draw_dead_mobs(int position_x, int position_y, Object*** map);
 	void draw_portals(int position_x, int position_y, Object*** map);
 	void mob_movement(Object* player, Object*** map);
+	int interaction() { return 0; };
 	~Location();
 };

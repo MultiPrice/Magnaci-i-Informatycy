@@ -10,7 +10,7 @@ Character::Character()
 	attitude = FRIEND;
 	is_moving = false;
 	movement_cooldown = al_get_time();
-	direction = RIGHT;
+	direction = DOWN;
 	inventory = new Inventory();
 }
 
@@ -249,7 +249,7 @@ void Character::get_damage(int dmg, Object *** &map, Location* location, std::ve
 										}
 									}
 				std::string dead_bitmap_file_name = "mob/" + name + "_dead.png";
-				location->dead_mobs.push_back(new Dead_mobs(new Element(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, false, dead_bitmap_file_name, "trup"), 600));
+				location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600));
 				location->mobs.erase(location->mobs.begin() + i);
 				return;
 			}
@@ -290,6 +290,51 @@ int Character::get_attitude()
 void Character::change_attack_type(int tmp)
 {
 	attack_type = tmp;
+}
+
+int Character::interact(Object*** map, Location* location, Object* player)
+{
+	switch (direction)
+	{
+	case UP:
+		if (player->get_Y() - 1 > 0)
+		{
+			if (map[player->get_X()][player->get_Y() - 1] == nullptr)
+				return 0;
+			return map[player->get_X()][player->get_Y() - 1]->interaction();
+		}
+		break;
+	case DOWN:
+		if (player->get_Y() + 1 < location->get_sizeY())
+		{
+			if (map[player->get_X()][player->get_Y() + 1] == nullptr)
+				return 0;
+			return map[player->get_X()][player->get_Y() + 1]->interaction();
+		}
+		break;
+	case RIGHT:
+		if (player->get_X() + 1 < location->get_sizeX())
+		{
+			if (map[player->get_X() + 1][player->get_Y()] == nullptr)
+				return 0;
+			return map[player->get_X() + 1][player->get_Y()]->interaction();
+		}
+		break;
+	case LEFT:
+		if (player->get_X() - 1 > 0)
+		{
+			if (map[player->get_X() - 1][player->get_Y()] == nullptr)
+				return 0;
+			return map[player->get_X() - 1][player->get_Y()]->interaction();
+		}
+		break;
+	}
+	return 0;
+}
+
+int Character::interaction()
+{
+	return 3;
 }
 
 Magnat::Magnat(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}

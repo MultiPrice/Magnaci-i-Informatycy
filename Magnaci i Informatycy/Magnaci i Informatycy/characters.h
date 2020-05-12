@@ -76,7 +76,9 @@ public:
 	int get_attack_type();
 	int get_attitude();
 	void change_attack_type(int tmp);
+	int interact(Object*** map, Location* location, Object* player);
 	virtual void basic_attack(Object***& map, class Location* location, std::vector <class Quest_line*> quest_line) = 0;
+	int interaction();
 };
 
 class Magnat : public Character

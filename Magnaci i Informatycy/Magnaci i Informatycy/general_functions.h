@@ -41,6 +41,7 @@ public:
 	std::string get_name();
 	void change_position(int new_X, int new_Y);
 	void change_texture(std::string new_texture_file);
+	virtual int interaction() = 0;
 	ALLEGRO_BITMAP* get_texture();
 };
 

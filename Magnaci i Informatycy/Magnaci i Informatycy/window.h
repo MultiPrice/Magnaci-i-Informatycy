@@ -6,6 +6,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <cstdio>
+#include <fstream>
 
 #include "buttons.h"
 #include "general_functions.h"
@@ -13,6 +14,7 @@
 #include "locations.h"
 #include "action.h"
 #include "quest.h"
+#include "dialogue.h"
 
 
 struct butt_list
@@ -44,8 +46,8 @@ class window
     ALLEGRO_FONT* header_font;
     ALLEGRO_FONT* setting_font;
     ALLEGRO_KEYBOARD_STATE keyboard;
-    ALLEGRO_TIMER* timer;
-    ALLEGRO_TIMER* move_timer;
+    ALLEGRO_TIMER* movement_timer;
+    ALLEGRO_TIMER* draw_timer;
 
 
     Object* player;
@@ -54,6 +56,7 @@ class window
     bool test;
     std::vector <Action*> action;
     std::vector <Quest_line*> quest_line;
+    std::vector <Question*> dialogue;
 public:
     friend Button;
     window(int pwidth, int pheight);
@@ -61,6 +64,7 @@ public:
     void working();
     bool game_working();
     void restart(std::string location_name);
+    void show_dialogue();
     void map_clear();
 
     void display_mode();
@@ -91,6 +95,7 @@ public:
     void draw_actions(int position_x, int position_y);
     void inventory();
     void guests();
+    void dialogue_file_read(int character_id);
 };
 
 void which_x_in_animation(int& start_x);

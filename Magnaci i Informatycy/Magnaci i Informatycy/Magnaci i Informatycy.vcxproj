@@ -189,6 +189,7 @@
     <ClCompile Include="action.cpp" />
     <ClCompile Include="buttons.cpp" />
     <ClCompile Include="characters.cpp" />
+    <ClCompile Include="dialogue.cpp" />
     <ClCompile Include="element.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="general_functions.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="action.h" />
     <ClInclude Include="buttons.h" />
     <ClInclude Include="characters.h" />
+    <ClInclude Include="dialogue.h" />
     <ClInclude Include="element.h" />
     <ClInclude Include="general_functions.h" />
     <ClInclude Include="items.h" />

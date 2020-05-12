@@ -38,8 +38,8 @@ void window::draw_actions(int position_x, int position_y)
 
 void window::inventory()
 {
-	al_stop_timer(timer);
-	al_stop_timer(move_timer);
+	al_stop_timer(movement_timer);
+	al_stop_timer(draw_timer);
 	int mouse_inv_x = 0;
 	int mouse_inv_y = 0;
 	Character* tmp = dynamic_cast<Character*>(player);
@@ -97,14 +97,14 @@ void window::inventory()
 		tmp->get_inventory()->add_item_to_inventory(holding_item);
 	al_destroy_bitmap(cursor);
 	al_show_mouse_cursor(display);
-	al_start_timer(timer);
-	al_start_timer(move_timer);
+	al_start_timer(movement_timer);
+	al_start_timer(draw_timer);
 }
 
 void window::guests()
 {
-	al_stop_timer(timer);
-	al_stop_timer(move_timer);
+	al_stop_timer(movement_timer);
+	al_stop_timer(draw_timer);
 	int mouse_inv_x = 0;
 	int mouse_inv_y = 0;
 	ALLEGRO_BITMAP* cursor = al_load_bitmap("bitmaps/background/mouse_cursor.png");
@@ -128,23 +128,37 @@ void window::guests()
 
 	al_destroy_bitmap(cursor);
 	al_show_mouse_cursor(display);
-	al_start_timer(timer);
-	al_start_timer(move_timer);
+	al_start_timer(movement_timer);
+	al_start_timer(draw_timer);
+}
+
+void window::dialogue_file_read(int character_id)
+{
+	std::fstream file;
+	std::string file_name = "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogue.txt";
+	file.open(file_name);
+	if (file)
+	{
+		while (file)
+		{
+			//fgf
+		}
+	}
 }
 
 bool window::pause_game()
 {
 	al_draw_filled_rectangle(0, 0, screen_width, screen_height, al_map_rgba(0, 0, 0, 69));
 	al_flip_display();
-	al_stop_timer(timer);
-	al_stop_timer(move_timer);
+	al_stop_timer(movement_timer);
+	al_stop_timer(draw_timer);
 	while (true)
 	{
 		al_get_keyboard_state(&keyboard);
 		if (al_key_down(&keyboard, ALLEGRO_KEY_R))
 		{
-			al_start_timer(timer);
-			al_start_timer(move_timer);
+			al_start_timer(movement_timer);
+			al_start_timer(draw_timer);
 			return true;
 		}
 		else if (al_key_down(&keyboard, ALLEGRO_KEY_E))
@@ -214,7 +228,7 @@ bool window::player_movement() // ruch gracza na planszy
 		{
 			if (dynamic_cast<Element*>(map[player->get_X() + 1][player->get_Y()])->get_ghosted() == true)
 			{
-				if (dynamic_cast<Element*>(map[player->get_X() + 1][player->get_Y()])->get_teleport() == true)
+				if (typeid(*map[player->get_X() + 1][player->get_Y()]) == typeid(Teleport))
 					restart(location->search_travel(player->get_X() + 1, player->get_Y()));
 				else
 				{
@@ -238,7 +252,7 @@ bool window::player_movement() // ruch gracza na planszy
 		{
 			if (dynamic_cast<Element*>(map[player->get_X() - 1][player->get_Y()])->get_ghosted() == true)
 			{
-				if (dynamic_cast<Element*>(map[player->get_X() - 1][player->get_Y()])->get_teleport() == true)
+				if (typeid(*map[player->get_X() - 1][player->get_Y()]) == typeid(Teleport))
 					restart(location->search_travel(player->get_X() - 1, player->get_Y()));
 				else
 				{
@@ -262,7 +276,7 @@ bool window::player_movement() // ruch gracza na planszy
 		{
 			if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() - 1])->get_ghosted() == true)
 			{
-				if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() - 1])->get_teleport() == true)
+				if (typeid(*map[player->get_X()][player->get_Y() - 1]) == typeid(Teleport))
 					restart(location->search_travel(player->get_X(), player->get_Y() - 1));
 				else
 				{
@@ -286,7 +300,7 @@ bool window::player_movement() // ruch gracza na planszy
 		{
 			if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() + 1])->get_ghosted() == true)
 			{
-				if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() + 1])->get_teleport() == true)
+				if (typeid(*map[player->get_X()][player->get_Y() + 1]) == typeid(Teleport))
 					restart(location->search_travel(player->get_X(), player->get_Y() + 1));
 				else
 				{
@@ -347,6 +361,38 @@ bool window::player_movement() // ruch gracza na planszy
 		quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
 		std::cout << "Rozpoczales linie questow" << std::endl;
 	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_E))
+	{
+		switch (tmp->interact(map, location, player))
+		{
+		case 0:
+		
+			break;
+		case 1:
+			switch (tmp->direction)
+			{
+			case UP:
+				restart(location->search_travel(player->get_X(), player->get_Y() - 1));
+				break;
+			case DOWN:
+				this->restart(location->search_travel(player->get_X(), player->get_Y() + 1));
+				break;
+			case RIGHT:
+				this->restart(location->search_travel(player->get_X() + 1, player->get_Y()));
+				break;
+			case LEFT:
+				this->restart(location->search_travel(player->get_X() - 1, player->get_Y()));
+				break;
+			}
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+		}
+	}
 	else
 	{
 		tmp->is_moving = false;
@@ -393,17 +439,17 @@ bool window::game_working()// odœwierzenie planszy
 	bool draw = true;
 	ALLEGRO_EVENT_QUEUE* event_q = al_create_event_queue();
 	al_register_event_source(event_q, al_get_keyboard_event_source());
-	al_register_event_source(event_q, al_get_timer_event_source(timer));
-	al_register_event_source(event_q, al_get_timer_event_source(move_timer));
-	al_start_timer(timer);
-	al_start_timer(move_timer);
+	al_register_event_source(event_q, al_get_timer_event_source(movement_timer));
+	al_register_event_source(event_q, al_get_timer_event_source(draw_timer));
+	al_start_timer(movement_timer);
+	al_start_timer(draw_timer);
 	while (true)
 	{
 		al_wait_for_event(event_q, &events);
 
 		if (events.type == ALLEGRO_EVENT_TIMER)
 		{
-			if (events.timer.source == timer)
+			if (events.timer.source == movement_timer)
 			{
 				if (dynamic_cast<Character*>(player)->get_attack_type())
 				{
@@ -416,15 +462,15 @@ bool window::game_working()// odœwierzenie planszy
 					if (!player_movement())
 						if (!pause_game())
 						{
-							al_destroy_timer(timer);
-							al_destroy_timer(move_timer);
+							al_destroy_timer(movement_timer);
+							al_destroy_timer(draw_timer);
 							al_destroy_event_queue(event_q);
 							return false;
 						}
 				}
 				location->mob_movement(player, map);
 			}
-			else if (events.timer.source == move_timer)
+			else if (events.timer.source == draw_timer)
 			{
 				for (int i = 0; i < action.size(); i++)
 				{
@@ -463,8 +509,8 @@ void window::start() // pierwsze uruchomienie planszy
 
 void window::restart(std::string location_name)
 {
-	al_stop_timer(timer);
-	al_stop_timer(move_timer);
+	al_stop_timer(movement_timer);
+	al_stop_timer(draw_timer);
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
@@ -499,8 +545,56 @@ void window::restart(std::string location_name)
 							}
 						}
 					}
-	al_start_timer(timer);
-	al_start_timer(move_timer);
+	al_start_timer(movement_timer);
+	al_start_timer(draw_timer);
+}
+
+
+void window::show_dialogue()
+{
+	al_stop_timer(movement_timer);
+	int mouse_inv_x = 0;
+	int mouse_inv_y = 0;
+	Character* tmp = dynamic_cast<Character*>(player);
+	ALLEGRO_BITMAP* cursor = al_load_bitmap("bitmaps/background/mouse_cursor.png");
+	al_hide_mouse_cursor(display);
+	while (true)
+	{
+		al_wait_for_event(event_queue, &events);
+		if (events.type == ALLEGRO_EVENT_MOUSE_AXES)
+		{
+			mouse_inv_x = events.mouse.x;
+			mouse_inv_y = events.mouse.y;
+		}
+		else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+		{
+			if (events.mouse.button & 1) //LPM
+			{
+
+			}
+			else if (events.mouse.button & 2) //PPM
+				break;
+		}
+		else if (events.type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			std::cout << "1";
+		}
+		al_clear_to_color(al_map_rgb(0, 0, 0));
+		location->draw(player->get_X(), player->get_Y());
+		location->draw_dead_mobs(player->get_X(), player->get_Y(), map);
+		draw_actions(player->get_X(), player->get_Y());
+		location->draw_mobs(player->get_X(), player->get_Y(), map);
+		location->draw_portals(player->get_X(), player->get_Y(), map);
+		player->draw(map, location->get_sizeX(), location->get_sizeY());
+		draw_hud(dynamic_cast<Character*>(player));
+		show_dialogue();
+		al_draw_bitmap(cursor, mouse_inv_x, mouse_inv_y, 0);
+		al_flip_display();
+	}
+	al_destroy_bitmap(cursor);
+	al_show_mouse_cursor(display);
+	al_start_timer(movement_timer);
+	
 }
 
 void window::map_clear() // mapa jest powalona i trzeba stestowac
