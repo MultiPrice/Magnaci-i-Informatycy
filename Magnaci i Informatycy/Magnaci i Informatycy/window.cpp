@@ -117,7 +117,7 @@ window::window(int pwidth, int pheight)
     al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(screen_width, screen_height);
     header_font = al_load_font("fonts/font.ttf", (150.0 / 1920) * al_get_display_width(display), 0);
-    setting_font = al_load_font("fonts/font.ttf", (75.0 / 1920) * al_get_display_height(display), 0);
+    setting_font = al_load_font("fonts/font.ttf", (40.0 / 1920) * al_get_display_width(display), 0);
     event_queue = al_create_event_queue();
     backgroud = al_load_bitmap("bitmaps/background/sztandar.bmp");
     movement_timer = al_create_timer(6.0 / FPS);
@@ -125,6 +125,7 @@ window::window(int pwidth, int pheight)
     HUD = al_load_bitmap("bitmaps/background/hud.png");
     HP = al_load_bitmap("bitmaps/background/hp.png");
     MANA = al_load_bitmap("bitmaps/background/mana.png");
+    dialogue_window = al_load_bitmap("bitmaps/background/dialogue.png");
     player = nullptr;
     map = nullptr;
     registration();

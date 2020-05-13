@@ -1,8 +1,9 @@
 #include "dialogue.h"
 
-Question::Question(std::string question)
+Question::Question(std::string question, int id)
 {
 	this->question = question;
+	this->id = id;
 }
 
 void Question::add_answer(std::string answer, int next_qt_id)

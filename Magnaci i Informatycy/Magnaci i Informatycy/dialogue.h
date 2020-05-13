@@ -24,12 +24,11 @@ struct Answer
 
 class Question
 {
-protected:
+public:
 	int id;
 	std::string question;
 	std::vector <Answer*> all_answers;
-public:
-	Question(std::string question);
+	Question(std::string question, int id);
 	void add_answer(std::string answer, int next_qt_id);
 };
 

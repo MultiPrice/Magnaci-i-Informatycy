@@ -82,11 +82,11 @@ bool AoE::make_action(Object***& map, int size_x, int size_y, int position_x, in
 		{
 			if (center_y - 3 > 0)
 				if (map[i][center_y - 3] != nullptr)
-					if (typeid(Element) != typeid(*map[i][center_y - 3]))
+					if (typeid(Teleport) != typeid(*map[i][center_y - 3]) && typeid(Container) != typeid(*map[i][center_y - 3]) && typeid(Other_element) != typeid(*map[i][center_y - 3]))
 						dynamic_cast<Character*>(map[i][center_y - 3])->get_damage(damage, map, location, quest_line);
 			if (center_y + 3 < size_y)
 					if (map[i][center_y + 3] != nullptr)
-						if (typeid(Element) != typeid(*map[i][center_y + 3]))
+						if (typeid(Teleport) != typeid(*map[i][center_y + 3]) && typeid(Container) != typeid(*map[i][center_y + 3]) && typeid(Other_element) != typeid(*map[i][center_y + 3]))
 							dynamic_cast<Character*>(map[i][center_y + 3])->get_damage(damage, map, location, quest_line);
 		}
 	}
@@ -96,14 +96,14 @@ bool AoE::make_action(Object***& map, int size_x, int size_y, int position_x, in
 		{
 			if (center_y - 1 > 0)
 				if (map[i][center_y - 1] != nullptr)
-					if (typeid(Element) != typeid(*map[i][center_y - 1]))
+					if (typeid(Teleport) != typeid(*map[i][center_y - 1]) && typeid(Container) != typeid(*map[i][center_y - 1]) && typeid(Other_element) != typeid(*map[i][center_y - 1]))
 						dynamic_cast<Character*>(map[i][center_y - 1])->get_damage(damage, map, location, quest_line);
 			if (center_y + 1 < size_y)
 				if (map[i][center_y + 1] != nullptr)
-					if (typeid(Element) != typeid(*map[i][center_y + 1]))
+					if (typeid(Teleport) != typeid(*map[i][center_y + 1]) && typeid(Container) != typeid(*map[i][center_y + 1]) && typeid(Other_element) != typeid(*map[i][center_y + 1]))
 						dynamic_cast<Character*>(map[i][center_y + 1])->get_damage(damage, map, location, quest_line);
 				if (map[i][center_y] != nullptr)
-					if (typeid(Element) != typeid(*map[i][center_y ]))
+					if (typeid(Teleport) != typeid(*map[i][center_y]) && typeid(Container) != typeid(*map[i][center_y]) && typeid(Other_element) != typeid(*map[i][center_y]))
 						dynamic_cast<Character*>(map[i][center_y ])->get_damage(damage, map, location, quest_line);
 		}
 	}
@@ -113,11 +113,11 @@ bool AoE::make_action(Object***& map, int size_x, int size_y, int position_x, in
 		{
 			if (center_y - 2 > 0)
 				if (map[i][center_y - 2] != nullptr)
-					if (typeid(Element) != typeid(*map[i][center_y - 2]))
+					if (typeid(Teleport) != typeid(*map[i][center_y - 2]) && typeid(Container) != typeid(*map[i][center_y - 2]) && typeid(Other_element) != typeid(*map[i][center_y - 2]))
 						dynamic_cast<Character*>(map[i][center_y - 2])->get_damage(damage, map, location, quest_line);
 			if (center_y + 2 < size_y)
 				if (map[i][center_y + 2] != nullptr)
-					if (typeid(Element) != typeid(*map[i][center_y + 2]))
+					if (typeid(Teleport) != typeid(*map[i][center_y + 2]) && typeid(Container) != typeid(*map[i][center_y + 2]) && typeid(Other_element) != typeid(*map[i][center_y + 2]))
 						dynamic_cast<Character*>(map[i][center_y + 2])->get_damage(damage, map, location, quest_line);
 		}
 	}
@@ -171,7 +171,7 @@ bool Wind::make_action(Object***& map, int size_x, int size_y, int position_x, i
 		{
 			if (map[representation->get_X()][representation->get_Y()] != nullptr)
 			{
-				if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 				{
 					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 						return false;
@@ -193,7 +193,7 @@ bool Wind::make_action(Object***& map, int size_x, int size_y, int position_x, i
 		{
 			if (map[representation->get_X()][representation->get_Y()] != nullptr)
 			{
-				if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 				{
 					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 						return false;
@@ -215,7 +215,7 @@ bool Wind::make_action(Object***& map, int size_x, int size_y, int position_x, i
 		{
 			if (map[representation->get_X()][representation->get_Y()] != nullptr)
 			{
-				if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 				{
 					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 						return false;
@@ -237,7 +237,7 @@ bool Wind::make_action(Object***& map, int size_x, int size_y, int position_x, i
 		{
 			if (map[representation->get_X()][representation->get_Y()] != nullptr)
 			{
-				if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 				{
 					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 						return false;
@@ -393,7 +393,7 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 			{
 				if (map[representation->get_X()][representation->get_Y()] != nullptr)
 				{
-					if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 					{
 						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 							return false;
@@ -418,7 +418,7 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 			{
 				if (map[representation->get_X()][representation->get_Y()] != nullptr)
 				{
-					if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 					{
 						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 							return false;
@@ -443,7 +443,7 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 			{
 				if (map[representation->get_X()][representation->get_Y()] != nullptr)
 				{
-					if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 					{
 						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 							return false;
@@ -468,7 +468,7 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 			{
 				if (map[representation->get_X()][representation->get_Y()] != nullptr)
 				{
-					if (typeid(Element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
 					{
 						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
 							return false;
@@ -499,18 +499,18 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 				for (int i = center_x - 2; i <= center_x + 2; i++)
 					if(i > 0 && i < size_x)
 						if (map[i][center_y - 2] != nullptr)
-							if (typeid(Element) != typeid(*map[i][center_y - 2]))
+							if (typeid(Teleport) != typeid(*map[i][center_y - 2]) && typeid(Container) != typeid(*map[i][center_y - 2]) && typeid(Other_element) != typeid(*map[i][center_y - 2]))
 								dynamic_cast<Character*>(map[i][center_y - 2])->get_damage(damage, map, location, quest_line);
 			if (center_y - 1 > 0)
 				for (int i = center_x - 1; i <= center_x + 1; i++)
 					if (i > 0 && i < size_x)
 						if (map[i][center_y - 1] != nullptr)
-							if (typeid(Element) != typeid(*map[i][center_y - 1]))
+							if (typeid(Teleport) != typeid(*map[i][center_y - 1]) && typeid(Container) != typeid(*map[i][center_y - 1]) && typeid(Other_element) != typeid(*map[i][center_y - 1]))
 								dynamic_cast<Character*>(map[i][center_y - 1])->get_damage(damage, map, location, quest_line);
 			if (center_y > 0)
 				if (center_x > 0 && center_x < size_x)
 					if (map[center_x][center_y] != nullptr)
-						if (typeid(Element) != typeid(*map[center_x][center_y]))
+						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
 							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
 			return true;
 		case DOWN:
@@ -518,18 +518,18 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 				for (int i = center_x - 2; i <= center_x + 2; i++)
 					if (i > 0 && i < size_x)
 						if (map[i][center_y + 2] != nullptr)
-							if (typeid(Element) != typeid(*map[i][center_y + 2]))
+							if (typeid(Teleport) != typeid(*map[i][center_y + 2]) && typeid(Container) != typeid(*map[i][center_y + 2]) && typeid(Other_element) != typeid(*map[i][center_y + 2]))
 								dynamic_cast<Character*>(map[i][center_y + 2])->get_damage(damage, map, location, quest_line);
 			if (center_y + 1 < size_y)
 				for (int i = center_x - 1; i <= center_x + 1; i++)
 					if (i > 0 && i < size_x)
 						if (map[i][center_y + 1] != nullptr)
-							if (typeid(Element) != typeid(*map[i][center_y + 1]))
+							if (typeid(Teleport) != typeid(*map[i][center_y + 1]) && typeid(Container) != typeid(*map[i][center_y + 1]) && typeid(Other_element) != typeid(*map[i][center_y + 1]))
 								dynamic_cast<Character*>(map[i][center_y + 1])->get_damage(damage, map, location, quest_line);
 			if (center_y < size_y)
 				if (center_x > 0 && center_x < size_x)
 					if (map[center_x][center_y] != nullptr)
-						if (typeid(Element) != typeid(*map[center_x][center_y]))
+						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
 							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
 			return true;
 		case RIGHT:
@@ -537,18 +537,18 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 				for (int i = center_y - 2; i <= center_y + 2; i++)
 					if (i > 0 && i < size_y)
 						if (map[center_x + 2][i] != nullptr)
-							if (typeid(Element) != typeid(*map[center_x + 2][i]))
+							if (typeid(Teleport) != typeid(*map[center_x + 2][i]) && typeid(Container) != typeid(*map[center_x + 2][i]) && typeid(Other_element) != typeid(*map[center_x + 2][i]))
 								dynamic_cast<Character*>(map[center_x + 2][i])->get_damage(damage, map, location, quest_line);
 			if (center_x + 1 < size_x)
 				for (int i = center_y - 1; i <= center_y + 1; i++)
 					if (i > 0 && i < size_y)
 						if (map[center_x + 1][i] != nullptr)
-							if (typeid(Element) != typeid(*map[center_x + 1][i]))
+							if (typeid(Teleport) != typeid(*map[center_x + 1][i]) && typeid(Container) != typeid(*map[center_x + 1][i]) && typeid(Other_element) != typeid(*map[center_x + 1][i]))
 								dynamic_cast<Character*>(map[center_x + 1][i])->get_damage(damage, map, location, quest_line);
 			if (center_x < size_x)
 				if (center_y > 0 && center_y < size_y)
 					if (map[center_x][center_y] != nullptr)
-						if (typeid(Element) != typeid(*map[center_x][center_y]))
+						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
 							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
 			return true;
 		case LEFT:
@@ -556,18 +556,18 @@ bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x,
 				for (int i = center_y - 2; i <= center_y + 2; i++)
 					if (i > 0 && i < size_y)
 						if (map[center_x - 2][i] != nullptr)
-							if (typeid(Element) != typeid(*map[center_x - 2][i]))
+							if (typeid(Teleport) != typeid(*map[center_x - 2][i]) && typeid(Container) != typeid(*map[center_x - 2][i]) && typeid(Other_element) != typeid(*map[center_x - 2][i]))
 								dynamic_cast<Character*>(map[center_x - 2][i])->get_damage(damage, map, location, quest_line);
 			if (center_x - 1 > 0)
 				for (int i = center_y - 1; i <= center_y + 1; i++)
 					if (i > 0 && i < size_y)
 						if (map[center_x - 1][i] != nullptr)
-							if (typeid(Element) != typeid(*map[center_x - 1][i]))
+							if (typeid(Teleport) != typeid(*map[center_x - 1][i]) && typeid(Container) != typeid(*map[center_x - 1][i]) && typeid(Other_element) != typeid(*map[center_x - 1][i]))
 								dynamic_cast<Character*>(map[center_x - 1][i])->get_damage(damage, map, location, quest_line);
 			if (center_x > 0)
 				if (center_y > 0 && center_y < size_y)
 					if (map[center_x][center_y] != nullptr)
-						if (typeid(Element) != typeid(*map[center_x][center_y]))
+						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
 							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
 			return true;
 		}

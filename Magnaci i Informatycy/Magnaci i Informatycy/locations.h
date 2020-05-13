@@ -72,6 +72,7 @@ public:
 	Location(std::string location_name, int X, int Y, Object***& map);
 	int get_sizeX();
 	int get_sizeY();
+	int get_id();
 	Object* get_mob(std::string name);
 	Dead_mobs* find_dead_mob(int X, int Y);
 	std::string get_terrain_name();

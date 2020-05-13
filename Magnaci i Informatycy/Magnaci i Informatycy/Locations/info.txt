@@ -1,13 +1,13 @@
 Plains1
 {
-1
+11
 64
 36
 Locations/PLAINS/Plains1/background.png
 }
 Plains2
 {
-1
+12
 64
 36
 Locations/PLAINS/Plains2/background.png

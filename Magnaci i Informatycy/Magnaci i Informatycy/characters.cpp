@@ -223,6 +223,11 @@ int Character::get_armour()
 	return armour;
 }
 
+int Character::get_id()
+{
+	return id;
+}
+
 Inventory* Character::get_inventory()
 {
 	return inventory;
@@ -288,6 +293,8 @@ void Character::get_damage(int dmg, Object *** &map, Location* location, std::ve
 {
 	if (armour > dmg)
 		return;
+	if (attitude == FRIEND)
+		return;
 	hp = (hp + armour) - dmg;
 	if (hp <= 0)
 	{
@@ -299,7 +306,7 @@ void Character::get_damage(int dmg, Object *** &map, Location* location, std::ve
 					for (int j = 0; j < quest_line[h]->get_quest()->objective.size(); j++)
 						if (quest_line[h]->get_quest()->objective[j]->check_objective(location))
 							if(quest_line[h]->get_quest()->objective[j]->get_to_do() == KILL)
-								if (location->mobs[i]->get_name() == quest_line[h]->get_quest()->objective[j]->get_target_name())
+								if (dynamic_cast<Character*>(location->mobs[i])->get_id() == quest_line[h]->get_quest()->objective[j]->get_target_id())
 									if (quest_line[h]->get_quest()->objective[j]->is_it_done())
 									{
 										quest_line[h]->get_quest()->objective.erase(quest_line[h]->get_quest()->objective.begin() + j);
