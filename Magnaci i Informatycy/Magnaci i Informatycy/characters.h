@@ -72,6 +72,9 @@ public:
 	int get_max_mana();
 	int get_armour();
 	int get_id();
+	int get_lvl();
+	int get_min_damage();
+	int get_max_damage();
 	Inventory* get_inventory();
 	Inventory* drop(std::string drop_name);
 	void get_damage(int dmg, Object***& map, class Location* location, std::vector <class Quest_line*>& quest_line);

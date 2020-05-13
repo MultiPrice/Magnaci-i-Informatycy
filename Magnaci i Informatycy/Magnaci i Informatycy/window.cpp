@@ -140,6 +140,73 @@ void window::registration()
     al_register_event_source(event_queue, al_get_mouse_event_source());
 }
 
+void window::save_game()
+{
+    save_player();
+    save_inventory();
+    save_quests();
+}
+
+void window::save_player()
+{
+    std::fstream file;
+    file.open("save/save_player.txt");
+    if (file)
+    {
+        Character* tmp_player = dynamic_cast<Character*>(player);
+        file << tmp_player->get_X() << std::endl;
+        file << tmp_player->get_Y() << std::endl;
+        file << tmp_player->get_name() << std::endl;
+        file << tmp_player->get_id() << std::endl;
+        file << tmp_player->get_hp() << std::endl;
+        file << tmp_player->get_max_hp() << std::endl;
+        file << tmp_player->get_mana() << std::endl;
+        file << tmp_player->get_max_mana() << std::endl;
+        file << tmp_player->get_lvl() << std::endl;
+        file << tmp_player->get_min_damage() << std::endl;
+        file << tmp_player->get_max_damage() << std::endl;
+        file << tmp_player->get_armour() << std::endl;
+        file << tmp_player->get_attitude() << std::endl;
+        file.close();
+    }
+}
+
+void window::save_inventory()
+{
+    std::fstream file;
+    file.open("save/save_inventory.txt");
+    if (file)
+    {
+        Character* tmp_player = dynamic_cast<Character*>(player);
+        Inventory* tmp_inventory = tmp_player->get_inventory();
+        Item* tmp_item = nullptr;
+        for (int i = 0; i < 7; i++)
+        {
+            tmp_item = tmp_inventory->get_equipment(i);
+            if(tmp_item)
+                file << tmp_item->get_item_id() << std::endl;
+        }
+        file << tmp_inventory->get_inventory_size() << std::endl;
+        for (int i = 0; i < tmp_inventory->get_inventory_size(); i++)
+        {
+            tmp_item = tmp_inventory->get_item(i);
+            if(tmp_item)
+                file << tmp_item->get_item_id() << " " << tmp_item->get_inventory_x() << " " << tmp_item->get_inventory_y() << std::endl;
+        }
+        file.close();
+    }
+}
+
+void window::save_quests()
+{
+
+}
+
+void window::load_game()
+{
+
+}
+
 void window::working()
 {
     bool is_working = true;
@@ -235,6 +302,7 @@ void window::working()
             }
         }
     }
+    save_game();
 }
 
 void window::display_mode()

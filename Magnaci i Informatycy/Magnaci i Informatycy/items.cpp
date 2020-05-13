@@ -297,17 +297,149 @@ Inventory::Inventory()
 	grill = al_load_bitmap("bitmaps/items/inventory_backpack_grill.png");
 }
 
-Inventory::Inventory(int rozmiar)
+Inventory::Inventory(int size)
 {
-	std::cout << rozmiar << "  ";
 	for (int i = 0; i < 7; i++)
 		equipment[i] = nullptr;
-	for (int i = 0; i < rozmiar; i++)
+	for (int i = 0; i < size; i++)
 		inventory.push_back(nullptr);
 	backpack = al_load_bitmap("bitmaps/items/drop_background.png");
 	background = nullptr;
 	player = nullptr;
 	grill = al_load_bitmap("bitmaps/items/drop_grill.png");
+}
+
+Inventory::Inventory(std::string file_name)
+{
+	std::fstream file;
+	file.open("save/save_inventory.txt");
+	if (file)
+	{
+		int item_id;
+		int size;
+		int X = 1080;
+		int Y = measure * 2;
+		Item* new_weapon;
+		Item* new_helmet;
+		Item* new_chestplate;
+		Item* new_boots;
+		Item* new_amulet;
+		Item* new_ring;
+
+		for (int i = 0; i < 7; i++)
+		{
+			file >> item_id;
+			switch (item_id / 100000)
+			{
+			case 0: //brak itema
+				X += measure * 2;
+				break;
+			case 1:
+				new_weapon = new Weapon(item_id, "items/weapon_file.txt");
+				new_weapon->change_inventory_x(X);
+				new_weapon->change_inventory_y(Y);
+				equipment[i] = new_weapon;
+				X += measure * 2;
+				break;
+			case 2:
+				switch (item_id / 10000 % 10)
+				{
+				case 1:
+					new_helmet = new Armour(item_id, "items/armour_file.txt");
+					new_helmet->change_inventory_x(X);
+					new_helmet->change_inventory_y(Y);
+					equipment[i] = new_helmet;
+					X += measure * 2;
+					break;
+				case 2:
+					new_chestplate = new Armour(item_id, "items/armour_file.txt");
+					new_chestplate->change_inventory_x(X);
+					new_chestplate->change_inventory_y(Y);
+					equipment[i] = new_chestplate;
+					X += measure * 2;
+					break;
+				case 3:
+					new_boots = new Armour(item_id, "items/armour_file.txt");
+					new_boots->change_inventory_x(X);
+					new_boots->change_inventory_y(Y);
+					equipment[i] = new_boots;
+					X += measure * 2;
+					break;
+				case 4:
+					new_amulet = new Armour(item_id, "items/armour_file.txt");
+					new_amulet->change_inventory_x(X);
+					new_amulet->change_inventory_y(Y);
+					equipment[i] = new_amulet;
+					X += measure * 2;
+					break;
+				case 5:
+					new_ring = new Armour(item_id, "items/armour_file.txt");
+					new_ring->change_inventory_x(X);
+					new_ring->change_inventory_y(Y);
+					equipment[i] = new_ring;
+					X += measure * 2;
+					break;
+				}
+			}
+		}
+		file >> size;
+		for (int i = 0; i < size; i++)
+			inventory.push_back(nullptr);
+		while (!file.eof())
+		{
+			file >> item_id >> X >> Y;
+			switch (item_id / 100000)
+			{
+			case 0: //brak itema
+				break;
+			case 1:
+				new_weapon = new Weapon(item_id, "items/weapon_file.txt");
+				new_weapon->change_inventory_x(X);
+				new_weapon->change_inventory_y(Y);
+				add_item_to_inventory_x_y(new_weapon, 1);
+				break;
+			case 2:
+				switch (item_id / 10000 % 10)
+				{
+				case 1:
+					new_helmet = new Armour(item_id, "items/armour_file.txt");
+					new_helmet->change_inventory_x(X);
+					new_helmet->change_inventory_y(Y);
+					add_item_to_inventory_x_y(new_helmet, 1);
+					break;
+				case 2:
+					new_chestplate = new Armour(item_id, "items/armour_file.txt");
+					new_chestplate->change_inventory_x(X);
+					new_chestplate->change_inventory_y(Y);
+					add_item_to_inventory_x_y(new_chestplate, 1);
+					break;
+				case 3:
+					new_boots = new Armour(item_id, "items/armour_file.txt");
+					new_boots->change_inventory_x(X);
+					new_boots->change_inventory_y(Y);
+					add_item_to_inventory_x_y(new_boots, 1);
+					break;
+				case 4:
+					new_amulet = new Armour(item_id, "items/armour_file.txt");
+					new_amulet->change_inventory_x(X);
+					new_amulet->change_inventory_y(Y);
+					add_item_to_inventory_x_y(new_amulet, 1);
+					break;
+				case 5:
+					new_ring = new Armour(item_id, "items/armour_file.txt");
+					new_ring->change_inventory_x(X);
+					new_ring->change_inventory_y(Y);
+					add_item_to_inventory_x_y(new_ring, 1);
+					break;
+				}
+			}
+		}
+		backpack = al_load_bitmap("bitmaps/items/inventory_backpack.png");
+		background = al_load_bitmap("bitmaps/items/inventory_background.png");
+		player = al_load_bitmap("player/player_move.png");
+		grill = al_load_bitmap("bitmaps/items/inventory_backpack_grill.png");
+		file.close();
+	}
 }
 
 Inventory::~Inventory()

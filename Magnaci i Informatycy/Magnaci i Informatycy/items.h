@@ -145,7 +145,8 @@ protected:
 	ALLEGRO_BITMAP* grill;
 public:
 	Inventory();
-	Inventory(int rozmiar);
+	Inventory(int size);
+	Inventory(std::string file_name);
 	~Inventory();
 	Item* get_equipment(int i);
 	Item* get_item(int i);
