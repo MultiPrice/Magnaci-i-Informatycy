@@ -60,7 +60,7 @@ int Container::interaction()
 
 Container::~Container()
 {
-	texture = nullptr;
+	al_destroy_bitmap(texture);
 }
 
 Other_element::Other_element(int X, int Y, bool ghost, std::string texture_name, std::string name)

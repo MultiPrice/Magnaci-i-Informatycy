@@ -82,7 +82,8 @@ Dead_mobs::Dead_mobs(Object* mob, int duration, Inventory* droped)
 
 Dead_mobs::~Dead_mobs()
 {
-	// dynamic_cast<Character*>(mob)->~Character();
+	dynamic_cast<Container*>(mob)->~Container();
+	delete mob;
 	droped->~Inventory();	
 }
 
@@ -371,7 +372,7 @@ void Location::draw_dead_mobs(int position_x, int position_y, Object*** map)
 			Dead_mobs* tmp = dead_mobs[i];
 			dead_mobs.erase(dead_mobs.begin() + i);
 			i--;
-			tmp->~Dead_mobs();
+			//tmp->~Dead_mobs();
 		}
 		else
 		{

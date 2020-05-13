@@ -15,6 +15,11 @@
 
 #include "items.h"
 
+Item::~Item()
+{
+	al_destroy_bitmap(texture);
+}
+
 void Item::draw_in_inventory()
 {
 	al_draw_bitmap(texture, inventory_x, inventory_y, 0);
@@ -311,8 +316,12 @@ Inventory::~Inventory()
 	al_destroy_bitmap(grill);
 	for (int i = 0; i < inventory.size(); i++)
 	{
-		if(inventory[i])
+		if (inventory[i])
+		{
+			inventory[i]->~Item();
 			delete(inventory[i]);
+		}
+		inventory.clear();
 	}
 
 	if (player)
@@ -322,7 +331,10 @@ Inventory::~Inventory()
 		for (int i = 0; i < 7; i++)
 		{
 			if (equipment[i])
+			{
+				equipment[i]->~Item();
 				delete(equipment[i]);
+			}
 		}
 	}
 	inventory.clear();

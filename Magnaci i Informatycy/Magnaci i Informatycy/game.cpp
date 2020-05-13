@@ -402,7 +402,6 @@ bool window::player_movement() // ruch gracza na planszy
 		switch (tmp->interact(map, location, player))
 		{
 		case 0:
-		
 			break;
 		case 1:
 			switch (tmp->direction)

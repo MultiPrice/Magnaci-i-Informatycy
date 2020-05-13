@@ -67,6 +67,7 @@ protected:
 	int inventory_y;
 
 public:
+	~Item();
 	virtual bool File_read(std::string file_name) = 0;
 	void draw_in_inventory();
 	int get_inventory_x();
