@@ -138,17 +138,22 @@ void window::guests()
 	al_start_timer(draw_timer);
 }
 
-void window::dialogue_file_read(int character_id, std::string file_name)
+bool window::dialogue_file_read(int character_id, std::string file_name)
 {
 	std::fstream file;
 	file.open(file_name);
-	if (file)
+	if (file.good())
 	{
 		std::string linia, linia2;
 		std::getline(file, linia);
 		while (linia != std::to_string(character_id))
 		{
 			std::getline(file, linia);
+			if (file.eof())
+			{
+				file.close();
+				return false;
+			}
 		}
 		std::getline(file, linia);
 		std::getline(file, linia);
@@ -166,20 +171,26 @@ void window::dialogue_file_read(int character_id, std::string file_name)
 						check = true;
 						tmp_index = i;
 					}
-				if(!check)
+				if (!check)
 					dialogue.push_back(new Question(linia, stoi(linia2)));
 			}
 			else
 			{
 				if (!check)
 					dialogue[dialogue.size() - 1]->add_answer(linia, stoi(linia2));
-				else 
+				else
 					dialogue[tmp_index]->add_answer(linia, stoi(linia2));
 			}
 			std::getline(file, linia);
 		}
 		file.close();
 	}
+	else
+	{
+		file.close();
+		return false;
+	}
+	return true;
 }
 
 bool window::pause_game()
@@ -447,8 +458,8 @@ bool window::player_movement() // ruch gracza na planszy
 						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
 							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id())
 								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
-				show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id());
+				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
+					show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id());
 				break;
 			case DOWN:
 				for (int i = 0; i < quest_line.size(); i++)
@@ -456,8 +467,8 @@ bool window::player_movement() // ruch gracza na planszy
 						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
 							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id())
 								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
-				show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id());
+				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
+					show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id());
 				break;
 			case RIGHT:
 				for (int i = 0; i < quest_line.size(); i++)
@@ -465,8 +476,8 @@ bool window::player_movement() // ruch gracza na planszy
 						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
 							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id())
 								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
-				show_dialogue(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id());
+				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
+					show_dialogue(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id());
 				break;
 			case LEFT:
 				for (int i = 0; i < quest_line.size(); i++)
@@ -474,8 +485,8 @@ bool window::player_movement() // ruch gracza na planszy
 						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
 							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id())
 								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt");
-				show_dialogue(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id());
+				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
+					show_dialogue(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id());
 				break;
 			}
 			dialogue.clear();
