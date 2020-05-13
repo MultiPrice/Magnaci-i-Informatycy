@@ -100,6 +100,11 @@ public:
     void guests();
     bool dialogue_file_read(int character_id, std::string file_name);
     void check_quest_item(Inventory* inventory);
+    void save_game();
+    void save_player();
+    void save_inventory();
+    void save_quests();
+    void load_game();
 };
 
 void which_x_in_animation(int& start_x);

@@ -675,6 +675,7 @@ void window::restart(std::string location_name)
 							}
 						}
 					}
+	save_game();
 	al_start_timer(movement_timer);
 	al_start_timer(draw_timer);
 }

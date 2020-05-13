@@ -33,7 +33,7 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	attitude = FRIEND;
 	movement_cooldown = al_get_time();
 	direction = RIGHT;
-	inventory = new Inventory();
+	inventory = new Inventory("save/save_inventory.txt");
 
 	File_read(file_name);
 }
@@ -226,6 +226,21 @@ int Character::get_armour()
 int Character::get_id()
 {
 	return id;
+}
+
+int Character::get_lvl()
+{
+	return lvl;
+}
+
+int Character::get_min_damage()
+{
+	return min_damage;
+}
+
+int Character::get_max_damage()
+{
+	return max_damage;
 }
 
 Inventory* Character::get_inventory()
