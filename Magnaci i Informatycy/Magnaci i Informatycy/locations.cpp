@@ -343,7 +343,7 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 		int n = 0;
 		while (true)
 		{
-			if (mobs[i]->get_Y() + n + 1 >= sizeY)
+			if (mobs[i]->get_Y() + n + 1 >= sizeY - 1)
 				break;
 			if (map[mobs[i]->get_X()][mobs[i]->get_Y() + n + 1] == nullptr)
 				break;
@@ -392,7 +392,7 @@ void Location::draw_portals(int position_x, int position_y, Object*** map)
 	}
 }
 
-void Location::mob_movement(Object* player, Object*** map)
+void Location::mob_movement(Object* & player, Object*** map)
 {
 	bool up, down, right, left;
 	bool first, second, third, fourth;
@@ -401,51 +401,62 @@ void Location::mob_movement(Object* player, Object*** map)
 	Character* tmp_mob;
 	for (int i = 0; i < mobs.size(); i++)
 	{
-		x2 = player->get_X() - mobs[i]->get_X();
-		y2 = player->get_Y() - mobs[i]->get_Y();
-		distance = sqrt(x2 * x2 + y2 * y2);
+		if (mobs[i]->get_Y() + 1 == player->get_Y() && mobs[i]->get_X() == player->get_X())
+			dynamic_cast<Character*>(mobs[i])->attack_player(player);
+		else if (mobs[i]->get_Y() - 1 == player->get_Y() && mobs[i]->get_X() == player->get_X())
+			dynamic_cast<Character*>(mobs[i])->attack_player(player);
+		else if (mobs[i]->get_X() + 1 == player->get_X() && mobs[i]->get_Y() == player->get_Y())
+			dynamic_cast<Character*>(mobs[i])->attack_player(player);
+		else if (mobs[i]->get_X() - 1 == player->get_X() && mobs[i]->get_Y() == player->get_Y())
+			dynamic_cast<Character*>(mobs[i])->attack_player(player);
+		else
+		{
+			x2 = player->get_X() - mobs[i]->get_X();
+			y2 = player->get_Y() - mobs[i]->get_Y();
+			distance = sqrt(x2 * x2 + y2 * y2);
 
-		tmp_mob = dynamic_cast<Character*>(mobs[i]);
-		if(tmp_mob->get_attitude() == 3)
-			if (distance < screen_height / measure / 2)
-			{
-				map[mobs[i]->get_X()][mobs[i]->get_Y()] = nullptr;
-				up = left = right = down = false;
-				first = second = third = fourth = false;
+			tmp_mob = dynamic_cast<Character*>(mobs[i]);
+			if (tmp_mob->get_attitude() == 3)
+				if (distance < screen_height / measure / 2)
+				{
+					map[mobs[i]->get_X()][mobs[i]->get_Y()] = nullptr;
+					up = left = right = down = false;
+					first = second = third = fourth = false;
 
-				if (map[mobs[i]->get_X()][mobs[i]->get_Y() - 1] == nullptr)
-				{
-					x2 = player->get_X() - mobs[i]->get_X();
-					y2 = player->get_Y() - (mobs[i]->get_Y() - 1);
-					if (distance > sqrt(x2 * x2 + y2 * y2))
-						up = true;
-				}
-				if (map[mobs[i]->get_X()][mobs[i]->get_Y() + 1] == nullptr)
-				{
-					x2 = player->get_X() - mobs[i]->get_X();
-					y2 = player->get_Y() - (mobs[i]->get_Y() + 1);
-					if (distance > sqrt(x2 * x2 + y2 * y2))
-						down = true;
-				}
-				if (map[mobs[i]->get_X() + 1][mobs[i]->get_Y()] == nullptr)
-				{
-					x2 = player->get_X() - (mobs[i]->get_X() + 1);
-					y2 = player->get_Y() - mobs[i]->get_Y();
-					if (distance > sqrt(x2 * x2 + y2 * y2))
-						right = true;
-				}
-				if (map[mobs[i]->get_X() - 1][mobs[i]->get_Y()] == nullptr)
-				{
-					x2 = player->get_X() - (mobs[i]->get_X() - 1);
-					y2 = player->get_Y() - mobs[i]->get_Y();
-					if (distance > sqrt(x2 * x2 + y2 * y2))
-						left = true;
-				}
+					if (map[mobs[i]->get_X()][mobs[i]->get_Y() - 1] == nullptr)
+					{
+						x2 = player->get_X() - mobs[i]->get_X();
+						y2 = player->get_Y() - (mobs[i]->get_Y() - 1);
+						if (distance > sqrt(x2 * x2 + y2 * y2))
+							up = true;
+					}
+					if (map[mobs[i]->get_X()][mobs[i]->get_Y() + 1] == nullptr)
+					{
+						if(mobs[i]->get_Y() + 1)
+						x2 = player->get_X() - mobs[i]->get_X();
+						y2 = player->get_Y() - (mobs[i]->get_Y() + 1);
+						if (distance > sqrt(x2 * x2 + y2 * y2))
+							down = true;
+					}
+					if (map[mobs[i]->get_X() + 1][mobs[i]->get_Y()] == nullptr)
+					{
+						x2 = player->get_X() - (mobs[i]->get_X() + 1);
+						y2 = player->get_Y() - mobs[i]->get_Y();
+						if (distance > sqrt(x2 * x2 + y2 * y2))
+							right = true;
+					}
+					if (map[mobs[i]->get_X() - 1][mobs[i]->get_Y()] == nullptr)
+					{
+						x2 = player->get_X() - (mobs[i]->get_X() - 1);
+						y2 = player->get_Y() - mobs[i]->get_Y();
+						if (distance > sqrt(x2 * x2 + y2 * y2))
+							left = true;
+					}
 
-				if (!up && !down && !right && !left)
-					tmp_mob->is_moving = false;
-				else
-					tmp_mob->is_moving = true;
+					if (!up && !down && !right && !left)
+						tmp_mob->is_moving = false;
+					else
+						tmp_mob->is_moving = true;
 
 					if ((player->get_X() > mobs[i]->get_X()))
 					{
@@ -580,10 +591,11 @@ void Location::mob_movement(Object* player, Object*** map)
 						}
 					}
 					map[mobs[i]->get_X()][mobs[i]->get_Y()] = mobs[i];
-			}
-			else
-				tmp_mob->is_moving = false;
-		tmp_mob->what_move_should_I_draw();
+				}
+				else
+					tmp_mob->is_moving = false;
+			tmp_mob->what_move_should_I_draw();
+		}
 	}
 }
 
