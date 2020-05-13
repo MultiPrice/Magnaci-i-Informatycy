@@ -101,6 +101,7 @@ void window::inventory(Inventory* droped)
 	if (holding_item)
 		tmp->get_inventory()->add_item_to_inventory(holding_item, 1);
 	tmp->add_bonuses();
+	check_quest_item(tmp->get_inventory());
 	al_destroy_bitmap(cursor);
 	al_show_mouse_cursor(display);
 	al_start_timer(movement_timer);
@@ -191,6 +192,35 @@ bool window::dialogue_file_read(int character_id, std::string file_name)
 		return false;
 	}
 	return true;
+}
+
+void window::check_quest_item(Inventory* inventory)
+{
+	for (int i = 0; i < quest_line.size(); i++)
+		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+			if (quest_line[i]->get_quest()->objective[j]->get_to_do() == TAKE)
+				if(quest_line[i]->get_quest()->objective[j]->get_target_location() == location->get_name())
+					for (int k = 0; k < inventory->get_inventory_size(); k++)
+						if(inventory->get_item(k))
+							if (inventory->get_item(k)->get_item_id() == quest_line[i]->get_quest()->objective[j]->get_target_id())
+								if (quest_line[i]->get_quest()->objective[j]->is_it_done())
+								{
+									std::cout << "dupa1 ";
+									quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
+									std::cout << "Zrobiono objectiva" << std::endl;
+									if (quest_line[i]->get_quest()->objective.empty())
+									{
+										std::cout << "dupa2 ";
+										std::cout << "Zrobiono questa" << std::endl;
+										if (!quest_line[i]->take_next_quest())
+										{
+											quest_line[i]->~Quest_line();
+											quest_line.erase(quest_line.begin() + i);
+											i--;
+											break;
+										}
+									}
+								}
 }
 
 bool window::pause_game()

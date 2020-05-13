@@ -99,6 +99,7 @@ public:
     void inventory(Inventory* droped);
     void guests();
     bool dialogue_file_read(int character_id, std::string file_name);
+    void check_quest_item(Inventory* inventory);
 };
 
 void which_x_in_animation(int& start_x);

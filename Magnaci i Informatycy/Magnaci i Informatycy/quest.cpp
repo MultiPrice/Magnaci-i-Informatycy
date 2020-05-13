@@ -76,6 +76,11 @@ Location_objective::Location_objective(int target_id, std::string target_locatio
 //		check = true;
 //}
 
+Item_objective::Item_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
+	:Objective(target_id, target_location_name, to_do, how_many)
+{
+}
+
 Quest::Quest(std::string name, int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class)
 {
 	this->name = name;
@@ -89,6 +94,9 @@ Quest::Quest(std::string name, int target_id, std::string target_location_name, 
 		break;
 	case 2: // Location
 		objective.push_back(new Location_objective(target_id, target_location_name, to_do, how_many));
+		break;
+	case 3: // Item
+		objective.push_back(new Item_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	}
 }
@@ -115,6 +123,9 @@ void Quest::add_objective(int target_id, std::string target_location_name, TYPE 
 		break;
 	case 2: // Location
 		objective.push_back(new Location_objective(target_id, target_location_name, to_do, how_many));
+		break;
+	case 3: // Item
+		objective.push_back(new Item_objective(target_id, target_location_name, to_do, how_many));
 		break;
 	}
 }
@@ -164,6 +175,9 @@ void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_
 				break;
 			case 2: // Location
 				add_quest(quest_name, stoi(object_id), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 2);
+				break;
+			case 3: // Item
+				add_quest(quest_name, stoi(object_id), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 3);
 				break;
 			}
 			if (trash == "}")

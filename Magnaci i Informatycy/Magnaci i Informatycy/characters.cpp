@@ -386,8 +386,9 @@ int Character::interact(Object*** map, Location* location, Object* player)
 			{
 				for (int i = 0; i < location->dead_mobs.size(); i++)
 				{
-					if ((location->find_dead_mob(player->get_X(), player->get_Y() - 1))->droped)
-						return 2;
+					if (location->find_dead_mob(player->get_X(), player->get_Y() - 1))
+						if ((location->find_dead_mob(player->get_X(), player->get_Y() - 1))->droped)
+							return 2;
 				}
 				return 0;
 			}
@@ -401,8 +402,9 @@ int Character::interact(Object*** map, Location* location, Object* player)
 			{
 				for (int i = 0; i < location->dead_mobs.size(); i++)
 				{
-					if ((location->find_dead_mob(player->get_X(), player->get_Y() + 1))->droped)
-						return 2;
+					if (location->find_dead_mob(player->get_X(), player->get_Y() + 1))
+						if ((location->find_dead_mob(player->get_X(), player->get_Y() + 1))->droped)
+							return 2;
 				}
 				return 0;
 			}
@@ -416,8 +418,9 @@ int Character::interact(Object*** map, Location* location, Object* player)
 			{
 				for (int i = 0; i < location->dead_mobs.size(); i++)
 				{
-					if ((location->find_dead_mob(player->get_X() + 1, player->get_Y()))->droped)
-						return 2;
+					if (location->find_dead_mob(player->get_X() + 1, player->get_Y()))
+						if ((location->find_dead_mob(player->get_X() + 1, player->get_Y()))->droped)
+							return 2;
 				}
 				return 0;
 			}
@@ -431,8 +434,9 @@ int Character::interact(Object*** map, Location* location, Object* player)
 			{
 				for (int i = 0; i < location->dead_mobs.size(); i++)
 				{
-					if ((location->find_dead_mob(player->get_X() - 1, player->get_Y()))->droped)
-						return 2;
+					if (location->find_dead_mob(player->get_X() - 1, player->get_Y()))
+						if ((location->find_dead_mob(player->get_X() - 1, player->get_Y()))->droped)
+							return 2;
 				}
 				return 0;
 			}

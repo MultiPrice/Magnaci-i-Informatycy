@@ -24,7 +24,7 @@ enum TYPE
 	KILL,
 	SPEAK_TO,
 	GO_TO,
-	INTERACT
+	TAKE
 };
 
 
@@ -64,6 +64,14 @@ class Location_objective : public Objective
 public:
 	Location_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many);
 //	void check_objective(Location* location);
+};
+
+class Item_objective : public Objective
+{
+protected:
+public:
+	Item_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many);
+	//void check_objective(Location* location);
 };
 
 

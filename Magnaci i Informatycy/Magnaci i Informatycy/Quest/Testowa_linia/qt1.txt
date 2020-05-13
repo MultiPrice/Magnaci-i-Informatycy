@@ -6,4 +6,4 @@ Plains1
 0
 1
 }
-qt4
+qt5
