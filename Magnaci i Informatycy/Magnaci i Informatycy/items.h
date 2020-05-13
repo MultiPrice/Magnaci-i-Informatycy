@@ -48,6 +48,12 @@ enum class WEAPON_TYPE
 	STAFF
 };
 
+struct drop_element
+{
+	int item_id;
+	int drop_percent;
+};
+
 //Main item class
 class Item
 {
@@ -138,14 +144,18 @@ protected:
 	ALLEGRO_BITMAP* grill;
 public:
 	Inventory();
+	Inventory(int rozmiar);
 	~Inventory();
 	Item* get_equipment(int i);
+	Item* get_item(int i);
+	int get_inventory_size();
 	void show_inventory();
-	void add_item_to_inventory(Item* new_item);
-	void add_item_to_inventory_x_y(Item* new_item);
-	Item* I_want_take_this_item(int sought_x, int sought_y, int &prev_x, int &prev_y);
-	Item* I_want_swap_this_item(int sought_x, int sought_y, Item* holding_item, int& prev_x, int& prev_y);
-	int is_there_an_item(int sought_x, int sought_y);
+	void show_drop();
+	void add_item_to_inventory(Item* new_item, int which_case);
+	void add_item_to_inventory_x_y(Item* new_item, int which_case);
+	Item* I_want_take_this_item(int sought_x, int sought_y, int &prev_x, int &prev_y, int which_case);
+	Item* I_want_swap_this_item(int sought_x, int sought_y, Item* holding_item, int& prev_x, int& prev_y, Inventory* droped);
+	int is_there_an_item(int sought_x, int sought_y, int which_case);
 	Item* I_want_take_this_equipment(int sought_x, int sought_y);
 	Item* I_want_equip_this_item(int sought_x, int sought_y, Item* holding_item);
 	int is_there_an_equipment(int sought_x, int sought_y);

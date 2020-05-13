@@ -36,7 +36,7 @@ void window::draw_actions(int position_x, int position_y)
 			action[i]->get_representation()->draw(position_x - shiftX, position_y - shiftY - 1);
 }
 
-void window::inventory()
+void window::inventory(Inventory* droped)
 {
 	al_stop_timer(movement_timer);
 	al_stop_timer(draw_timer);
@@ -71,13 +71,15 @@ void window::inventory()
 				{
 					holding_item = tmp->get_inventory()->I_want_equip_this_item(mouse_inv_x, mouse_inv_y, holding_item);
 					if(holding_item)
-						holding_item = tmp->get_inventory()->I_want_swap_this_item(mouse_inv_x, mouse_inv_y, holding_item, prev_x, prev_y);
+						holding_item = tmp->get_inventory()->I_want_swap_this_item(mouse_inv_x, mouse_inv_y, holding_item, prev_x, prev_y, droped);
 				}
 				else
 				{
 					holding_item = tmp->get_inventory()->I_want_take_this_equipment(mouse_inv_x, mouse_inv_y);
 					if(!holding_item)
-						holding_item = tmp->get_inventory()->I_want_take_this_item(mouse_inv_x, mouse_inv_y, prev_x, prev_y);
+						holding_item = tmp->get_inventory()->I_want_take_this_item(mouse_inv_x, mouse_inv_y, prev_x, prev_y, 1);
+					if (droped && !holding_item)
+						holding_item = droped->I_want_take_this_item(mouse_inv_x, mouse_inv_y, prev_x, prev_y, 2);
 				}
 			}
 			else if (events.mouse.button & 2)
@@ -85,17 +87,19 @@ void window::inventory()
 		}
 		else if(events.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
-			std::cout << "1";
+			std::cout << "xd ";
 		}
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 		tmp->get_inventory()->show_inventory();
+		if (droped)
+			droped->show_drop();
 		if(holding_item)
 			holding_item->draw_in_inventory();
 		al_draw_bitmap(cursor, mouse_inv_x, mouse_inv_y, 0);
 		al_flip_display();
 	}
 	if (holding_item)
-		tmp->get_inventory()->add_item_to_inventory(holding_item);
+		tmp->get_inventory()->add_item_to_inventory(holding_item, 1);
 	tmp->add_bonuses();
 	al_destroy_bitmap(cursor);
 	al_show_mouse_cursor(display);
@@ -146,65 +150,6 @@ void window::dialogue_file_read(int character_id)
 			//fgf
 		}
 	}
-}
-
-Inventory* window::drop(std::string drop_name)
-{
-	Inventory* new_inventory = new Inventory();
-	std::vector<drop_element*> what_can_I_drop;
-	Item* new_item;
-	std::fstream file;
-	file.open("mob/drop.txt");
-	if (file)
-	{
-		std::string tmp_name;
-		std::string tmp_drop_id;
-		int tmp_drop_percent = 0;
-		file >> tmp_name;
-		if (tmp_name != drop_name)
-		{
-			file >> tmp_name;
-			while (tmp_name != drop_name)
-				file >> tmp_drop_id >> tmp_name;
-		}
-
-		file >> tmp_name;
-		while (true)
-		{
-			file >> tmp_drop_id >> tmp_drop_percent;
-			std::cout << tmp_drop_id << " " << tmp_drop_percent << " ";
-			if (tmp_drop_id == "}")
-				break;
-			what_can_I_drop.push_back(new drop_element{ stoi(tmp_drop_id), tmp_drop_percent });
-		}
-		int drawn = rand() % 100 + 1;
-		int sum = 0;
-		Character* player_tmp = dynamic_cast<Character*>(player);
-		for (int i = rand() % 3; i > 0; i--)
-		{
-			for(int j = 0; j < what_can_I_drop.size(); j++)
-			{
-				sum += what_can_I_drop[j]->drop_percent;
-				if (drawn <= sum)
-				{
-					switch (what_can_I_drop[j]->item_id/100000)
-					{
-					case 1: //weapon
-						player_tmp->get_inventory()->add_item_to_inventory(new Weapon(what_can_I_drop[j]->item_id, "items/weapon_file.txt"));
-						break;
-					case 2: //armour
-						player_tmp->get_inventory()->add_item_to_inventory(new Armour(what_can_I_drop[j]->item_id, "items/armour_file.txt"));
-						break;
-					}
-				}
-			}
-		}
-	}
-	else
-		return nullptr;
-	file.close();
-	//new_inventory->add_item_to_inventory(new_item);
-	return new_inventory;
 }
 
 bool window::pause_game()
@@ -373,7 +318,7 @@ bool window::player_movement() // ruch gracza na planszy
 		}
 	}
 	else if(al_key_down(&keyboard, ALLEGRO_KEY_I))
-		inventory();
+		inventory(nullptr);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_Q))
 		guests();
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_ESCAPE))
@@ -385,45 +330,37 @@ bool window::player_movement() // ruch gracza na planszy
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F1))
 	{
 		Item* new_weapon = new Weapon(110001, "items/weapon_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_weapon);
+		tmp->get_inventory()->add_item_to_inventory(new_weapon, 1);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F2))
 	{
 		Item* new_helmet = new Armour(210001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_helmet);
+		tmp->get_inventory()->add_item_to_inventory(new_helmet, 1);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F3))
 	{
 		Item* new_chestplate = new Armour(220001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_chestplate);
+		tmp->get_inventory()->add_item_to_inventory(new_chestplate, 1);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F4))
 	{
 		Item* new_boots = new Armour(230001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_boots);
+		tmp->get_inventory()->add_item_to_inventory(new_boots, 1);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F5))
 	{
 		Item* new_amulet = new Armour(240001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_amulet);
+		tmp->get_inventory()->add_item_to_inventory(new_amulet, 1);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F6))
 	{
 		Item* new_ring = new Armour(250001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_ring);
+		tmp->get_inventory()->add_item_to_inventory(new_ring, 1);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F7))
 	{
 		Item* new__weapon_2 = new Weapon(130001, "items/weapon_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new__weapon_2);
-	}
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F8))
-	{
-		drop("mob1");
-	}
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F9))
-	{
-		drop("mob2");
+		tmp->get_inventory()->add_item_to_inventory(new__weapon_2, 1);
 	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_BACKSPACE))
 	{
@@ -455,7 +392,21 @@ bool window::player_movement() // ruch gracza na planszy
 			}
 			break;
 		case 2:
-
+			switch (tmp->direction)
+			{
+			case UP:
+				inventory(location->find_dead_mob(player->get_X(), player->get_Y() - 1)->get_drop());
+				break;
+			case DOWN:
+				inventory(location->find_dead_mob(player->get_X(), player->get_Y() + 1)->get_drop());
+				break;
+			case RIGHT:
+				inventory(location->find_dead_mob(player->get_X() + 1, player->get_Y())->get_drop());
+				break;
+			case LEFT:
+				inventory(location->find_dead_mob(player->get_X() - 1, player->get_Y())->get_drop());
+				break;
+			}
 			break;
 		case 3:
 

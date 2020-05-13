@@ -14,6 +14,13 @@ Character::Character()
 	inventory = new Inventory();
 }
 
+Character::~Character()
+{
+	inventory->~Inventory();
+	//al_destroy_bitmap(texture);
+	texture = nullptr;
+}
+
 Character::Character(int X, int Y, int seek_id, std::string& file_name)
 {
 	name = "";
@@ -221,6 +228,62 @@ Inventory* Character::get_inventory()
 	return inventory;
 }
 
+Inventory* Character::drop(std::string drop_name)
+{
+	Inventory* new_inventory = new Inventory(rand() % 6);
+	std::vector<drop_element*> what_can_I_drop;
+	Item* new_item;
+	std::fstream file;
+	file.open("mob/drop.txt");
+	if (file)
+	{
+		std::string tmp_name;
+		std::string tmp_drop_id;
+		int tmp_drop_percent = 0;
+		file >> tmp_name;
+		if (tmp_name != drop_name)
+		{
+			file >> tmp_name;
+			while (tmp_name != drop_name)
+				file >> tmp_drop_id >> tmp_name;
+		}
+
+		file >> tmp_name;
+		while (true)
+		{
+			file >> tmp_drop_id >> tmp_drop_percent;
+			if (tmp_drop_id == "}")
+				break;
+			what_can_I_drop.push_back(new drop_element{ stoi(tmp_drop_id), tmp_drop_percent });
+		}
+		int drawn = rand() % 100 + 1;
+		int sum = 0;
+		for (int i = 0; i < new_inventory->get_inventory_size(); i++)
+		{
+			for(int j = 0; j < what_can_I_drop.size(); j++)
+			{
+				sum += what_can_I_drop[j]->drop_percent;
+				if (drawn <= sum)
+				{
+					switch (what_can_I_drop[j]->item_id/100000)
+					{
+					case 1: //weapon
+						new_inventory->add_item_to_inventory(new Weapon(what_can_I_drop[j]->item_id, "items/weapon_file.txt"), 2);
+						break;
+					case 2: //armour
+						new_inventory->add_item_to_inventory(new Armour(what_can_I_drop[j]->item_id, "items/armour_file.txt"), 2);
+						break;
+					}
+				}
+			}
+		}
+	}
+	else
+		return nullptr;
+	file.close();
+	return new_inventory;
+}
+
 void Character::get_damage(int dmg, Object *** &map, Location* location, std::vector <Quest_line*>& quest_line)
 {
 	if (armour > dmg)
@@ -254,7 +317,7 @@ void Character::get_damage(int dmg, Object *** &map, Location* location, std::ve
 										}
 									}
 				std::string dead_bitmap_file_name = "mob/" + name + "_dead.png";
-				location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600));
+				location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600, drop(location->mobs[i]->get_name())));
 				location->mobs.erase(location->mobs.begin() + i);
 				return;
 			}
@@ -305,7 +368,14 @@ int Character::interact(Object*** map, Location* location, Object* player)
 		if (player->get_Y() - 1 > 0)
 		{
 			if (map[player->get_X()][player->get_Y() - 1] == nullptr)
+			{
+				for (int i = 0; i < location->dead_mobs.size(); i++)
+				{
+					if (location->find_dead_mob(player->get_X(), player->get_Y() - 1))
+						return 2;
+				}
 				return 0;
+			}
 			return map[player->get_X()][player->get_Y() - 1]->interaction();
 		}
 		break;
@@ -313,7 +383,14 @@ int Character::interact(Object*** map, Location* location, Object* player)
 		if (player->get_Y() + 1 < location->get_sizeY())
 		{
 			if (map[player->get_X()][player->get_Y() + 1] == nullptr)
+			{
+				for (int i = 0; i < location->dead_mobs.size(); i++)
+				{
+					if (location->find_dead_mob(player->get_X(), player->get_Y() + 1))
+						return 2;
+				}
 				return 0;
+			}
 			return map[player->get_X()][player->get_Y() + 1]->interaction();
 		}
 		break;
@@ -321,7 +398,14 @@ int Character::interact(Object*** map, Location* location, Object* player)
 		if (player->get_X() + 1 < location->get_sizeX())
 		{
 			if (map[player->get_X() + 1][player->get_Y()] == nullptr)
+			{
+				for (int i = 0; i < location->dead_mobs.size(); i++)
+				{
+					if (location->find_dead_mob(player->get_X() + 1, player->get_Y()))
+						return 2;
+				}
 				return 0;
+			}
 			return map[player->get_X() + 1][player->get_Y()]->interaction();
 		}
 		break;
@@ -329,7 +413,14 @@ int Character::interact(Object*** map, Location* location, Object* player)
 		if (player->get_X() - 1 > 0)
 		{
 			if (map[player->get_X() - 1][player->get_Y()] == nullptr)
+			{
+				for (int i = 0; i < location->dead_mobs.size(); i++)
+				{
+					if (location->find_dead_mob(player->get_X() - 1, player->get_Y()))
+						return 2;
+				}
 				return 0;
+			}
 			return map[player->get_X() - 1][player->get_Y()]->interaction();
 		}
 		break;

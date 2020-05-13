@@ -552,17 +552,12 @@ Item* Inventory::I_want_equip_this_item(int sought_x, int sought_y, Item* holdin
 				equipment[0] = holding_item;
 				return tmp_item;
 			}
-			else if (equipment[1])
+			if (equipment[1])
 			{
 				tmp_item = equipment[1];
 				equipment[1] = nullptr;
 				equipment[0] = holding_item;
 				return tmp_item;
-			}
-			else
-			{
-				equipment[0] = holding_item;
-				return nullptr;
 			}
 		}
 	}

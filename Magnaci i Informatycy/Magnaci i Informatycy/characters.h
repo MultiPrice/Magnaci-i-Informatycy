@@ -59,6 +59,7 @@ public:
 	DIRECTION direction;
 	bool is_moving;
 	Character();
+	~Character();
 	Character(int X, int Y, int seek_id, std::string& file_name);
 	Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
@@ -71,6 +72,7 @@ public:
 	int get_max_mana();
 	int get_armour();
 	Inventory* get_inventory();
+	Inventory* drop(std::string drop_name);
 	void get_damage(int dmg, Object***& map, class Location* location, std::vector <class Quest_line*>& quest_line);
 	void change_hp(int change);
 	void change_mana(int change);

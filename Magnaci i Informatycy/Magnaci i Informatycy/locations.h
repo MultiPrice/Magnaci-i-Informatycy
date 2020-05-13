@@ -49,8 +49,12 @@ struct Dead_mobs
 {
 	Object* mob; 
 	int duration; // jak dlugo mob zostanie
+	Inventory* droped;
 
-	Dead_mobs(Object* mob, int duration);
+	Dead_mobs(Object* mob, int duration, Inventory* droped);
+	~Dead_mobs();
+	Inventory* get_drop();
+	void wypisz_w_dupe();
 };
 
 class Location : public Object
@@ -69,6 +73,7 @@ public:
 	int get_sizeX();
 	int get_sizeY();
 	Object* get_mob(std::string name);
+	Dead_mobs* find_dead_mob(int X, int Y);
 	std::string get_terrain_name();
 	Travel_list* get_pTravel();
 	void read_travel_file(std::string location_name);

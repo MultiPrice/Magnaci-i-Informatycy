@@ -73,10 +73,28 @@ std::string find_enum_name(int enum_nr)
 	}
 }
 
-Dead_mobs::Dead_mobs(Object* mob, int duration)
+Dead_mobs::Dead_mobs(Object* mob, int duration, Inventory* droped)
 {
 	this->mob = mob;
 	this->duration = duration;
+	this->droped = droped;
+}
+
+Dead_mobs::~Dead_mobs()
+{
+	// dynamic_cast<Character*>(mob)->~Character();
+	droped->~Inventory();	
+}
+
+Inventory* Dead_mobs::get_drop()
+{
+	return droped;
+}
+
+void Dead_mobs::wypisz_w_dupe()
+{
+	for (int i = 0; i < droped->get_inventory_size(); i++)
+		std::cout<< droped->get_item(i)->get_item_id() << std::endl;
 }
 
 
@@ -117,6 +135,16 @@ Object* Location::get_mob(std::string name)
 	for (int i = 0; i < mobs.size(); i++)
 		if (mobs[i]->get_name() == name)
 			return mobs[i];
+	return nullptr;
+}
+
+Dead_mobs* Location::find_dead_mob(int X, int Y)
+{
+	for (int i = 0; i < dead_mobs.size(); i++)
+	{
+		if (dead_mobs[i]->mob->get_X() == X && dead_mobs[i]->mob->get_Y() == Y)
+			return dead_mobs[i];
+	}
 	return nullptr;
 }
 
@@ -333,8 +361,11 @@ void Location::draw_dead_mobs(int position_x, int position_y, Object*** map)
 	{
 		if (dead_mobs[i]->duration <= 0)
 		{
+			//dead_mobs[i]->~Dead_mobs();
+			Dead_mobs* tmp = dead_mobs[i];
 			dead_mobs.erase(dead_mobs.begin() + i);
 			i--;
+			tmp->~Dead_mobs();
 		}
 		else
 		{
