@@ -98,7 +98,7 @@ public:
     void draw_actions(int position_x, int position_y);
     void inventory(Inventory* droped);
     void guests();
-    void dialogue_file_read(int character_id);
+    void dialogue_file_read(int character_id, std::string file_name);
 };
 
 void which_x_in_animation(int& start_x);

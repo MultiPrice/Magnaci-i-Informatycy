@@ -235,7 +235,7 @@ Inventory* Character::get_inventory()
 
 Inventory* Character::drop(std::string drop_name)
 {
-	Inventory* new_inventory = new Inventory(rand() % 6);
+	Inventory* new_inventory = new Inventory(rand() % 2 + 1);
 	std::vector<drop_element*> what_can_I_drop;
 	Item* new_item;
 	std::fstream file;
@@ -324,7 +324,15 @@ void Character::get_damage(int dmg, Object *** &map, Location* location, std::ve
 										}
 									}
 				std::string dead_bitmap_file_name = "mob/" + name + "_dead.png";
-				location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600, drop(location->mobs[i]->get_name())));
+				switch (rand()%3)
+				{
+				case 0:
+					location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600, nullptr));
+					break;
+				default:
+					location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600, drop(location->mobs[i]->get_name())));
+					break;
+				}
 				location->mobs.erase(location->mobs.begin() + i);
 				return;
 			}
