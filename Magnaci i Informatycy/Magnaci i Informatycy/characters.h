@@ -63,7 +63,7 @@ public:
 	Character(int X, int Y, int seek_id, std::string& file_name);
 	Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
 	bool File_read(std::string& file_name); // false jak blad odczytu
-	void what_move_should_I_draw();
+	void what_move_should_I_draw(int animation_frames);
 	void what_attack_should_I_draw(int animation_frames);
 	void change_texture(std::string tmp);
 	int get_hp();

@@ -183,8 +183,10 @@ void window::save_inventory()
         for (int i = 0; i < 7; i++)
         {
             tmp_item = tmp_inventory->get_equipment(i);
-            if(tmp_item)
+            if (tmp_item)
                 file << tmp_item->get_item_id() << std::endl;
+            else
+                file << '0' << std::endl;
         }
         file << tmp_inventory->get_inventory_size() << std::endl;
         for (int i = 0; i < tmp_inventory->get_inventory_size(); i++)
@@ -199,7 +201,13 @@ void window::save_inventory()
 
 void window::save_quests()
 {
+    std::fstream file;
+    file.open("save/save_quests.txt");
+    if (file)
+    {
 
+        file.close();
+    }
 }
 
 void window::load_game()
