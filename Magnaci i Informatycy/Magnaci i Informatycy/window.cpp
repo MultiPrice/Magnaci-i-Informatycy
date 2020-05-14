@@ -205,14 +205,45 @@ void window::save_quests()
     file.open("save/save_quests.txt");
     if (file)
     {
+        for (int i = 0; i < quest_line.size(); i++)
+        {
+            quest_line[i]->save_status(file);
+            file << quest_line[i]->next_quest_name << std::endl << "}" << std::endl;
+        }
+        file.close();
+    }
+}
 
+void window::load_quests()
+{
+    std::fstream file;
+    file.open("save/save_quests.txt");
+    if (file)
+    {
+        std::string quest_line_name, trash, quest_name;
+        while (file)
+        {
+            std::getline(file, quest_line_name);
+            if (file.eof())
+                return;
+            std::getline(file, trash);
+            std::getline(file, quest_name);
+            std::getline(file, trash);
+            quest_line.push_back(new Quest_line(quest_line_name));
+            quest_line[quest_line.size() - 1]->load_status(file, quest_name);
+            std::getline(file, trash);
+            quest_line[quest_line.size() - 1]->next_quest_name = trash;
+            std::getline(file, trash);
+            if (trash == "}")
+                break;
+        }
         file.close();
     }
 }
 
 void window::load_game()
 {
-
+    load_quests();
 }
 
 void window::working()

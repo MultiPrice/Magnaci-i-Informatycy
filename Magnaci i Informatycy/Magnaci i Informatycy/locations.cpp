@@ -594,7 +594,7 @@ void Location::mob_movement(Object* & player, Object*** map)
 				}
 				else
 					tmp_mob->is_moving = false;
-			tmp_mob->what_move_should_I_draw();
+			tmp_mob->what_move_should_I_draw(8);
 		}
 	}
 }
