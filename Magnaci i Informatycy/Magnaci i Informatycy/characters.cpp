@@ -86,35 +86,35 @@ bool Character::File_read(std::string& file_name)
 	return true;
 }
 
-void Character::what_move_should_I_draw()
+void Character::what_move_should_I_draw(int animation_frames)
 {
 	if (is_moving)
 	{
 		switch (direction)
 		{
-		case UP:
-			if (bitmap_start_x >= 720)
+		case DOWN:
+			if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
 			bitmap_start_y = 0;
 			break;
 		case RIGHT:
-			if (bitmap_start_x >= 720)
+			if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
 			bitmap_start_y = 240;
 			break;
-		case DOWN:
-			if (bitmap_start_x >= 720)
+		case UP:
+			if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
 			bitmap_start_y = 360;
 			break;
 		case LEFT:
-			if (bitmap_start_x >= 720)
+			if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
 				bitmap_start_x = 0;
 			else
 				bitmap_start_x += measure * 1.5;
@@ -126,7 +126,7 @@ void Character::what_move_should_I_draw()
 	{
 		switch (direction)
 		{
-		case UP:
+		case DOWN:
 			bitmap_start_x = 0;
 			bitmap_start_y = 0;
 			break;
@@ -134,7 +134,7 @@ void Character::what_move_should_I_draw()
 			bitmap_start_x = 0;
 			bitmap_start_y = 240;
 			break;
-		case DOWN:
+		case UP:
 			bitmap_start_x = 0;
 			bitmap_start_y = 360;
 			break;
@@ -150,7 +150,7 @@ void Character::what_attack_should_I_draw(int animation_frames)
 {
 	switch (direction)
 	{
-	case UP:
+	case DOWN:
 		if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
 		{
 			attack_type = 0;
@@ -170,7 +170,7 @@ void Character::what_attack_should_I_draw(int animation_frames)
 			bitmap_start_x += measure * 1.5;
 		bitmap_start_y = measure*4;
 		break;
-	case DOWN:
+	case UP:
 		if (bitmap_start_x >= measure * 1.5 * ((double)animation_frames - 1))
 		{
 			attack_type = 0;

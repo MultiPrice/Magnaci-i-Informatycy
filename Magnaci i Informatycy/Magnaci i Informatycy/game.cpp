@@ -298,7 +298,7 @@ bool window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->what_move_should_I_draw();
+			tmp->what_move_should_I_draw(8);
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
 		}
 		else if (typeid(Element) == typeid(*map[player->get_X() + 1][player->get_Y()]))
@@ -310,7 +310,7 @@ bool window::player_movement() // ruch gracza na planszy
 				else
 				{
 					tmp->is_moving = true;
-					tmp->what_move_should_I_draw();
+					tmp->what_move_should_I_draw(8);
 					change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
 				}
 			}
@@ -322,7 +322,7 @@ bool window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X() - 1][player->get_Y()] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->what_move_should_I_draw();
+			tmp->what_move_should_I_draw(8);
 			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
 		}
 		else if (typeid(Element) == typeid(*map[player->get_X() - 1][player->get_Y()]))
@@ -334,7 +334,7 @@ bool window::player_movement() // ruch gracza na planszy
 				else
 				{
 					tmp->is_moving = true;
-					tmp->what_move_should_I_draw();
+					tmp->what_move_should_I_draw(8);
 					change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
 				}
 			}
@@ -346,7 +346,7 @@ bool window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X()][player->get_Y() - 1] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->what_move_should_I_draw();
+			tmp->what_move_should_I_draw(8);
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
 		}
 		else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() - 1]))
@@ -358,7 +358,7 @@ bool window::player_movement() // ruch gracza na planszy
 				else
 				{
 					tmp->is_moving = true;
-					tmp->what_move_should_I_draw();
+					tmp->what_move_should_I_draw(8);
 					change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
 				}
 			}
@@ -370,7 +370,7 @@ bool window::player_movement() // ruch gracza na planszy
 		if (map[player->get_X()][player->get_Y() + 1] == nullptr)
 		{
 			tmp->is_moving = true;
-			tmp->what_move_should_I_draw();
+			tmp->what_move_should_I_draw(8);
 			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
 		}
 		else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() + 1]))
@@ -382,7 +382,7 @@ bool window::player_movement() // ruch gracza na planszy
 				else
 				{
 					tmp->is_moving = true;
-					tmp->what_move_should_I_draw();
+					tmp->what_move_should_I_draw(8);
 					change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
 				}
 			}
@@ -525,7 +525,7 @@ bool window::player_movement() // ruch gracza na planszy
 	else
 	{
 		tmp->is_moving = false;
-		tmp->what_move_should_I_draw();
+		tmp->what_move_should_I_draw(8);
 	}
 	return true;
 }
