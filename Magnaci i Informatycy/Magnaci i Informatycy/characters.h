@@ -81,6 +81,7 @@ public:
 	void change_hp(int change);
 	void change_mana(int change);
 	int get_attack_type();
+	void attack_player(Object * &player);
 	int get_attitude();
 	void change_attack_type(int tmp);
 	int interact(Object*** map, Location* location, Object* player);

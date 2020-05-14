@@ -380,6 +380,12 @@ int Character::get_attack_type()
 	return attack_type;
 }
 
+void Character::attack_player(Object*& player)
+{
+	// wklej ³adn¹ animacje
+	dynamic_cast<Character*>(player)->change_hp(-(rand() % (max_damage - min_damage) + min_damage - dynamic_cast<Character*>(player)->get_armour()));
+}
+
 int Character::get_attitude()
 {
 	return (int)attitude;
