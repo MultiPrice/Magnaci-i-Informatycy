@@ -17,7 +17,6 @@ void wypisz_kurde_wszytsko(Object*** twoja_stara)
 			else if (typeid(Element) == typeid(*twoja_stara[j][i]))
 				std::cout << "W";
 		}
-			
 		std::cout << std::endl;
 	}
 }
@@ -438,6 +437,10 @@ bool window::player_movement() // ruch gracza na planszy
 		quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
 		std::cout << "Rozpoczales linie questow" << std::endl;
 	}
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F9))
+	{
+	create_colision_file();
+	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_E))
 	{
 		switch (tmp->interact(map, location, player))
@@ -631,7 +634,7 @@ void window::start() // pierwsze uruchomienie planszy
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
 	player = new Magnat(2,2, 110000, "player/player.txt");
-	location = new Location("Plains1", 0, 0, this->map);
+	location = new Location("Forest2", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	test = false;
 }

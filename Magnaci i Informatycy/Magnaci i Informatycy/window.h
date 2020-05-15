@@ -106,6 +106,7 @@ public:
     void save_quests();
     void load_quests();
     void load_game();
+    void create_colision_file();
 };
 
 void which_x_in_animation(int& start_x);

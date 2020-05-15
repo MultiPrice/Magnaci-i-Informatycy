@@ -106,6 +106,7 @@ Location::Location(std::string location_name, int X, int Y, Object***& map)
 	positionY = Y;
 	id = 0;
 	texture = nullptr;
+	mob_life = al_load_bitmap("mob/mob_life.png");
 	terrain = INTERIOR;
 	pTravel = nullptr;
 
@@ -355,8 +356,12 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 		{
 			if (typeid(Element) == typeid(*map[mobs[i]->get_X()][mobs[i]->get_Y() + j]))
 				map[mobs[i]->get_X()][mobs[i]->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
-			else if(dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
-				map[mobs[i]->get_X()][mobs[i]->get_Y() + j]->draw(position_x - shiftX, position_y - shiftY);
+			else if (dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j])->get_attitude() != 4)
+			{
+				Character* tmp_mob = dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j]);
+				tmp_mob->draw(position_x - shiftX, position_y - shiftY);
+				al_draw_bitmap_region(mob_life, 0, 0, (measure * 2 * tmp_mob->get_hp() / tmp_mob->get_max_hp()), 10, (tmp_mob->get_X() - shiftX) * measure, (tmp_mob->get_Y() - shiftY) * measure, 0);
+			}
 			j++;
 		}
 	}
@@ -651,6 +656,7 @@ Location::~Location()
 {
 	delete_travel_list(pTravel);
 	al_destroy_bitmap(texture);
+	al_destroy_bitmap(mob_life);
 	texture = nullptr;
 	//for (int i = 0; i < mobs.size(); i++)
 		//dynamic_cast<Character*>(mobs[i])->~Character();
