@@ -14,6 +14,21 @@ Character::Character()
 	inventory = new Inventory();
 }
 
+Character::Character(std::string file_name, std::string inventory_file)
+{
+	std::fstream file;
+	file.open(file_name);
+	if (file)
+	{
+		int tmp_attitude;
+		file >> positionX >> positionY >> name >> id >> hp >> max_hp >> mana >> max_mana >> lvl >> min_damage >> max_damage >> armour >> tmp_attitude;
+		attitude = (ATTITUDE)tmp_attitude;
+		inventory = new Inventory(inventory_file);
+		texture = al_load_bitmap("player/player_move.png");
+		file.close();
+	}
+}
+
 Character::~Character()
 {
 	inventory->~Inventory();
@@ -33,7 +48,7 @@ Character::Character(int X, int Y, int seek_id, std::string& file_name)
 	attitude = FRIEND;
 	movement_cooldown = al_get_time();
 	direction = RIGHT;
-	inventory = new Inventory("save/save_inventory.txt");
+	inventory = new Inventory();
 
 	File_read(file_name);
 }
@@ -517,7 +532,15 @@ void Character::remove_bonuses()
 	}
 }
 
-Magnat::Magnat(int X, int Y, int id, std::string file_name) : Character(X, Y, id, file_name) {}
+Magnat::Magnat(int X, int Y, int id, std::string file_name)
+	: Character(X, Y, id, file_name)
+{
+}
+
+Magnat::Magnat(std::string file_name, std::string inventory_file)
+	: Character(file_name, inventory_file)
+{
+}
 
 Magnat::Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y)
 	: Character(name, id, texture, hp, max_hp, mana, max_mana, lvl, min_damage, max_damage, armor, attitude, X, Y)

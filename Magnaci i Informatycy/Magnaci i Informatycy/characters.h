@@ -59,6 +59,7 @@ public:
 	DIRECTION direction;
 	bool is_moving;
 	Character();
+	Character(std::string file_name, std::string inventory_file);
 	~Character();
 	Character(int X, int Y, int seek_id, std::string& file_name);
 	Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
@@ -95,6 +96,7 @@ class Magnat : public Character
 {
 public:
 	Magnat(int X, int Y, int id, std::string file_name);
+	Magnat(std::string file_name, std::string inventory_file);
 	Magnat(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, int max_hp, int mana, int max_mana, int lvl, int min_damage, int max_damage, int armor, ATTITUDE attitude, int X, int Y);
 	~Magnat();
 	void draw(Object ***map, int max_x, int max_y);
