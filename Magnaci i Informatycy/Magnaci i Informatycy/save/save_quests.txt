@@ -10,5 +10,15 @@ Plains2
 }
 qt3
 }
-t2
+Testowa_linia
+{
+qt1
+{
+110000
+0
+Plains1
+1
+1
+}
+qt2
 }
