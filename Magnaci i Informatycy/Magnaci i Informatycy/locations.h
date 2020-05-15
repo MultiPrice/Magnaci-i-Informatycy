@@ -88,6 +88,7 @@ public:
 	void draw_dead_mobs(int position_x, int position_y, Object*** map);
 	void draw_portals(int position_x, int position_y, Object*** map);
 	void mob_movement(Object* &player, Object*** map);
+	void mob_attack(Object* mob_tmp);
 	int interaction() { return 0; };
 	~Location();
 };

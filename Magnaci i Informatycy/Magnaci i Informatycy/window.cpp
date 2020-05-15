@@ -243,6 +243,15 @@ void window::load_quests()
 
 void window::load_game()
 {
+    srand(time(NULL));
+    clear();
+    al_clear_to_color(al_map_rgb(0, 150, 0));
+    add_functional_button(10, 10, MENU);
+    player = new Magnat(2, 2, 110000, "player/player.txt");
+    location = new Location("Plains1", 0, 0, this->map);
+    map[player->get_X()][player->get_Y()] = player;
+
+    test = false;
     load_quests();
 }
 
@@ -293,6 +302,8 @@ void window::working()
                         break;
                     case 1:
                         checking = false;
+                        load_game();
+                        game_is_on = true;
                         break;
                     case 2:
                         checking = false;
