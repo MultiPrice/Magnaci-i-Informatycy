@@ -104,6 +104,7 @@ public:
     void save_player();
     void save_inventory();
     void save_quests();
+    void load_quests();
     void load_game();
 };
 

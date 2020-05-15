@@ -633,6 +633,7 @@ void window::start() // pierwsze uruchomienie planszy
 	player = new Magnat(2,2, 110000, "player/player.txt");
 	location = new Location("Plains1", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
+	load_game();
 	test = false;
 }
 
