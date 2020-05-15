@@ -409,223 +409,226 @@ void Location::mob_movement(Object* & player, Object*** map)
 		}
 		else
 		{
-			if (mobs[i]->get_Y() + 1 == player->get_Y() && mobs[i]->get_X() == player->get_X())
+			if (dynamic_cast<Character*>(mobs[i])->get_attitude() == 3)
 			{
-				tmp_mob->direction = DOWN;
-				tmp_mob->change_attack_type(1);
-				tmp_mob->bitmap_start_x = 0;
-				tmp_mob->change_texture("mob/mob1_attack.png");
-				tmp_mob->attack_player(player);
-			}
-			else if (mobs[i]->get_Y() - 1 == player->get_Y() && mobs[i]->get_X() == player->get_X())
-			{
-				tmp_mob->direction = UP;
-				tmp_mob->change_attack_type(1);
-				tmp_mob->bitmap_start_x = 0;
-				tmp_mob->change_texture("mob/mob1_attack.png");
-				tmp_mob->attack_player(player);
-			}
-			else if (mobs[i]->get_X() + 1 == player->get_X() && mobs[i]->get_Y() == player->get_Y())
-			{
-				tmp_mob->direction = RIGHT;
-				tmp_mob->change_attack_type(1);
-				tmp_mob->bitmap_start_x = 0;
-				tmp_mob->change_texture("mob/mob1_attack.png");
-				tmp_mob->attack_player(player);
-			}
-			else if (mobs[i]->get_X() - 1 == player->get_X() && mobs[i]->get_Y() == player->get_Y())
-			{
-				tmp_mob->direction = LEFT;
-				tmp_mob->change_attack_type(1);
-				tmp_mob->bitmap_start_x = 0;
-				tmp_mob->change_texture("mob/mob1_attack.png");
-				tmp_mob->attack_player(player);
-			}
-			else
-			{
-				x2 = player->get_X() - mobs[i]->get_X();
-				y2 = player->get_Y() - mobs[i]->get_Y();
-				distance = sqrt(x2 * x2 + y2 * y2);
+				if (mobs[i]->get_Y() + 1 == player->get_Y() && mobs[i]->get_X() == player->get_X())
+				{
+					tmp_mob->direction = DOWN;
+					tmp_mob->change_attack_type(1);
+					tmp_mob->bitmap_start_x = 0;
+					tmp_mob->change_texture("mob/mob1_attack.png");
+					tmp_mob->attack_player(player);
+				}
+				else if (mobs[i]->get_Y() - 1 == player->get_Y() && mobs[i]->get_X() == player->get_X())
+				{
+					tmp_mob->direction = UP;
+					tmp_mob->change_attack_type(1);
+					tmp_mob->bitmap_start_x = 0;
+					tmp_mob->change_texture("mob/mob1_attack.png");
+					tmp_mob->attack_player(player);
+				}
+				else if (mobs[i]->get_X() + 1 == player->get_X() && mobs[i]->get_Y() == player->get_Y())
+				{
+					tmp_mob->direction = RIGHT;
+					tmp_mob->change_attack_type(1);
+					tmp_mob->bitmap_start_x = 0;
+					tmp_mob->change_texture("mob/mob1_attack.png");
+					tmp_mob->attack_player(player);
+				}
+				else if (mobs[i]->get_X() - 1 == player->get_X() && mobs[i]->get_Y() == player->get_Y())
+				{
+					tmp_mob->direction = LEFT;
+					tmp_mob->change_attack_type(1);
+					tmp_mob->bitmap_start_x = 0;
+					tmp_mob->change_texture("mob/mob1_attack.png");
+					tmp_mob->attack_player(player);
+				}
+				else
+				{
+					x2 = player->get_X() - mobs[i]->get_X();
+					y2 = player->get_Y() - mobs[i]->get_Y();
+					distance = sqrt(x2 * x2 + y2 * y2);
 
-				if (tmp_mob->get_attitude() == 3)
-					if (distance < screen_height / measure / 2)
-					{
-						map[mobs[i]->get_X()][mobs[i]->get_Y()] = nullptr;
-						up = left = right = down = false;
-						first = second = third = fourth = false;
+					if (tmp_mob->get_attitude() == 3)
+						if (distance < screen_height / measure / 2)
+						{
+							map[mobs[i]->get_X()][mobs[i]->get_Y()] = nullptr;
+							up = left = right = down = false;
+							first = second = third = fourth = false;
 
-						if (map[mobs[i]->get_X()][mobs[i]->get_Y() - 1] == nullptr)
-						{
-							x2 = player->get_X() - mobs[i]->get_X();
-							y2 = player->get_Y() - (mobs[i]->get_Y() - 1);
-							if (distance > sqrt(x2 * x2 + y2 * y2))
-								up = true;
-						}
-						if (map[mobs[i]->get_X()][mobs[i]->get_Y() + 1] == nullptr)
-						{
-							if (mobs[i]->get_Y() + 1)
+							if (map[mobs[i]->get_X()][mobs[i]->get_Y() - 1] == nullptr)
+							{
 								x2 = player->get_X() - mobs[i]->get_X();
-							y2 = player->get_Y() - (mobs[i]->get_Y() + 1);
-							if (distance > sqrt(x2 * x2 + y2 * y2))
-								down = true;
-						}
-						if (map[mobs[i]->get_X() + 1][mobs[i]->get_Y()] == nullptr)
-						{
-							x2 = player->get_X() - (mobs[i]->get_X() + 1);
-							y2 = player->get_Y() - mobs[i]->get_Y();
-							if (distance > sqrt(x2 * x2 + y2 * y2))
-								right = true;
-						}
-						if (map[mobs[i]->get_X() - 1][mobs[i]->get_Y()] == nullptr)
-						{
-							x2 = player->get_X() - (mobs[i]->get_X() - 1);
-							y2 = player->get_Y() - mobs[i]->get_Y();
-							if (distance > sqrt(x2 * x2 + y2 * y2))
-								left = true;
-						}
+								y2 = player->get_Y() - (mobs[i]->get_Y() - 1);
+								if (distance > sqrt(x2 * x2 + y2 * y2))
+									up = true;
+							}
+							if (map[mobs[i]->get_X()][mobs[i]->get_Y() + 1] == nullptr)
+							{
+								if (mobs[i]->get_Y() + 1)
+									x2 = player->get_X() - mobs[i]->get_X();
+								y2 = player->get_Y() - (mobs[i]->get_Y() + 1);
+								if (distance > sqrt(x2 * x2 + y2 * y2))
+									down = true;
+							}
+							if (map[mobs[i]->get_X() + 1][mobs[i]->get_Y()] == nullptr)
+							{
+								x2 = player->get_X() - (mobs[i]->get_X() + 1);
+								y2 = player->get_Y() - mobs[i]->get_Y();
+								if (distance > sqrt(x2 * x2 + y2 * y2))
+									right = true;
+							}
+							if (map[mobs[i]->get_X() - 1][mobs[i]->get_Y()] == nullptr)
+							{
+								x2 = player->get_X() - (mobs[i]->get_X() - 1);
+								y2 = player->get_Y() - mobs[i]->get_Y();
+								if (distance > sqrt(x2 * x2 + y2 * y2))
+									left = true;
+							}
 
-						if (!up && !down && !right && !left)
+							if (!up && !down && !right && !left)
+								tmp_mob->is_moving = false;
+							else
+								tmp_mob->is_moving = true;
+
+							if ((player->get_X() > mobs[i]->get_X()))
+							{
+								if ((player->get_Y() > mobs[i]->get_Y()))
+									fourth = true;
+								else
+									first = true;
+							}
+							else
+							{
+								if ((player->get_Y() > mobs[i]->get_Y()))
+									third = true;
+								else
+									second = true;
+							}
+
+							if (first)
+							{
+								if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+								{
+									if (right)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+										tmp_mob->direction = RIGHT;
+									}
+									else if (up)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+										tmp_mob->direction = UP;
+									}
+								}
+								else
+								{
+									if (up)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+										tmp_mob->direction = UP;
+									}
+
+									else if (right)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+										tmp_mob->direction = RIGHT;
+									}
+								}
+							}
+							else if (second)
+							{
+								if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+								{
+									if (left)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+										tmp_mob->direction = LEFT;
+									}
+									else if (up)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+										tmp_mob->direction = UP;
+									}
+								}
+								else
+								{
+									if (up)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
+										tmp_mob->direction = UP;
+									}
+									else if (left)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+										tmp_mob->direction = LEFT;
+									}
+								}
+							}
+							else if (third)
+							{
+								if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+								{
+									if (left)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+										tmp_mob->direction = LEFT;
+									}
+									else if (down)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+										tmp_mob->direction = DOWN;
+									}
+								}
+								else
+								{
+									if (down)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+										tmp_mob->direction = DOWN;
+									}
+									else if (left)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
+										tmp_mob->direction = LEFT;
+									}
+								}
+							}
+							else if (fourth)
+							{
+								if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
+								{
+									if (right)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+										tmp_mob->direction = RIGHT;
+									}
+									else if (down)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+										tmp_mob->direction = DOWN;
+									}
+								}
+								else
+								{
+									if (down)
+									{
+										mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
+										tmp_mob->direction = DOWN;
+									}
+									else if (right)
+									{
+										mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
+										tmp_mob->direction = RIGHT;
+									}
+								}
+							}
+							map[mobs[i]->get_X()][mobs[i]->get_Y()] = mobs[i];
+						}
+						else
 							tmp_mob->is_moving = false;
-						else
-							tmp_mob->is_moving = true;
-
-						if ((player->get_X() > mobs[i]->get_X()))
-						{
-							if ((player->get_Y() > mobs[i]->get_Y()))
-								fourth = true;
-							else
-								first = true;
-						}
-						else
-						{
-							if ((player->get_Y() > mobs[i]->get_Y()))
-								third = true;
-							else
-								second = true;
-						}
-
-						if (first)
-						{
-							if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
-							{
-								if (right)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
-									tmp_mob->direction = RIGHT;
-								}
-								else if (up)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
-									tmp_mob->direction = UP;
-								}
-							}
-							else
-							{
-								if (up)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
-									tmp_mob->direction = UP;
-								}
-
-								else if (right)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
-									tmp_mob->direction = RIGHT;
-								}
-							}
-						}
-						else if (second)
-						{
-							if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
-							{
-								if (left)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
-									tmp_mob->direction = LEFT;
-								}
-								else if (up)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
-									tmp_mob->direction = UP;
-								}
-							}
-							else
-							{
-								if (up)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() - 1);
-									tmp_mob->direction = UP;
-								}
-								else if (left)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
-									tmp_mob->direction = LEFT;
-								}
-							}
-						}
-						else if (third)
-						{
-							if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
-							{
-								if (left)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
-									tmp_mob->direction = LEFT;
-								}
-								else if (down)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
-									tmp_mob->direction = DOWN;
-								}
-							}
-							else
-							{
-								if (down)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
-									tmp_mob->direction = DOWN;
-								}
-								else if (left)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() - 1, mobs[i]->get_Y());
-									tmp_mob->direction = LEFT;
-								}
-							}
-						}
-						else if (fourth)
-						{
-							if (abs(player->get_X() - mobs[i]->get_X()) > abs(player->get_Y() - mobs[i]->get_Y()))
-							{
-								if (right)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
-									tmp_mob->direction = RIGHT;
-								}
-								else if (down)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
-									tmp_mob->direction = DOWN;
-								}
-							}
-							else
-							{
-								if (down)
-								{
-									mobs[i]->change_position(mobs[i]->get_X(), mobs[i]->get_Y() + 1);
-									tmp_mob->direction = DOWN;
-								}
-								else if (right)
-								{
-									mobs[i]->change_position(mobs[i]->get_X() + 1, mobs[i]->get_Y());
-									tmp_mob->direction = RIGHT;
-								}
-							}
-						}
-						map[mobs[i]->get_X()][mobs[i]->get_Y()] = mobs[i];
-					}
-					else
-						tmp_mob->is_moving = false;
-				tmp_mob->what_move_should_I_draw(8);
+					tmp_mob->what_move_should_I_draw(8);
+				}
 			}
 		}
 	}
