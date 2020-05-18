@@ -501,7 +501,7 @@ bool window::player_movement() // ruch gracza na planszy
 		go_up(tmp);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
 		go_down(tmp);
-	else if(al_key_down(&keyboard, ALLEGRO_KEY_I))
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_I))
 		inventory(nullptr);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_Q))
 		quests();
@@ -511,6 +511,8 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->change_hp(-10);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_M))
 		tmp->change_mana(-10);
+	else if (al_key_down(&keyboard, ALLEGRO_KEY_F11))
+		std::cout << tmp->get_X() << " " << tmp->get_Y() << std::endl;
 	/*else if (al_key_down(&keyboard, ALLEGRO_KEY_F1))
 		tmp->get_inventory()->add_item_to_inventory(new Weapon(110001, "items/weapon_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F2))
@@ -692,8 +694,8 @@ void window::start()
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
-	player = new Magnat(2,26, 110000, "player/player.txt");
-	location = new Location("Village1", 0, 0, this->map);
+	player = new Magnat(67,40, 110000, "player/player.txt");
+	location = new Location("Forest2", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	quest_line.push_back(new Quest_line("Stachu_Jones", "Poczatek przygody"));
 }

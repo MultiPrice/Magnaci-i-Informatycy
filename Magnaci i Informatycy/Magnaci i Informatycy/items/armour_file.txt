@@ -108,6 +108,17 @@ bitmaps/items/armour/amulet/dolar.png
 1
 1
 }
+240003
+{
+Artefakt
+Tylko Airgard wie jak go odnalezc
+bitmaps/items/armour/amulet/artefakt.png
+1
+1
+1
+1
+1
+}
 250001
 {
 LOTR

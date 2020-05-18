@@ -260,7 +260,7 @@ void Character::drop_file_get(std::fstream &file, std::string tmp_name, std::str
 	{
 		file >> tmp_name;
 		while (tmp_name != drop_name)
-			file >> tmp_drop_id >> tmp_name;
+			file >> tmp_name;
 	}
 	file >> tmp_name;
 	while (true)
@@ -296,9 +296,9 @@ Inventory* Character::get_inventory()
 	return inventory;
 }
 
-Inventory* Character::drop(std::string drop_name)
+Inventory* Character::drop(std::string drop_name, int how_many)
 {
-	Inventory* new_inventory = new Inventory(rand() % 2 + 1);
+	Inventory* new_inventory = new Inventory(how_many);
 	std::vector<drop_element*> what_can_I_drop;
 	Item* new_item;
 	std::fstream file;
@@ -359,13 +359,30 @@ void Character::get_damage(int dmg, Object *** &map, Location*& location, std::v
 			{
 				check_KILL_quests(quest_line, i, location);
 				std::string dead_bitmap_file_name = "mob/" + name + "_dead.png";
-				switch (rand()%3)
+				int how_many = 0;
+				int do_I_drop = 0;
+				if (name == "mob1")
+				{
+					how_many = rand() % 5 + 1;
+					do_I_drop = rand() % 3;
+				}
+				if (name == "mob2")
+				{
+					how_many = rand() % 2 + 1;
+					do_I_drop = rand() % 3;
+				}
+				if (name == "mob3")
+				{
+					how_many = 1;
+					do_I_drop = 1;
+				}
+				switch (do_I_drop)
 				{
 				case 0:
 					location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600, nullptr));
 					break;
 				default:
-					location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600, drop(location->mobs[i]->get_name())));
+					location->dead_mobs.push_back(new Dead_mobs(new Container(location->mobs[i]->get_X(), location->mobs[i]->get_Y(), true, dead_bitmap_file_name, "trup"), 600, drop(location->mobs[i]->get_name(), how_many)));
 					break;
 				}
 				location->mobs.erase(location->mobs.begin() + i);
