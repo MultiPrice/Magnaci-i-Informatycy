@@ -682,8 +682,8 @@ void window::start()
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
-	player = new Magnat(2,2, 110000, "player/player.txt");
-	location = new Location("Forest2", 0, 0, this->map);
+	player = new Magnat(2,26, 110000, "player/player.txt");
+	location = new Location("Village1", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
 }

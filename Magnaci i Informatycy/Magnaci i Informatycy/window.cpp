@@ -117,7 +117,7 @@ window::window(int pwidth, int pheight)
     al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(screen_width, screen_height);
     header_font = al_load_font("fonts/font.ttf", (150.0 / 1920) * al_get_display_width(display), 0);
-    setting_font = al_load_font("fonts/font.ttf", (40.0 / 1920) * al_get_display_width(display), 0);
+    setting_font = al_load_font("fonts/comic.ttf", (20.0 / 1920) * al_get_display_width(display), 0);
     event_queue = al_create_event_queue();
     backgroud = al_load_bitmap("bitmaps/background/sztandar.bmp");
     

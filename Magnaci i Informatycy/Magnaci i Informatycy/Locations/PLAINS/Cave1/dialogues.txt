@@ -1,0 +1,15 @@
+110000
+{
+#Czy Kwiatek to zjeb?
+1
+I to w chuj
+2
+123456789012345678901234567890123456789012345678901234567890
+2
+Spierdalaj z mojej ziemi
+0
+#A jak bardzo duzy?
+2
+Spierdalaj z mojej ziemi
+0
+}

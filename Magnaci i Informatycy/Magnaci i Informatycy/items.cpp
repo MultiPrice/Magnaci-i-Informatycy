@@ -470,7 +470,7 @@ void Inventory::show_inventory()
 	al_draw_bitmap(background, 0, 0, 0);
 	al_draw_bitmap(backpack, screen_width / 2 + measure, 0, 0);
 	al_draw_bitmap_region(grill, 0, 0, 782, 2 + (inventory.size() / 13) * measure, 1079, 299, 0);
-	al_draw_tinted_scaled_rotated_bitmap_region(player, 0, measure * 6, measure * 1.5, measure * 2, al_map_rgb(255, 255, 255), 0, 0, 150, 60, 8, 8, 0, 0);
+	al_draw_tinted_scaled_rotated_bitmap_region(player, 0, 0, measure * 1.5, measure * 2, al_map_rgb(255, 255, 255), 0, 0, 150, 60, 8, 8, 0, 0);
 	for (int i = 0; i <= 6; i++) // rysowanie przedmiotow zalozonych
 	{
 		if (equipment[i])
