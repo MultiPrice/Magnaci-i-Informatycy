@@ -15,11 +15,3 @@ Plains1
 }
 qt2
 }
-
-0
-Plains1
-0
-1
-}
-qt2
-}

@@ -254,7 +254,7 @@ bool Quest_line::take_next_quest()
 	return true;
 }
 
-void Quest_line::save_status(std::fstream& file)
+void Quest_line::save_status(std::ofstream& file)
 {
 	file << name << std::endl << "{" << std::endl;
 	file << quest->get_name() << std::endl << "{" << std::endl;

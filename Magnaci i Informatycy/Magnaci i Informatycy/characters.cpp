@@ -14,14 +14,19 @@ Character::Character()
 	inventory = new Inventory();
 }
 
-Character::Character(std::string file_name, std::string inventory_file)
+Character::Character(std::string file_name, std::string inventory_file, std::string& location_name)
 {
 	std::fstream file;
 	file.open(file_name);
 	if (file)
 	{
+		attack_type = 0;
+		direction = DOWN;
+		is_moving = false;
+		movement_cooldown = al_get_time();
+		regenertion_cooldown = al_get_time();
 		int tmp_attitude;
-		file >> positionX >> positionY >> name >> id >> hp >> max_hp >> mana >> max_mana >> lvl >> min_damage >> max_damage >> armour >> tmp_attitude;
+		file >> positionX >> positionY >> name >> id >> hp >> max_hp >> mana >> max_mana >> lvl >> min_damage >> max_damage >> armour >> tmp_attitude >> location_name;
 		attitude = (ATTITUDE)tmp_attitude;
 		inventory = new Inventory(inventory_file);
 		texture = al_load_bitmap("player/player_move.png");
@@ -492,7 +497,7 @@ int Character::interaction()
 
 void Character::draw_hp(ALLEGRO_BITMAP* hp_texture, int position_x, int position_y)
 {
-	al_draw_bitmap_region(hp_texture, 0, 0, measure * 2 * hp / max_hp, 10, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
+	al_draw_bitmap_region(hp_texture, 0, 0, measure * hp / max_hp, 10, (positionX - position_x) * measure, (positionY - position_y) * measure, 0);
 }
 
 void Character::add_bonuses()
@@ -544,8 +549,8 @@ Magnat::Magnat(int X, int Y, int id, std::string file_name)
 {
 }
 
-Magnat::Magnat(std::string file_name, std::string inventory_file)
-	: Character(file_name, inventory_file)
+Magnat::Magnat(std::string file_name, std::string inventory_file, std::string& location_name)
+	: Character(file_name, inventory_file, location_name)
 {
 }
 
