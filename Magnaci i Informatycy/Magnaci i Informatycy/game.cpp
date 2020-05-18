@@ -22,6 +22,25 @@
 //	}
 //}
 
+void wypisz_kurde_wszytsko(Object*** twoja_stara)
+{
+	system("cls");
+	for (int i = 0; i < 36; i++)
+	{
+		for (int j = 0; j < 64; j++)
+		{
+			if (twoja_stara[j][i] == nullptr)
+				std::cout << "O";
+			else if (typeid(Magnat)==typeid(*twoja_stara[j][i]))
+				std::cout << " ";
+			else if (typeid(Element) == typeid(*twoja_stara[j][i]))
+				std::cout << "W";
+		}
+			
+		std::cout << std::endl;
+	}
+}
+
 void window::change_position(Object*& who, int prevX, int prevY, int nextX, int nextY)
 {
 	who->change_position(nextX, nextY);
@@ -664,7 +683,7 @@ void window::start()
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
 	player = new Magnat(2,2, 110000, "player/player.txt");
-	location = new Location("Plains1", 0, 0, this->map);
+	location = new Location("Forest2", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
 }

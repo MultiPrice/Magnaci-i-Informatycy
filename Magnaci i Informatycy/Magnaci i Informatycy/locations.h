@@ -64,6 +64,7 @@ protected:
 	int sizeX;
 	int sizeY;
 	Travel_list* pTravel;
+	ALLEGRO_BITMAP* mob_life;
 public:
 	std::vector <Object*> mobs;
 	std::vector <Dead_mobs*> dead_mobs;

@@ -58,8 +58,8 @@ Character::Character(std::string name, int id, ALLEGRO_BITMAP* texture, int hp, 
 	this->name = name;
 	this->id = id;
 	this->texture = texture;
-	this->hp = hp;
-	this->mana = mana;
+	this->hp = this->max_hp = hp;
+	this->mana = this->max_mana = mana;
 	this->lvl = lvl;
 	this->min_damage = min_damage;
 	this->max_damage = max_damage;

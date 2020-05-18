@@ -294,6 +294,67 @@ bool window::check_login(std::string email_p, std::string haslo_p)
     else return true;
 }
 
+void window::create_colision_file()
+{
+    std::fstream file;
+    file.open("Locations/colision.txt");
+    if (file)
+    {
+        al_stop_timer(movement_timer);
+        al_stop_timer(draw_timer);
+        bool check = true;
+        ALLEGRO_BITMAP* map_bitmap = al_load_bitmap("Locations/test_map.png");
+        int map_x = 0;
+        int map_y = 0;
+        while (check)
+        {
+            al_wait_for_event(event_queue, &events);
+            if (events.type == ALLEGRO_EVENT_MOUSE_AXES)
+            {
+                
+            }
+            else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+            {
+                if (events.mouse.button & 1)
+                    file << "W";
+                else if (events.mouse.button & 2)
+                    file << "O";
+            }
+            else if (events.type == ALLEGRO_EVENT_KEY_DOWN)
+            {
+                switch (events.keyboard.keycode)
+                {
+                case ALLEGRO_KEY_UP:
+                    map_y -= measure;
+                    break;
+                case ALLEGRO_KEY_DOWN:
+                    map_y += measure;
+                    break;
+                case ALLEGRO_KEY_RIGHT:
+                    map_x += measure;
+                    break;
+                case ALLEGRO_KEY_LEFT:
+                    map_x -= measure;
+                    break;
+                case ALLEGRO_KEY_E:
+                    check = false;
+                    break;
+                case ALLEGRO_KEY_ENTER:
+                    file << std::endl;
+                    break;
+                }
+            }
+            std::cout << map_x << " " << map_y << std::endl;
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_draw_bitmap_region(map_bitmap, map_x, map_y, screen_width, screen_height, 0, 0, 0);
+            al_flip_display();
+        }
+        al_start_timer(movement_timer);
+        al_start_timer(draw_timer);
+    }
+        file.close();
+}
+
 void window::working()
 {
     bool is_working = true;

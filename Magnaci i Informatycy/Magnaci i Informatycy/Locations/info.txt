@@ -12,6 +12,13 @@ Plains2
 36
 Locations/PLAINS/Plains2/background.png
 }
+Forest2
+{
+13
+64
+36
+Locations/PLAINS/Forest2/background.png
+}
 <nazwa_mapy_2>
 {
 ...
