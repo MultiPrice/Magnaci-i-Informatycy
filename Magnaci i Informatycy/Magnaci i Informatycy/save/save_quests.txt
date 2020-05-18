@@ -1,20 +1,16 @@
 Stachu_Jones
 {
-Mistrza nad mistrzami
+Poczatek przygody
 {
-110001
+110002
 0
 Village1
 1
 1
 }
-
+Zadanie burmistrza
 }
-d mistrzami
-}
-Plains1
-0
-1
+Koniec treningu
 }
 qt2
 }

@@ -1,0 +1,9 @@
+Walka z Bestią
+{
+130004
+0
+Forest2
+0
+1
+}
+Koniec przygody

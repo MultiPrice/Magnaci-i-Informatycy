@@ -1,0 +1,9 @@
+Koniec treningu
+{
+110001
+0
+Village1
+1
+1
+}
+Poszukiwania Bestii

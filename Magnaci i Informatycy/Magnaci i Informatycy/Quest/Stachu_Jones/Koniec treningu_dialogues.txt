@@ -1,0 +1,11 @@
+110001
+{
+#Teraz jak amsz artefakt możesz zaatakować Bestię z Północy
+1
+Jak ją powstrzymamy?
+101
+#Trzeba go ostatecznie rozdupcyć bo cham się odradza!
+101
+Jestem gotów
+0
+}

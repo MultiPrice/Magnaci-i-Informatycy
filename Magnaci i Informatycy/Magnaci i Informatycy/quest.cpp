@@ -185,8 +185,6 @@ void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_
 			std::getline(file, trash);
 			next_quest_name = trash;
 			quest->name = quest_name_s;
-			std::cout << "Actual " << this->quest->get_name() << std::endl;
-			std::cout << "Next " << next_quest_name << std::endl;
 		}
 	}
 	catch (std::ifstream::failure e) 

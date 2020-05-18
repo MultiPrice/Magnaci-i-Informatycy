@@ -22,25 +22,6 @@
 //	}
 //}
 
-void wypisz_kurde_wszytsko(Object*** twoja_stara)
-{
-	system("cls");
-	for (int i = 0; i < 36; i++)
-	{
-		for (int j = 0; j < 64; j++)
-		{
-			if (twoja_stara[j][i] == nullptr)
-				std::cout << "O";
-			else if (typeid(Magnat)==typeid(*twoja_stara[j][i]))
-				std::cout << " ";
-			else if (typeid(Element) == typeid(*twoja_stara[j][i]))
-				std::cout << "W";
-		}
-			
-		std::cout << std::endl;
-	}
-}
-
 void window::change_position(Object*& who, int prevX, int prevY, int nextX, int nextY)
 {
 	who->change_position(nextX, nextY);
@@ -431,14 +412,8 @@ void window::dialogue_interaction(Character*& tmp, Object*& obj)
 		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
 			if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
 				if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(obj)->get_id())
-				{
-					std::cout << dynamic_cast<Character*>(obj)->get_id() << " " << quest_line[i]->get_name() << " " << quest_line[i]->get_quest()->get_name() << std::endl;
 					if (dialogue_file_read(dynamic_cast<Character*>(obj)->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt"))
-					{
-						std::cout << "DUPA";
 						check = true;
-					}
-				}
 	if (dialogue_file_read(dynamic_cast<Character*>(obj)->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
 		check = true;
 	if(check)
@@ -486,13 +461,25 @@ bool window::player_movement() // ruch gracza na planszy
 	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
 		attack_in_movement(tmp);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_1))
-		action_in_movement(tmp, new Wind(tmp->get_X(), tmp->get_Y(), "player/player_action1.png", "fireball", 20, 10, 5 * 3, 8, 0, false, 6, player, tmp->direction), 2);
+	{
+		if(tmp->get_mana() > 10)
+			action_in_movement(tmp, new Wind(tmp->get_X(), tmp->get_Y(), "player/player_action1.png", "fireball", 20, 10, 5 * 3, 8, 0, false, 6, player, tmp->direction), 2);
+	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_2))
-		action_in_movement(tmp, new Self(tmp->get_X(), tmp->get_Y(), "player/player_action2.png", "heal", 5, 10, 5 * 3, 10, 0, false, 18, player, true), 2);
+	{
+		if (tmp->get_mana() > 10)
+			action_in_movement(tmp, new Self(tmp->get_X(), tmp->get_Y(), "player/player_action2.png", "heal", 5, 10, 5 * 3, 10, 0, false, 18, player, true), 2);
+	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_3))
-		action_in_movement(tmp, new AoE(tmp->get_X(), tmp->get_Y(), "player/player_action3.png", "AoE Dmg", 5, 10, 5 * 3, 10, 0, false, 18, player, tmp->direction, -3, -3), 2);
+	{
+		if (tmp->get_mana() > 10)
+			action_in_movement(tmp, new AoE(tmp->get_X(), tmp->get_Y(), "player/player_action3.png", "AoE Dmg", 5, 10, 5 * 3, 10, 0, false, 18, player, tmp->direction, -3, -3), 2);
+	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_4))
-		action_in_movement(tmp, new Breath(tmp->get_X(), tmp->get_Y(), "player/player_action4", "Breath", 20, 10, 5 * 3, 8, 0, false, 6, player, tmp->direction), 2);
+	{
+		if (tmp->get_mana() > 10)
+			action_in_movement(tmp, new Breath(tmp->get_X(), tmp->get_Y(), "player/player_action4", "Breath", 20, 10, 5 * 3, 8, 0, false, 6, player, tmp->direction), 2);
+	}
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
 		go_right(tmp);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
@@ -513,22 +500,6 @@ bool window::player_movement() // ruch gracza na planszy
 		tmp->change_mana(-10);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F11))
 		std::cout << tmp->get_X() << " " << tmp->get_Y() << std::endl;
-	/*else if (al_key_down(&keyboard, ALLEGRO_KEY_F1))
-		tmp->get_inventory()->add_item_to_inventory(new Weapon(110001, "items/weapon_file.txt"), 1);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F2))
-		tmp->get_inventory()->add_item_to_inventory(new Armour(210001, "items/armour_file.txt"), 1);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F3))
-		tmp->get_inventory()->add_item_to_inventory(new Armour(220001, "items/armour_file.txt"), 1);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F4))
-		tmp->get_inventory()->add_item_to_inventory(new Armour(230001, "items/armour_file.txt"), 1);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F5))
-		tmp->get_inventory()->add_item_to_inventory(new Armour(240001, "items/armour_file.txt"), 1);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F6))
-		tmp->get_inventory()->add_item_to_inventory(new Armour(250001, "items/armour_file.txt"), 1);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F7))
-		tmp->get_inventory()->add_item_to_inventory(new Weapon(130001, "items/weapon_file.txt"), 1);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_BACKSPACE))
-		quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));*/
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_E))
 		any_interaction(tmp);
 	else
@@ -688,8 +659,6 @@ void window::start()
 	//add_login();
 	movement_timer = al_create_timer(6.0 / FPS);
 	draw_timer = al_create_timer(1.0 / FPS);
-	al_start_timer(movement_timer);
-	al_start_timer(draw_timer);
 	srand(time(NULL));
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
@@ -698,13 +667,15 @@ void window::start()
 	location = new Location("Forest2", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	quest_line.push_back(new Quest_line("Stachu_Jones", "Poczatek przygody"));
+	al_start_timer(movement_timer);
+	al_start_timer(draw_timer);
 }
 
 void window::restart(std::string location_name)
 {
 	al_stop_timer(movement_timer);
 	al_stop_timer(draw_timer);
-	clear();
+	//clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
 	map[player->get_X()][player->get_Y()] = nullptr;
