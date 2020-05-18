@@ -1,0 +1,9 @@
+Poczatek przygody
+{
+110002
+0
+Village1
+1
+1
+}
+Zadanie burmistrza

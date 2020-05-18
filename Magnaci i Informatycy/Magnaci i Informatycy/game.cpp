@@ -426,12 +426,22 @@ void window::portal_interaction(Character*& tmp)
 
 void window::dialogue_interaction(Character*& tmp, Object*& obj)
 {
+	bool check = false;
 	for (int i = 0; i < quest_line.size(); i++)
 		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
 			if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
 				if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(obj)->get_id())
-					dialogue_file_read(dynamic_cast<Character*>(obj)->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
+				{
+					std::cout << dynamic_cast<Character*>(obj)->get_id() << " " << quest_line[i]->get_name() << " " << quest_line[i]->get_quest()->get_name() << std::endl;
+					if (dialogue_file_read(dynamic_cast<Character*>(obj)->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt"))
+					{
+						std::cout << "DUPA";
+						check = true;
+					}
+				}
 	if (dialogue_file_read(dynamic_cast<Character*>(obj)->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
+		check = true;
+	if(check)
 		show_dialogue(dynamic_cast<Character*>(obj)->get_id());
 }
 
@@ -685,7 +695,7 @@ void window::start()
 	player = new Magnat(2,26, 110000, "player/player.txt");
 	location = new Location("Village1", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
-	quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
+	quest_line.push_back(new Quest_line("Stachu_Jones", "Poczatek przygody"));
 }
 
 void window::restart(std::string location_name)
@@ -801,7 +811,7 @@ void window::check_dialogue_quest(bool quest_check, std::vector<Quest_line*>& qu
 										quest_line[i]->~Quest_line();
 										quest_line.erase(quest_line.begin() + i);
 										i--;
-										break;
+										return;
 									}
 							}
 }

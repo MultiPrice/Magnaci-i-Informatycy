@@ -143,11 +143,11 @@ Quest_line::Quest_line(std::string quest_line_name)
 	player = al_load_bitmap("player/player_move.png");
 }
 
-void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_name)
+void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_name_s)
 {
 	try
 	{
-		std::string file_name = "Quest/" + quest_line_name + "/" + quest_name + ".txt";
+		std::string file_name = "Quest/" + quest_line_name + "/" + quest_name_s + ".txt";
 		std::fstream file;
 		file.open(file_name);
 		if (file)
@@ -166,16 +166,16 @@ void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_
 				switch (stoi(class_type))
 				{
 				case 0: // Character 
-					add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 0);
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 0);
 					break;
 				case 1: // Element
-					add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 1);
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 1);
 					break;
 				case 2: // Location
-					add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 2);
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 2);
 					break;
 				case 3: // Item
-					add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 3);
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 3);
 					break;
 				}
 				std::getline(file, trash);
@@ -184,6 +184,9 @@ void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_
 			}
 			std::getline(file, trash);
 			next_quest_name = trash;
+			quest->name = quest_name_s;
+			std::cout << "Actual " << this->quest->get_name() << std::endl;
+			std::cout << "Next " << next_quest_name << std::endl;
 		}
 	}
 	catch (std::ifstream::failure e) 
@@ -247,7 +250,7 @@ void Quest_line::show_quests(ALLEGRO_FONT* setting_font, int &j)
 
 bool Quest_line::take_next_quest()
 {
-	quest->~Quest();
+	//quest->~Quest();
 	if (next_quest_name == "")
 		return false;
 	quest_file_read(name, next_quest_name);

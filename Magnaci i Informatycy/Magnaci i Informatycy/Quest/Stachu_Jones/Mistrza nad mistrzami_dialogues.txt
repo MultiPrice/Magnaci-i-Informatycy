@@ -1,0 +1,19 @@
+110001
+{
+#WYWALAJ Z MOJEJ ZIEMI!!!
+1
+Bestia z półocy zagraża wiosce. Proszę pomóż mi
+101
+#Okej...
+101
+...
+102
+#Wyszkole Cię w jeden księżyc. Zaczniemy od treningu wytrzymałościowego
+102
+Co mam zrobić?
+103
+#Idź pokonaj 5 goblinów w Lesie kurde
+103
+Dobra
+0
+}

@@ -1,22 +1,17 @@
-Testowa_linia
+Stachu_Jones
 {
-qt1
+Mistrza nad mistrzami
 {
-130000
+110001
 0
-Plains1
-0
-1
-110000
-0
-Plains1
+Village1
 1
 1
-}
-qt2
 }
 
-0
+}
+d mistrzami
+}
 Plains1
 0
 1

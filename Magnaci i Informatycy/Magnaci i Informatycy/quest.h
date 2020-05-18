@@ -84,11 +84,9 @@ public:
 
 class Quest
 {
-protected:
-	std::string name;
 public:
 	std::vector<Objective*> objective;
-
+	std::string name;
 	Quest(std::string name, int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class);
 	std::string get_name();
 	void add_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class);

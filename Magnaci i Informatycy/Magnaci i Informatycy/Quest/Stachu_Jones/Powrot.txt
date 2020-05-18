@@ -1,0 +1,9 @@
+Powrót
+{
+110001
+0
+Village1
+1
+1
+}
+Jaskiniowa jaskinia
