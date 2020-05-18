@@ -38,7 +38,11 @@ mob2
 250002
 8
 }
-
+mob3
+{
+240003
+100
+}
 nazwa moba
 {
 id itema

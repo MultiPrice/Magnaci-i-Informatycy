@@ -406,7 +406,8 @@ void Location::prepere_mob_attack(Character*& tmp_mob, Object*& player, int dir)
 	tmp_mob->direction = DIRECTION(dir);
 	tmp_mob->change_attack_type(1);
 	tmp_mob->bitmap_start_x = 0;
-	tmp_mob->change_texture("mob/mob1_attack.png");
+	std::string attack_texture = "mob/" + tmp_mob->get_name() + "_attack.png";
+	tmp_mob->change_texture(attack_texture);
 	tmp_mob->attack_player(player);
 }
 
@@ -655,7 +656,10 @@ void Location::mob_attack(Object* mob_tmp)
 	case 1: //basic attack
 		mob->what_attack_should_I_draw(5);
 		if (!mob->get_attack_type())
-			mob->change_texture("mob/mob1_move.png");
+		{
+			std::string move_texture = "mob/" + mob->get_name() + "_move.png";
+			mob->change_texture(move_texture);
+		}
 		break;
 	}
 }

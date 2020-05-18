@@ -83,7 +83,7 @@ public:
 	void drop_file_get(std::fstream& file, std::string tmp_name, std::string drop_name, std::string tmp_drop_id, int tmp_drop_percent, std::vector<drop_element*>& what_can_I_drop); // odczytuje z pliku potrzebne rzeczy do dropu
 	void create_drop(Inventory*& new_inventory, std::vector<drop_element*>& what_can_I_drop, int sum, int drawn);
 	Inventory* get_inventory();
-	Inventory* drop(std::string drop_name);
+	Inventory* drop(std::string drop_name, int how_many);
 	void check_KILL_quests(std::vector<class Quest_line*>& quest_line, int i, class Location* & location); // sprawdza czy zosta³ wykonany el questa zwiazany z zabojstwem moba
 	void get_damage(int dmg, Object***& map, class Location* &location, std::vector <class Quest_line*>& quest_line);
 	void change_hp(int change);
