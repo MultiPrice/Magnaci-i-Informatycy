@@ -602,7 +602,6 @@ bool window::game_working()// odœwierzenie planszy
 						{
 							clear_all();
 							al_destroy_event_queue(event_q);
-							//load_game();
 ;							return false;
 						}
 					}
@@ -660,11 +659,12 @@ void window::clear_all()
 	al_stop_timer(draw_timer);
 	map_clear();
 	location->~Location();
-	delete location;
-	for (int i = 0; i < action.size(); i++)
-		action[i]->~Action();
-	for (int i = 0; i < quest_line.size(); i++)
-		quest_line[i]->~Quest_line();
+	if(!action.empty())
+		for (int i = 0; i < action.size(); i++)
+			action[i]->~Action();
+	if(!quest_line.empty())
+		for (int i = 0; i < quest_line.size(); i++)
+			quest_line[i]->~Quest_line();
 	quest_line.clear();
 	action.clear();
 	al_destroy_timer(movement_timer);
@@ -673,7 +673,7 @@ void window::clear_all()
 
 void window::start()
 {
-	add_login();
+	//add_login();
 	movement_timer = al_create_timer(6.0 / FPS);
 	draw_timer = al_create_timer(1.0 / FPS);
 	al_start_timer(movement_timer);

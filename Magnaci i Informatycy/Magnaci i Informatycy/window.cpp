@@ -297,62 +297,33 @@ bool window::check_login(std::string email_p, std::string haslo_p)
 void window::create_colision_file()
 {
     std::fstream file;
-    file.open("Locations/colision.txt");
+    file.open("Locations/better_colision.txt");
     if (file)
     {
         al_stop_timer(movement_timer);
         al_stop_timer(draw_timer);
         bool check = true;
-        ALLEGRO_BITMAP* map_bitmap = al_load_bitmap("Locations/test_map.png");
-        int map_x = 0;
-        int map_y = 0;
-        while (check)
+        ALLEGRO_BITMAP* map_bitmap = al_load_bitmap("Locations/Bez nazwy.png");
+        ALLEGRO_COLOR pixel;
+        ALLEGRO_COLOR red = al_map_rgb(255, 0, 0);
+        for (int i = 30; i < al_get_bitmap_height(map_bitmap); i += 60)
         {
-            al_wait_for_event(event_queue, &events);
-            if (events.type == ALLEGRO_EVENT_MOUSE_AXES)
+            for (int j = 30; j < al_get_bitmap_width(map_bitmap); j += 60)
             {
-                
-            }
-            else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-            {
-                if (events.mouse.button & 1)
-                    file << "W";
-                else if (events.mouse.button & 2)
+                pixel = al_get_pixel(map_bitmap, j, i);
+                if (memcmp(&pixel, &red, sizeof(ALLEGRO_COLOR)))
                     file << "O";
+                else
+                    file << "W";
             }
-            else if (events.type == ALLEGRO_EVENT_KEY_DOWN)
-            {
-                switch (events.keyboard.keycode)
-                {
-                case ALLEGRO_KEY_UP:
-                    map_y -= measure;
-                    break;
-                case ALLEGRO_KEY_DOWN:
-                    map_y += measure;
-                    break;
-                case ALLEGRO_KEY_RIGHT:
-                    map_x += measure;
-                    break;
-                case ALLEGRO_KEY_LEFT:
-                    map_x -= measure;
-                    break;
-                case ALLEGRO_KEY_E:
-                    check = false;
-                    break;
-                case ALLEGRO_KEY_ENTER:
-                    file << std::endl;
-                    break;
-                }
-            }
-            std::cout << map_x << " " << map_y << std::endl;
-            al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_bitmap_region(map_bitmap, map_x, map_y, screen_width, screen_height, 0, 0, 0);
-            al_flip_display();
+            file << std::endl;
+            std::cout << i << " ";
         }
-        al_start_timer(movement_timer);
-        al_start_timer(draw_timer);
-    }
         file.close();
+    }
+    std::cout << std::endl << "done " << std::endl;
+    al_start_timer(movement_timer);
+    al_start_timer(draw_timer);
 }
 
 void window::working()

@@ -112,6 +112,7 @@ public:
     bool load_game();
     void add_login();
     bool check_login(std::string email_p, std::string haslo_p);
+    void create_colision_file();
 
     // funkcje poruszania
     void attack_in_movement(Character*& tmp); // gracz wykonuje atak

@@ -366,7 +366,7 @@ void Location::draw_mobs(int position_x, int position_y, Object*** map)//funckaj
 			{
 				Character* tmp_mob = dynamic_cast<Character*>(map[mobs[i]->get_X()][mobs[i]->get_Y() + j]);
 				tmp_mob->draw(position_x - shiftX, position_y - shiftY);
-				al_draw_bitmap_region(mob_life, 0, 0, (measure * 2 * tmp_mob->get_hp() / tmp_mob->get_max_hp()), 10, (tmp_mob->get_X() - shiftX) * measure, (tmp_mob->get_Y() - shiftY) * measure, 0);
+				tmp_mob->draw_hp(mob_life, position_x - shiftX, position_y - shiftY);
 			}
 			j++;
 		}
