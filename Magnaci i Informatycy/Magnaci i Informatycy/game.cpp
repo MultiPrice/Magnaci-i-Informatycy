@@ -2,25 +2,25 @@
 
 #include <typeinfo>
 #include "window.h"
-
-void wypisz_kurde_wszytsko(Object*** twoja_stara)
-{
-	system("cls");
-	for (int i = 0; i < 36; i++)
-	{
-		for (int j = 0; j < 64; j++)
-		{
-			if (twoja_stara[j][i] == nullptr)
-				std::cout << "O";
-			else if (typeid(Magnat)==typeid(*twoja_stara[j][i]))
-				std::cout << " ";
-			else if (typeid(Element) == typeid(*twoja_stara[j][i]))
-				std::cout << "W";
-		}
-			
-		std::cout << std::endl;
-	}
-}
+//
+//void wypisz_kurde_wszytsko(Object*** twoja_stara)
+//{
+//	system("cls");
+//	for (int i = 0; i < 36; i++)
+//	{
+//		for (int j = 0; j < 64; j++)
+//		{
+//			if (twoja_stara[j][i] == nullptr)
+//				std::cout << "O";
+//			else if (typeid(Magnat)==typeid(*twoja_stara[j][i]))
+//				std::cout << " ";
+//			else if (typeid(Element) == typeid(*twoja_stara[j][i]))
+//				std::cout << "W";
+//		}
+//			
+//		std::cout << std::endl;
+//	}
+//}
 
 void window::change_position(Object*& who, int prevX, int prevY, int nextX, int nextY)
 {
@@ -85,10 +85,6 @@ void window::inventory(Inventory* droped)
 			else if (events.mouse.button & 2)
 				break;
 		}
-		else if(events.type == ALLEGRO_EVENT_KEY_DOWN)
-		{
-			std::cout << "xd ";
-		}
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 		tmp->get_inventory()->show_inventory();
 		if (droped)
@@ -108,7 +104,7 @@ void window::inventory(Inventory* droped)
 	al_start_timer(draw_timer);
 }
 
-void window::guests()
+void window::quests()
 {
 	al_stop_timer(movement_timer);
 	al_stop_timer(draw_timer);
@@ -127,12 +123,21 @@ void window::guests()
 		else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
 			if (events.mouse.button & 2)
 				break;
+		if(quest_line.empty())
+			break;
 		al_clear_to_color(al_map_rgb(0, 0, 0));
-		quest_line[0]->show_quests();
+		al_draw_bitmap(quest_line[0]->background, 0, 0, 0);
+		al_draw_bitmap(quest_line[0]->quest_bitmap, screen_width / 2 + measure, 0, 0);
+		al_draw_tinted_scaled_rotated_bitmap_region(quest_line[0]->player, 0, measure * 6, measure * 1.5, measure * 2, al_map_rgb(255, 255, 255), 0, 0, 150, 60, 8, 8, 0, 0);
+		int j = 2;
+		for (int i = 0; i < quest_line.size(); i++)
+		{
+			quest_line[i]->show_quests(setting_font, j);
+			j ++;
+		}
 		al_draw_bitmap(cursor, mouse_inv_x, mouse_inv_y, 0);
 		al_flip_display();
 	}
-
 	al_destroy_bitmap(cursor);
 	al_show_mouse_cursor(display);
 	al_start_timer(movement_timer);
@@ -205,13 +210,8 @@ void window::check_quest_item(Inventory* inventory)
 							if (inventory->get_item(k)->get_item_id() == quest_line[i]->get_quest()->objective[j]->get_target_id())
 								if (quest_line[i]->get_quest()->objective[j]->is_it_done())
 								{
-									std::cout << "dupa1 ";
 									quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
-									std::cout << "Zrobiono objectiva" << std::endl;
 									if (quest_line[i]->get_quest()->objective.empty())
-									{
-										std::cout << "dupa2 ";
-										std::cout << "Zrobiono questa" << std::endl;
 										if (!quest_line[i]->take_next_quest())
 										{
 											quest_line[i]->~Quest_line();
@@ -219,7 +219,6 @@ void window::check_quest_item(Inventory* inventory)
 											i--;
 											break;
 										}
-									}
 								}
 }
 
@@ -252,276 +251,255 @@ void window::draw_hud(Character* player)
 	al_draw_bitmap_region(MANA, 600-(600*actual_mana), 0, 600 * actual_mana, 40, 1280 + (600 - (600 * actual_mana)), 1030, 0);
 }
 
+void window::attack_in_movement(Character*& tmp)
+{
+	tmp->change_attack_type(1);
+	tmp->bitmap_start_x = 0;
+	tmp->change_texture("player/player_attack.png");
+	tmp->basic_attack(map, location, quest_line);
+}
+
+void window::action_in_movement(Character*& tmp, Action* new_action, int type)
+{
+	tmp->change_attack_type(type);
+	tmp->bitmap_start_x = 0;
+	tmp->change_texture("player/player_attack.png");
+	action.push_back(new_action);
+}
+
+void window::go_up(Character*& tmp)
+{
+	tmp->direction = UP;
+	if (map[player->get_X()][player->get_Y() - 1] == nullptr)
+	{
+		tmp->is_moving = true;
+		tmp->what_move_should_I_draw(8);
+		change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
+	}
+	else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() - 1]))
+	{
+		if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() - 1])->get_ghosted() == true)
+		{
+			if (typeid(*map[player->get_X()][player->get_Y() - 1]) == typeid(Teleport))
+				restart(location->search_travel(player->get_X(), player->get_Y() - 1));
+			else
+			{
+				tmp->is_moving = true;
+				tmp->what_move_should_I_draw(8);
+				change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
+			}
+		}
+	}
+}
+
+void window::go_down(Character*& tmp)
+{
+	tmp->direction = DOWN;
+	if (map[player->get_X()][player->get_Y() + 1] == nullptr)
+	{
+		tmp->is_moving = true;
+		tmp->what_move_should_I_draw(8);
+		change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
+	}
+	else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() + 1]))
+	{
+		if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() + 1])->get_ghosted() == true)
+		{
+			if (typeid(*map[player->get_X()][player->get_Y() + 1]) == typeid(Teleport))
+				restart(location->search_travel(player->get_X(), player->get_Y() + 1));
+			else
+			{
+				tmp->is_moving = true;
+				tmp->what_move_should_I_draw(8);
+				change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
+			}
+		}
+	}
+}
+
+void window::go_right(Character*& tmp)
+{
+	tmp->direction = RIGHT;
+	if (map[player->get_X() + 1][player->get_Y()] == nullptr)
+	{
+		tmp->is_moving = true;
+		tmp->what_move_should_I_draw(8);
+		change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
+	}
+	else if (typeid(Element) == typeid(*map[player->get_X() + 1][player->get_Y()]))
+	{
+		if (dynamic_cast<Element*>(map[player->get_X() + 1][player->get_Y()])->get_ghosted() == true)
+		{
+			if (typeid(*map[player->get_X() + 1][player->get_Y()]) == typeid(Teleport))
+				restart(location->search_travel(player->get_X() + 1, player->get_Y()));
+			else
+			{
+				tmp->is_moving = true;
+				tmp->what_move_should_I_draw(8);
+				change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
+			}
+		}
+	}
+}
+
+void window::go_left(Character*& tmp)
+{
+	tmp->direction = LEFT;
+	if (map[player->get_X() - 1][player->get_Y()] == nullptr)
+	{
+		tmp->is_moving = true;
+		tmp->what_move_should_I_draw(8);
+		change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
+	}
+	else if (typeid(Element) == typeid(*map[player->get_X() - 1][player->get_Y()]))
+	{
+		if (dynamic_cast<Element*>(map[player->get_X() - 1][player->get_Y()])->get_ghosted() == true)
+		{
+			if (typeid(*map[player->get_X() - 1][player->get_Y()]) == typeid(Teleport))
+				restart(location->search_travel(player->get_X() - 1, player->get_Y()));
+			else
+			{
+				tmp->is_moving = true;
+				tmp->what_move_should_I_draw(8);
+				change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
+			}
+		}
+	}
+}
+
+void window::inventory_interaction(Character*& tmp)
+{
+	switch (tmp->direction)
+	{
+	case UP:
+		inventory(location->find_dead_mob(player->get_X(), player->get_Y() - 1)->get_drop());
+		break;
+	case DOWN:
+		inventory(location->find_dead_mob(player->get_X(), player->get_Y() + 1)->get_drop());
+		break;
+	case RIGHT:
+		inventory(location->find_dead_mob(player->get_X() + 1, player->get_Y())->get_drop());
+		break;
+	case LEFT:
+		inventory(location->find_dead_mob(player->get_X() - 1, player->get_Y())->get_drop());
+		break;
+	}
+}
+
+void window::portal_interaction(Character*& tmp)
+{
+	switch (tmp->direction)
+	{
+	case UP:
+		restart(location->search_travel(player->get_X(), player->get_Y() - 1));
+		break;
+	case DOWN:
+		restart(location->search_travel(player->get_X(), player->get_Y() + 1));
+		break;
+	case RIGHT:
+		restart(location->search_travel(player->get_X() + 1, player->get_Y()));
+		break;
+	case LEFT:
+		restart(location->search_travel(player->get_X() - 1, player->get_Y()));
+		break;
+	}
+}
+
+void window::dialogue_interaction(Character*& tmp, Object*& obj)
+{
+	for (int i = 0; i < quest_line.size(); i++)
+		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+			if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
+				if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(obj)->get_id())
+					dialogue_file_read(dynamic_cast<Character*>(obj)->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
+	if (dialogue_file_read(dynamic_cast<Character*>(obj)->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
+		show_dialogue(dynamic_cast<Character*>(obj)->get_id());
+}
+
+void window::any_interaction(Character*& tmp)
+{
+	switch (tmp->interact(map, location, player))
+	{
+	case 0:
+		break;
+	case 1:
+		portal_interaction(tmp);
+		break;
+	case 2:
+		inventory_interaction(tmp);
+		break;
+	case 3:
+		switch (tmp->direction)
+		{
+		case UP:
+			dialogue_interaction(tmp, map[player->get_X()][player->get_Y() - 1]);
+			break;
+		case DOWN:
+			dialogue_interaction(tmp, map[player->get_X()][player->get_Y() + 1]);
+			break;
+		case RIGHT:
+			dialogue_interaction(tmp, map[player->get_X() + 1][player->get_Y()]);
+			break;
+		case LEFT:
+			dialogue_interaction(tmp, map[player->get_X() - 1][player->get_Y()]);
+			break;
+		}
+		dialogue.clear();
+		break;
+	}
+}
+
 bool window::player_movement() // ruch gracza na planszy
 {
 	al_get_keyboard_state(&keyboard);
 	Character* tmp = dynamic_cast<Character*>(player);	
 
 	if (al_key_down(&keyboard, ALLEGRO_KEY_SPACE))
-	{
-		tmp->change_attack_type(1);
-		tmp->bitmap_start_x = 0;
-		tmp->change_texture("player/player_attack.png");
-		tmp->basic_attack(map, location, quest_line);
-	}
+		attack_in_movement(tmp);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_1))
-	{
-		tmp->change_attack_type(2);
-		tmp->bitmap_start_x = 0;
-		tmp->change_texture("player/player_attack.png");
-		action.push_back(new Wind(tmp->get_X(), tmp->get_Y(), "player/player_action1.png", "fireball", 20, 10, 5, 8, 0, false, 6, player, tmp->direction));
-	}
+		action_in_movement(tmp, new Wind(tmp->get_X(), tmp->get_Y(), "player/player_action1.png", "fireball", 20, 10, 5 * 3, 8, 0, false, 6, player, tmp->direction), 2);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_2))
-	{
-		tmp->change_attack_type(3);
-		tmp->bitmap_start_x = 0;
-		tmp->change_texture("player/player_attack.png");
-		action.push_back(new Self(tmp->get_X(), tmp->get_Y(), "player/player_action2.png", "heal", 5, 10, 5, 10, 0, false, 18, player, true));
-	}
+		action_in_movement(tmp, new Self(tmp->get_X(), tmp->get_Y(), "player/player_action2.png", "heal", 5, 10, 5 * 3, 10, 0, false, 18, player, true), 2);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_3))
-	{
-		tmp->change_attack_type(4);
-		tmp->bitmap_start_x = 0;
-		tmp->change_texture("player/player_attack.png");
-		action.push_back(new AoE(tmp->get_X(), tmp->get_Y(), "player/player_action3.png", "AoE Dmg", 5, 10, 5, 10, 0, false, 18, player, tmp->direction, -3, -3));
-	}
+		action_in_movement(tmp, new AoE(tmp->get_X(), tmp->get_Y(), "player/player_action3.png", "AoE Dmg", 5, 10, 5 * 3, 10, 0, false, 18, player, tmp->direction, -3, -3), 2);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_4))
-	{
-		tmp->change_attack_type(5);
-		tmp->bitmap_start_x = 0;
-		tmp->change_texture("player/player_attack.png");
-		action.push_back(new Breath(tmp->get_X(), tmp->get_Y(), "player/player_action4", "Breath", 20, 10, 5, 8, 0, false, 6, player, tmp->direction));
-	}
+		action_in_movement(tmp, new Breath(tmp->get_X(), tmp->get_Y(), "player/player_action4", "Breath", 20, 10, 5 * 3, 8, 0, false, 6, player, tmp->direction), 2);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_RIGHT))
-	{
-		tmp->direction = RIGHT;
-		if (map[player->get_X() + 1][player->get_Y()] == nullptr)
-		{
-			tmp->is_moving = true;
-			tmp->what_move_should_I_draw(8);
-			change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
-		}
-		else if (typeid(Element) == typeid(*map[player->get_X() + 1][player->get_Y()]))
-		{
-			if (dynamic_cast<Element*>(map[player->get_X() + 1][player->get_Y()])->get_ghosted() == true)
-			{
-				if (typeid(*map[player->get_X() + 1][player->get_Y()]) == typeid(Teleport))
-					restart(location->search_travel(player->get_X() + 1, player->get_Y()));
-				else
-				{
-					tmp->is_moving = true;
-					tmp->what_move_should_I_draw(8);
-					change_position(player, player->get_X(), player->get_Y(), player->get_X() + 1, player->get_Y());
-				}
-			}
-		}
-	}
+		go_right(tmp);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_LEFT))
-	{
-		tmp->direction = LEFT;
-		if (map[player->get_X() - 1][player->get_Y()] == nullptr)
-		{
-			tmp->is_moving = true;
-			tmp->what_move_should_I_draw(8);
-			change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
-		}
-		else if (typeid(Element) == typeid(*map[player->get_X() - 1][player->get_Y()]))
-		{
-			if (dynamic_cast<Element*>(map[player->get_X() - 1][player->get_Y()])->get_ghosted() == true)
-			{
-				if (typeid(*map[player->get_X() - 1][player->get_Y()]) == typeid(Teleport))
-					restart(location->search_travel(player->get_X() - 1, player->get_Y()));
-				else
-				{
-					tmp->is_moving = true;
-					tmp->what_move_should_I_draw(8);
-					change_position(player, player->get_X(), player->get_Y(), player->get_X() - 1, player->get_Y());
-				}
-			}
-		}
-	}
+		go_left(tmp);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_UP))
-	{
-		tmp->direction = UP;
-		if (map[player->get_X()][player->get_Y() - 1] == nullptr)
-		{
-			tmp->is_moving = true;
-			tmp->what_move_should_I_draw(8);
-			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
-		}
-		else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() - 1]))
-		{
-			if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() - 1])->get_ghosted() == true)
-			{
-				if (typeid(*map[player->get_X()][player->get_Y() - 1]) == typeid(Teleport))
-					restart(location->search_travel(player->get_X(), player->get_Y() - 1));
-				else
-				{
-					tmp->is_moving = true;
-					tmp->what_move_should_I_draw(8);
-					change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() - 1);
-				}
-			}
-		}
-	}
+		go_up(tmp);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_DOWN))
-	{
-		tmp->direction = DOWN;
-		if (map[player->get_X()][player->get_Y() + 1] == nullptr)
-		{
-			tmp->is_moving = true;
-			tmp->what_move_should_I_draw(8);
-			change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
-		}
-		else if (typeid(Element) == typeid(*map[player->get_X()][player->get_Y() + 1]))
-		{
-			if (dynamic_cast<Element*>(map[player->get_X()][player->get_Y() + 1])->get_ghosted() == true)
-			{
-				if (typeid(*map[player->get_X()][player->get_Y() + 1]) == typeid(Teleport))
-					restart(location->search_travel(player->get_X(), player->get_Y() + 1));
-				else
-				{
-					tmp->is_moving = true;
-					tmp->what_move_should_I_draw(8);
-					change_position(player, player->get_X(), player->get_Y(), player->get_X(), player->get_Y() + 1);
-				}
-			}
-		}
-	}
+		go_down(tmp);
 	else if(al_key_down(&keyboard, ALLEGRO_KEY_I))
 		inventory(nullptr);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_Q))
-		guests();
+		quests();
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_ESCAPE))
 		return false;
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_H))
 		tmp->change_hp(-10);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_M))
 		tmp->change_mana(-10);
-	else if (al_key_down(&keyboard, ALLEGRO_KEY_F1))
-	{
-		Item* new_weapon = new Weapon(110001, "items/weapon_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_weapon, 1);
-	}
+	/*else if (al_key_down(&keyboard, ALLEGRO_KEY_F1))
+		tmp->get_inventory()->add_item_to_inventory(new Weapon(110001, "items/weapon_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F2))
-	{
-		Item* new_helmet = new Armour(210001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_helmet, 1);
-	}
+		tmp->get_inventory()->add_item_to_inventory(new Armour(210001, "items/armour_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F3))
-	{
-		Item* new_chestplate = new Armour(220001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_chestplate, 1);
-	}
+		tmp->get_inventory()->add_item_to_inventory(new Armour(220001, "items/armour_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F4))
-	{
-		Item* new_boots = new Armour(230001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_boots, 1);
-	}
+		tmp->get_inventory()->add_item_to_inventory(new Armour(230001, "items/armour_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F5))
-	{
-		Item* new_amulet = new Armour(240001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_amulet, 1);
-	}
+		tmp->get_inventory()->add_item_to_inventory(new Armour(240001, "items/armour_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F6))
-	{
-		Item* new_ring = new Armour(250001, "items/armour_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new_ring, 1);
-	}
+		tmp->get_inventory()->add_item_to_inventory(new Armour(250001, "items/armour_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_F7))
-	{
-		Item* new__weapon_2 = new Weapon(130001, "items/weapon_file.txt");
-		tmp->get_inventory()->add_item_to_inventory(new__weapon_2, 1);
-	}
+		tmp->get_inventory()->add_item_to_inventory(new Weapon(130001, "items/weapon_file.txt"), 1);
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_BACKSPACE))
-	{
-		quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
-		std::cout << "Rozpoczales linie questow" << std::endl;
-	}
+		quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));*/
 	else if (al_key_down(&keyboard, ALLEGRO_KEY_E))
-	{
-		switch (tmp->interact(map, location, player))
-		{
-		case 0:
-			break;
-		case 1:
-			switch (tmp->direction)
-			{
-			case UP:
-				restart(location->search_travel(player->get_X(), player->get_Y() - 1));
-				break;
-			case DOWN:
-				this->restart(location->search_travel(player->get_X(), player->get_Y() + 1));
-				break;
-			case RIGHT:
-				this->restart(location->search_travel(player->get_X() + 1, player->get_Y()));
-				break;
-			case LEFT:
-				this->restart(location->search_travel(player->get_X() - 1, player->get_Y()));
-				break;
-			}
-			break;
-		case 2:
-			switch (tmp->direction)
-			{
-			case UP:
-				inventory(location->find_dead_mob(player->get_X(), player->get_Y() - 1)->get_drop());
-				break;
-			case DOWN:
-				inventory(location->find_dead_mob(player->get_X(), player->get_Y() + 1)->get_drop());
-				break;
-			case RIGHT:
-				inventory(location->find_dead_mob(player->get_X() + 1, player->get_Y())->get_drop());
-				break;
-			case LEFT:
-				inventory(location->find_dead_mob(player->get_X() - 1, player->get_Y())->get_drop());
-				break;
-			}
-			break;
-		case 3:
-			switch (tmp->direction)
-			{
-			case UP:
-				for (int i = 0; i < quest_line.size(); i++)
-					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
-						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
-							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id())
-								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
-					show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() - 1])->get_id());
-				break;
-			case DOWN:
-				for (int i = 0; i < quest_line.size(); i++)
-					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
-						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
-							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id())
-								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
-					show_dialogue(dynamic_cast<Character*>(map[player->get_X()][player->get_Y() + 1])->get_id());
-				break;
-			case RIGHT:
-				for (int i = 0; i < quest_line.size(); i++)
-					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
-						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
-							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id())
-								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
-					show_dialogue(dynamic_cast<Character*>(map[player->get_X() + 1][player->get_Y()])->get_id());
-				break;
-			case LEFT:
-				for (int i = 0; i < quest_line.size(); i++)
-					for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
-						if (quest_line[i]->get_quest()->objective[j]->get_to_do() == SPEAK_TO)
-							if (quest_line[i]->get_quest()->objective[j]->get_target_id() == dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id())
-								dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id(), "Quest/" + quest_line[i]->get_name() + "/" + quest_line[i]->get_quest()->get_name() + "_dialogues.txt");
-				if(dialogue_file_read(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id(), "Locations/" + location->get_terrain_name() + "/" + location->get_name() + "/" + "dialogues.txt"))
-					show_dialogue(dynamic_cast<Character*>(map[player->get_X() - 1][player->get_Y()])->get_id());
-				break;
-			}
-			dialogue.clear();
-			break;
-		}
-	}
+		any_interaction(tmp);
 	else
 	{
 		tmp->is_moving = false;
@@ -586,20 +564,33 @@ bool window::game_working()// odœwierzenie planszy
 						action[i]->prepare_action();
 					player_attack();
 				}
-				else if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5)
+				else if (dynamic_cast<Character*>(player)->movement_cooldown < al_get_time() + 5.0)
 				{
 					if (!player_movement())
 						if (!pause_game())
 						{
-							al_destroy_timer(movement_timer);
-							al_destroy_timer(draw_timer);
+							save_game();
+							clear_all();
 							al_destroy_event_queue(event_q);
 							return false;
 						}
 				}
-				location->mob_movement(player, map);
+				if (!location->mobs.empty())
+					if (dynamic_cast<Character*>(location->mobs[0])->movement_cooldown + 9.0 / FPS <= al_get_time())
+					{
+						location->mob_movement(player, map);
+						if (dynamic_cast<Character*>(player)->get_hp() == 0)
+						{
+							clear_all();
+							al_destroy_event_queue(event_q);
+							//load_game();
+;							return false;
+						}
+					}
+				if(dynamic_cast<Character*>(player)->regenertion_cooldown + 30.0 / FPS <= al_get_time())
+					dynamic_cast<Character*>(player)->resources_regeneration();
 			}
-			else if (events.timer.source == draw_timer)
+			if (events.timer.source == draw_timer)
 			{
 				for (int i = 0; i < action.size(); i++)
 				{
@@ -613,8 +604,8 @@ bool window::game_working()// odœwierzenie planszy
 				location->draw(player->get_X(), player->get_Y());
 				location->draw_dead_mobs(player->get_X(), player->get_Y(), map);
 				draw_actions(player->get_X(), player->get_Y());
-				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				location->draw_portals(player->get_X(), player->get_Y(), map);
+				location->draw_mobs(player->get_X(), player->get_Y(), map);
 				player->draw(map, location->get_sizeX(), location->get_sizeY());
 				draw_hud(dynamic_cast<Character*>(player));
 				draw_buttons();
@@ -624,8 +615,50 @@ bool window::game_working()// odœwierzenie planszy
 	}
 }
 
-void window::start() // pierwsze uruchomienie planszy
+void window::check_location_quest(std::vector<Quest_line*> quest_line, int location_id)
 {
+	for (int i = 0; i < quest_line.size(); i++)
+		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
+			if (quest_line[i]->get_quest()->objective[j]->get_to_do() == GO_TO)
+				if (location_id == quest_line[i]->get_quest()->objective[j]->get_target_id())
+					if (quest_line[i]->get_quest()->objective[j]->is_it_done())
+					{
+						quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
+						if (quest_line[i]->get_quest()->objective.empty())
+							if (!quest_line[i]->take_next_quest())
+							{
+								quest_line[i]->~Quest_line();
+								quest_line.erase(quest_line.begin() + i);
+								i--;
+								break;
+							}
+					}
+}
+
+void window::clear_all()
+{
+	al_stop_timer(movement_timer);
+	al_stop_timer(draw_timer);
+	map_clear();
+	location->~Location();
+	delete location;
+	for (int i = 0; i < action.size(); i++)
+		action[i]->~Action();
+	for (int i = 0; i < quest_line.size(); i++)
+		quest_line[i]->~Quest_line();
+	quest_line.clear();
+	action.clear();
+	al_destroy_timer(movement_timer);
+	al_destroy_timer(draw_timer);
+}
+
+void window::start()
+{
+	add_login();
+	movement_timer = al_create_timer(6.0 / FPS);
+	draw_timer = al_create_timer(1.0 / FPS);
+	al_start_timer(movement_timer);
+	al_start_timer(draw_timer);
 	srand(time(NULL));
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
@@ -633,7 +666,7 @@ void window::start() // pierwsze uruchomienie planszy
 	player = new Magnat(2,2, 110000, "player/player.txt");
 	location = new Location("Plains1", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
-	test = false;
+	quest_line.push_back(new Quest_line("Testowa_linia", "qt1"));
 }
 
 void window::restart(std::string location_name)
@@ -645,8 +678,8 @@ void window::restart(std::string location_name)
 	add_functional_button(10, 10, MENU);
 	map[player->get_X()][player->get_Y()] = nullptr;
 	map_clear();
-	int toX = location->get_pTravel()->toX;
-	int toY = location->get_pTravel()->toY; 
+	int toX = location->get_pTravel(location_name)->toX;
+	int toY = location->get_pTravel(location_name)->toY; 
 	int location_id = location->get_id();
 	location->~Location();
 	for (int i = 0; i < action.size(); i++)
@@ -655,26 +688,7 @@ void window::restart(std::string location_name)
 	player->change_position(toX, toY);
 	location = new Location(location_name, 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
-	for (int i = 0; i < quest_line.size(); i++)
-		for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
-			if(quest_line[i]->get_quest()->objective[j]->get_to_do() == GO_TO)
-				if(location_id == quest_line[i]->get_quest()->objective[j]->get_target_id())
-					if (quest_line[i]->get_quest()->objective[j]->is_it_done())
-					{
-						quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
-						std::cout << "Zrobiono objectiva" << std::endl;
-						if (quest_line[i]->get_quest()->objective.empty())
-						{
-							std::cout << "Zrobiono questa" << std::endl;
-							if (!quest_line[i]->take_next_quest())
-							{
-								quest_line[i]->~Quest_line();
-								quest_line.erase(quest_line.begin() + i);
-								i--;
-								break;
-							}
-						}
-					}
+	check_location_quest(quest_line, location_id);
 	save_game();
 	al_start_timer(movement_timer);
 	al_start_timer(draw_timer);
@@ -731,10 +745,6 @@ void window::show_dialogue(int character_id)
 			else if (events.mouse.button & 2) //PPM
 				break;
 		}
-		else if (events.type == ALLEGRO_EVENT_KEY_DOWN)
-		{
-			//break;
-		}
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 		location->draw(player->get_X(), player->get_Y());
 		location->draw_dead_mobs(player->get_X(), player->get_Y(), map);
@@ -747,6 +757,16 @@ void window::show_dialogue(int character_id)
 		al_draw_bitmap(cursor, mouse_x, mouse_y, 0);
 		al_flip_display();
 	}
+	check_dialogue_quest(quest_check, quest_line, character_id);
+		
+	al_destroy_bitmap(cursor);
+	al_show_mouse_cursor(display);
+	al_start_timer(movement_timer);
+	al_start_timer(draw_timer);
+}
+
+void window::check_dialogue_quest(bool quest_check, std::vector<Quest_line*>& quest_line, int character_id)
+{
 	if (quest_check)
 		for (int i = 0; i < quest_line.size(); i++)
 			for (int j = 0; j < quest_line[i]->get_quest()->objective.size(); j++)
@@ -756,10 +776,7 @@ void window::show_dialogue(int character_id)
 							if (quest_line[i]->get_quest()->objective[j]->is_it_done())
 							{
 								quest_line[i]->get_quest()->objective.erase(quest_line[i]->get_quest()->objective.begin() + j);
-								std::cout << "Zrobiono objectiva" << std::endl;
 								if (quest_line[i]->get_quest()->objective.empty())
-								{
-									std::cout << "Zrobiono questa" << std::endl;
 									if (!quest_line[i]->take_next_quest())
 									{
 										quest_line[i]->~Quest_line();
@@ -767,13 +784,7 @@ void window::show_dialogue(int character_id)
 										i--;
 										break;
 									}
-								}
 							}
-		
-	al_destroy_bitmap(cursor);
-	al_show_mouse_cursor(display);
-	al_start_timer(movement_timer);
-	al_start_timer(draw_timer);
 }
 
 void window::draw_dialogue(Question* question)
@@ -784,7 +795,7 @@ void window::draw_dialogue(Question* question)
 		al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (2 + i), 0, question->all_answers[i]->answer.c_str());
 }
 
-void window::map_clear() // mapa jest powalona i trzeba stestowac
+void window::map_clear()
 {
 	for (int i = 0; i < location->get_sizeX(); i++)
 	{

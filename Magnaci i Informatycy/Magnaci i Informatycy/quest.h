@@ -43,6 +43,7 @@ public:
 	std::string get_target_location();
 	bool is_it_done();
 	TYPE get_to_do();
+	int get_to_do_int();
 	virtual void XD() = 0;
 };
 
@@ -99,10 +100,10 @@ class Quest_line
 protected:
 	std::string name;
 	Quest* quest;
+public:
 	ALLEGRO_BITMAP* quest_bitmap;
 	ALLEGRO_BITMAP* background;
 	ALLEGRO_BITMAP* player;
-public:
 	std::string next_quest_name;
 	Quest_line(std::string quest_line_name, std::string start_quest_name);
 	Quest_line(std::string quest_line_name);
@@ -114,5 +115,5 @@ public:
 	void load_status(std::fstream &file, std::string quest_name);
 	Quest* get_quest();
 	~Quest_line();
-	void show_quests();
+	void show_quests(ALLEGRO_FONT* setting_font, int &j);
 };

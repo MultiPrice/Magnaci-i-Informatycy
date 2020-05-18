@@ -120,8 +120,7 @@ window::window(int pwidth, int pheight)
     setting_font = al_load_font("fonts/font.ttf", (40.0 / 1920) * al_get_display_width(display), 0);
     event_queue = al_create_event_queue();
     backgroud = al_load_bitmap("bitmaps/background/sztandar.bmp");
-    movement_timer = al_create_timer(6.0 / FPS);
-    draw_timer = al_create_timer(1.0 / FPS);
+    
     HUD = al_load_bitmap("bitmaps/background/hud.png");
     HP = al_load_bitmap("bitmaps/background/hp.png");
     MANA = al_load_bitmap("bitmaps/background/mana.png");
@@ -241,8 +240,19 @@ void window::load_quests()
     }
 }
 
-void window::load_game()
+bool window::load_game()
 {
+    std::string email, haslo;
+    std::cout << "Podaj email: ";
+    std::cin >> email;
+    std::cout << "Podaj haslo: ";
+    std::cin >> haslo;
+    if (!check_login(email, haslo))
+        return false;
+    movement_timer = al_create_timer(6.0 / FPS);
+    draw_timer = al_create_timer(1.0 / FPS);
+    al_start_timer(movement_timer);
+    al_start_timer(draw_timer);
     srand(time(NULL));
     clear();
     al_clear_to_color(al_map_rgb(0, 150, 0));
@@ -250,8 +260,38 @@ void window::load_game()
     player = new Magnat("save/save_player.txt", "save/save_inventory.txt");
     location = new Location("Plains1", 0, 0, this->map);
     map[player->get_X()][player->get_Y()] = player;
-    test = false;
     load_quests();
+    return true;
+}
+
+void window::add_login()
+{
+    vector<std::unique_ptr<Uzytkownik>> gejmer;
+
+    gejmer.push_back(std::make_unique<Uzytkownik>());
+
+    vector<unique_ptr<Uzytkownik>>::iterator iter;
+
+    for (iter = gejmer.begin(); iter < gejmer.end(); iter++)
+        (*iter)->zapisz("save/login.txt");
+}
+
+bool window::check_login(std::string email_p, std::string haslo_p)
+{
+    fstream plik;
+    plik.open("save/login.txt");
+    if (plik)
+    {
+        std::string email, haslo;
+        std::getline(plik, email);
+        std::getline(plik, haslo);
+        plik.close();
+        if (email == email_p && haslo == haslo_p)
+            return true;
+        else 
+            return false;
+    }
+    else return true;
 }
 
 void window::working()
@@ -263,15 +303,14 @@ void window::working()
         al_wait_for_event(event_queue, &events);
         if (game_is_on)
             game_is_on = game_working();
+    /*    std::cout << "Dupa";*/
         if (mouse_position_x != events.mouse.x || mouse_position_y != events.mouse.y)
         {
             butt_list* temp = buttons;
             while (temp)
             {
                 if (temp->element->check_position(events.mouse.x, events.mouse.y))
-                {
                     temp->element->select();
-                }
                 else
                     temp->element->unselect();
                 temp = temp->next;
@@ -315,8 +354,8 @@ void window::working()
                         break;
                     case 5:
                         checking = false;
-                        load_game();
-                        game_is_on = true;
+                        game_is_on = load_game();
+                        //game_is_on = true;
                         break;
                     case 6:
                         checking = false;
@@ -351,7 +390,6 @@ void window::working()
             }
         }
     }
-    save_game();
 }
 
 void window::display_mode()

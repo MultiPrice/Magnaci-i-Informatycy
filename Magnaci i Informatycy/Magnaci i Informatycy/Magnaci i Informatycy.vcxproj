@@ -209,6 +209,7 @@
     <ClInclude Include="items.h" />
     <ClInclude Include="locations.h" />
     <ClInclude Include="quest.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>

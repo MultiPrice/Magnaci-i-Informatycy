@@ -58,7 +58,6 @@ bool Armour::File_read(std::string file_name)
 	{
 		int seek_id;
 		std::string tmp;
-
 		file >> seek_id; //szukamy wskazanego id
 		while (seek_id != id)
 		{
@@ -67,7 +66,6 @@ bool Armour::File_read(std::string file_name)
 				std::getline(file, tmp);
 			file >> seek_id;
 		}
-
 		file >> tmp >> name;
 		std::getline(file, description);
 		std::getline(file, description);
@@ -99,8 +97,6 @@ Armour::Armour(int id, std::string file_name)
 	if (!File_read(file_name))
 		std::cout << "blad odczytu z pliku armour";
 }
-
-//------------------------------------------------------------
 
 bool Weapon::File_read(std::string file_name)
 {
@@ -147,7 +143,6 @@ int Weapon::get_max_damage()
 	return max_damage;
 }
 
-
 Weapon::Weapon(int id, std::string file_name)
 {
 	this->id = id;
@@ -157,21 +152,14 @@ Weapon::Weapon(int id, std::string file_name)
 		std::cout << "blad odczytu z pliku armour";
 }
 
-//----------------------------------------------------
-
-bool Food::File_read(std::string& file_name) {
-
-	//File variable
+bool Food::File_read(std::string& file_name) 
+{
 	std::fstream file;
 	file.open(file_name);
-
-	int seek_id;				//To compare IDs from list with needed
-	std::string temp;			//Temp string to skip unneeded item
-
-	//Checks whenever file exists and was opened
+	int seek_id;
+	std::string temp;
 	if (file)
 	{
-		//Loops until find needed item
 		file >> seek_id;
 		while (seek_id != id);
 		{
@@ -179,30 +167,20 @@ bool Food::File_read(std::string& file_name) {
 				file >> temp;
 			file >> seek_id;
 		}
-
-		//False if doesn't have brackets
 		file >> temp;
 		if (temp != "{")
 			return false;
-
-		//Puts values into variables
 		file >> temp;
 		name = temp;
-
-		//"-" means no description
 		file >> temp;
-		if (temp == "-") {
-			description = "";
-		}
-		else {
-			description = temp;
-		}
 
+		if (temp == "-")
+			description = "";
+		else 
+			description = temp;
 		file >> temp;
 		texture = al_load_bitmap(temp.c_str());
 		file >> cost;
-
-		//False if doesn't have brackets
 		file >> temp;
 		if (temp != "}")
 			return false;
@@ -211,9 +189,8 @@ bool Food::File_read(std::string& file_name) {
 	return true;
 }
 
-
-Food::Food(int id, std::string& file_name) {
-
+Food::Food(int id, std::string& file_name) 
+{
 	this->id = id;
 	health = 0;
 	tp_dest = "";
@@ -221,21 +198,14 @@ Food::Food(int id, std::string& file_name) {
 	File_read(file_name);
 }
 
-//---------------------------------------------------
-
-bool Special::File_read(std::string& file_name) {
-
-	//File variable
+bool Special::File_read(std::string& file_name) 
+{
 	std::fstream file;
 	file.open(file_name);
-
-	int seek_id;				//To compare IDs from list with needed
-	std::string temp;			//Temp string to skip unneeded item
-
-	//Checks whenever file exists and was opened
+	int seek_id;
+	std::string temp;
 	if (file)
 	{
-		//Loops until find needed item
 		file >> seek_id;
 		while (seek_id != id);
 		{
@@ -243,32 +213,19 @@ bool Special::File_read(std::string& file_name) {
 				file >> temp;
 			file >> seek_id;
 		}
-
-		//Decode first leters of ID into variables
-
-		//False if doesn't have brackets
 		file >> temp;
 		if (temp != "{")
 			return false;
-
-		//Puts values into variables
 		file >> temp;
 		name = temp;
-
-		//"-" means no description
 		file >> temp;
-		if (temp == "-") {
+		if (temp == "-")
 			description = "";
-		}
-		else {
+		else
 			description = temp;
-		}
-
 		file >> temp;
 		texture = al_load_bitmap(temp.c_str());
 		file >> cost;
-
-		//False if doesn't have brackets
 		file >> temp;
 		if (temp != "}")
 			return false;
@@ -278,10 +235,9 @@ bool Special::File_read(std::string& file_name) {
 }
 
 
-Special::Special(int id, std::string& file_name) {
-
+Special::Special(int id, std::string& file_name)
+{
 	this->id = id;
-
 	File_read(file_name);
 }
 
@@ -315,8 +271,8 @@ Inventory::Inventory(std::string file_name)
 	file.open("save/save_inventory.txt");
 	if (file)
 	{
-		int item_id;
-		int size;
+		int item_id = 0;
+		int size = 0;
 		int X = 1080;
 		int Y = measure * 2;
 		Item* new_weapon;
@@ -326,114 +282,10 @@ Inventory::Inventory(std::string file_name)
 		Item* new_amulet;
 		Item* new_ring;
 
-		for (int i = 0; i < 7; i++)
-		{
-			file >> item_id;
-			switch (item_id / 100000)
-			{
-			case 0: //brak itema
-				X += measure * 2;
-				break;
-			case 1:
-				new_weapon = new Weapon(item_id, "items/weapon_file.txt");
-				new_weapon->change_inventory_x(X);
-				new_weapon->change_inventory_y(Y);
-				equipment[i] = new_weapon;
-				X += measure * 2;
-				break;
-			case 2:
-				switch (item_id / 10000 % 10)
-				{
-				case 1:
-					new_helmet = new Armour(item_id, "items/armour_file.txt");
-					new_helmet->change_inventory_x(X);
-					new_helmet->change_inventory_y(Y);
-					equipment[i] = new_helmet;
-					X += measure * 2;
-					break;
-				case 2:
-					new_chestplate = new Armour(item_id, "items/armour_file.txt");
-					new_chestplate->change_inventory_x(X);
-					new_chestplate->change_inventory_y(Y);
-					equipment[i] = new_chestplate;
-					X += measure * 2;
-					break;
-				case 3:
-					new_boots = new Armour(item_id, "items/armour_file.txt");
-					new_boots->change_inventory_x(X);
-					new_boots->change_inventory_y(Y);
-					equipment[i] = new_boots;
-					X += measure * 2;
-					break;
-				case 4:
-					new_amulet = new Armour(item_id, "items/armour_file.txt");
-					new_amulet->change_inventory_x(X);
-					new_amulet->change_inventory_y(Y);
-					equipment[i] = new_amulet;
-					X += measure * 2;
-					break;
-				case 5:
-					new_ring = new Armour(item_id, "items/armour_file.txt");
-					new_ring->change_inventory_x(X);
-					new_ring->change_inventory_y(Y);
-					equipment[i] = new_ring;
-					X += measure * 2;
-					break;
-				}
-			}
-		}
-		file >> size;
-		for (int i = 0; i < size; i++)
-			inventory.push_back(nullptr);
-		while (!file.eof())
-		{
-			file >> item_id >> X >> Y;
-			switch (item_id / 100000)
-			{
-			case 0: //brak itema
-				break;
-			case 1:
-				new_weapon = new Weapon(item_id, "items/weapon_file.txt");
-				new_weapon->change_inventory_x(X);
-				new_weapon->change_inventory_y(Y);
-				add_item_to_inventory_x_y(new_weapon, 1);
-				break;
-			case 2:
-				switch (item_id / 10000 % 10)
-				{
-				case 1:
-					new_helmet = new Armour(item_id, "items/armour_file.txt");
-					new_helmet->change_inventory_x(X);
-					new_helmet->change_inventory_y(Y);
-					add_item_to_inventory_x_y(new_helmet, 1);
-					break;
-				case 2:
-					new_chestplate = new Armour(item_id, "items/armour_file.txt");
-					new_chestplate->change_inventory_x(X);
-					new_chestplate->change_inventory_y(Y);
-					add_item_to_inventory_x_y(new_chestplate, 1);
-					break;
-				case 3:
-					new_boots = new Armour(item_id, "items/armour_file.txt");
-					new_boots->change_inventory_x(X);
-					new_boots->change_inventory_y(Y);
-					add_item_to_inventory_x_y(new_boots, 1);
-					break;
-				case 4:
-					new_amulet = new Armour(item_id, "items/armour_file.txt");
-					new_amulet->change_inventory_x(X);
-					new_amulet->change_inventory_y(Y);
-					add_item_to_inventory_x_y(new_amulet, 1);
-					break;
-				case 5:
-					new_ring = new Armour(item_id, "items/armour_file.txt");
-					new_ring->change_inventory_x(X);
-					new_ring->change_inventory_y(Y);
-					add_item_to_inventory_x_y(new_ring, 1);
-					break;
-				}
-			}
-		}
+		first_part_item_file_read(file, X, Y, item_id, new_weapon, new_helmet, new_chestplate, new_boots, new_amulet, new_ring);
+		
+		second_part_item_file_read(file, size, X, Y, item_id, new_weapon, new_helmet, new_chestplate, new_boots, new_amulet, new_ring);
+		
 		backpack = al_load_bitmap("bitmaps/items/inventory_backpack.png");
 		background = al_load_bitmap("bitmaps/items/inventory_background.png");
 		player = al_load_bitmap("player/player_move.png");
@@ -470,6 +322,132 @@ Inventory::~Inventory()
 		}
 	}
 	inventory.clear();
+}
+
+void Inventory::first_part_item_file_read(std::fstream& file, int X, int Y, int item_id, Item *& new_weapon, Item*& new_helmet, Item*& new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring)
+{
+	for (int i = 0; i < 7; i++)
+	{
+		file >> item_id;
+		switch (item_id / 100000)
+		{
+		case 0: //brak itema
+			X += measure * 2;
+			break;
+		case 1:
+			new_weapon = new Weapon(item_id, "items/weapon_file.txt");
+			new_weapon->change_inventory_x(X);
+			new_weapon->change_inventory_y(Y);
+			equipment[i] = new_weapon;
+			X += measure * 2;
+			break;
+		case 2:
+			add_armour(X, Y, i, item_id, new_helmet, new_chestplate, new_boots, new_amulet, new_ring);
+		}
+	}
+}
+
+void Inventory::second_part_item_file_read(std::fstream& file, int size, int X, int Y, int item_id, Item*& new_weapon, Item*& new_helmet, Item*& new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring)
+{
+	file >> size;
+	for (int i = 0; i < size; i++)
+		inventory.push_back(nullptr);
+	while (!file.eof())
+	{
+		file >> item_id >> X >> Y;
+		switch (item_id / 100000)
+		{
+		case 0: //brak itema
+			break;
+		case 1:
+			new_weapon = new Weapon(item_id, "items/weapon_file.txt");
+			new_weapon->change_inventory_x(X);
+			new_weapon->change_inventory_y(Y);
+			add_item_to_inventory_x_y(new_weapon, 1);
+			break;
+		case 2:
+			add_armour_to_inventory(X, Y, item_id, new_helmet, new_chestplate, new_boots, new_amulet, new_ring);
+		}
+	}
+}
+
+void Inventory::add_armour(int X, int Y, int i, int item_id, Item*& new_helmet, Item* &new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring)
+{
+	switch (item_id / 10000 % 10)
+	{
+	case 1:
+		new_helmet = new Armour(item_id, "items/armour_file.txt");
+		new_helmet->change_inventory_x(X);
+		new_helmet->change_inventory_y(Y);
+		equipment[i] = new_helmet;
+		X += measure * 2;
+		break;
+	case 2:
+		new_chestplate = new Armour(item_id, "items/armour_file.txt");
+		new_chestplate->change_inventory_x(X);
+		new_chestplate->change_inventory_y(Y);
+		equipment[i] = new_chestplate;
+		X += measure * 2;
+		break;
+	case 3:
+		new_boots = new Armour(item_id, "items/armour_file.txt");
+		new_boots->change_inventory_x(X);
+		new_boots->change_inventory_y(Y);
+		equipment[i] = new_boots;
+		X += measure * 2;
+		break;
+	case 4:
+		new_amulet = new Armour(item_id, "items/armour_file.txt");
+		new_amulet->change_inventory_x(X);
+		new_amulet->change_inventory_y(Y);
+		equipment[i] = new_amulet;
+		X += measure * 2;
+		break;
+	case 5:
+		new_ring = new Armour(item_id, "items/armour_file.txt");
+		new_ring->change_inventory_x(X);
+		new_ring->change_inventory_y(Y);
+		equipment[i] = new_ring;
+		X += measure * 2;
+		break;
+	}
+}
+
+void Inventory::add_armour_to_inventory(int X, int Y, int item_id, Item*& new_helmet, Item*& new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring)
+{
+	switch (item_id / 10000 % 10)
+	{
+	case 1:
+		new_helmet = new Armour(item_id, "items/armour_file.txt");
+		new_helmet->change_inventory_x(X);
+		new_helmet->change_inventory_y(Y);
+		add_item_to_inventory_x_y(new_helmet, 1);
+		break;
+	case 2:
+		new_chestplate = new Armour(item_id, "items/armour_file.txt");
+		new_chestplate->change_inventory_x(X);
+		new_chestplate->change_inventory_y(Y);
+		add_item_to_inventory_x_y(new_chestplate, 1);
+		break;
+	case 3:
+		new_boots = new Armour(item_id, "items/armour_file.txt");
+		new_boots->change_inventory_x(X);
+		new_boots->change_inventory_y(Y);
+		add_item_to_inventory_x_y(new_boots, 1);
+		break;
+	case 4:
+		new_amulet = new Armour(item_id, "items/armour_file.txt");
+		new_amulet->change_inventory_x(X);
+		new_amulet->change_inventory_y(Y);
+		add_item_to_inventory_x_y(new_amulet, 1);
+		break;
+	case 5:
+		new_ring = new Armour(item_id, "items/armour_file.txt");
+		new_ring->change_inventory_x(X);
+		new_ring->change_inventory_y(Y);
+		add_item_to_inventory_x_y(new_ring, 1);
+		break;
+	}
 }
 
 Item* Inventory::get_equipment(int i)
@@ -517,16 +495,15 @@ void Inventory::show_drop()
 	}
 }
 
-void Inventory::add_item_to_inventory(Item* new_item, int which_case)
+void Inventory::which_case_inventory(int gap, int which_case, int& new_x, int& new_y, int& base_x, int& max_x)
 {
-	int new_x, new_y, base_x, max_x = 0;
 	switch (which_case)
 	{
 	case 1:
 		new_x = 1080;
 		new_y = measure * 5;
 		base_x = 1080;
-		max_x = screen_width - measure * 2;
+		max_x = screen_width - gap;
 		break;
 	case 2:
 		new_x = measure * 0.5;
@@ -535,6 +512,12 @@ void Inventory::add_item_to_inventory(Item* new_item, int which_case)
 		max_x = measure * 0.5;
 		break;
 	}
+}
+
+void Inventory::add_item_to_inventory(Item* new_item, int which_case)
+{
+	int new_x, new_y, base_x, max_x = 0;
+	which_case_inventory(measure * 2, which_case, new_x, new_y, base_x, max_x);
 	for (int i = 0; i < inventory.size(); i++)
 	{
 		if (inventory[i])
@@ -561,21 +544,7 @@ void Inventory::add_item_to_inventory_x_y(Item* new_item, int which_case)
 	int x = new_item->get_inventory_x();
 	int y = new_item->get_inventory_y();
 	int tmp_x, tmp_y, base_x, max_x = 0;
-	switch (which_case)
-	{
-	case 1:
-		tmp_x = 1080;
-		tmp_y = measure * 5;
-		base_x = 1080;
-		max_x = screen_width;
-		break;
-	case 2:
-		tmp_x = measure * 0.5;
-		tmp_y = measure * 0.5;
-		base_x = measure * 0.5;
-		max_x = measure * 0.5;
-		break;
-	}
+	which_case_inventory(measure * 2, which_case, tmp_x, tmp_y, base_x, max_x);
 	for (int i = 0; i < inventory.size(); i++)
 	{
 		if (tmp_x != x || tmp_y != y)

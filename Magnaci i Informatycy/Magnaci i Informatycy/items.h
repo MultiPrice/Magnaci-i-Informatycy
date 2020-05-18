@@ -148,11 +148,16 @@ public:
 	Inventory(int size);
 	Inventory(std::string file_name);
 	~Inventory();
+	void first_part_item_file_read(std::fstream& file, int X, int Y, int item_id, Item*& new_weapon, Item*& new_helmet, Item*& new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring); //Odczytuje z pliku informacje o dodawanym itemie, uzywanne w konstruktorze
+	void second_part_item_file_read(std::fstream& file, int size, int X, int Y, int item_id, Item*& new_weapon, Item*& new_helmet, Item*& new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring); //dodaje itemy odczytane z pliku do wektora i do samego inwentory
+	void add_armour(int X, int Y, int i, int item_id, Item*& new_helmet, Item*& new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring); //dodaje odpowiedni element pancerza w konstruktorze
+	void add_armour_to_inventory(int X, int Y, int item_id, Item*& new_helmet, Item*& new_chestplate, Item*& new_boots, Item*& new_amulet, Item*& new_ring); //dodaje odpowiednia czesc armoura do inventory, wywoluje add_item_to_inventory_x_y
 	Item* get_equipment(int i);
 	Item* get_item(int i);
 	int get_inventory_size();
 	void show_inventory();
 	void show_drop();
+	void which_case_inventory(int gap, int which_case, int& new_x, int& new_y, int& base_x, int& max_x); //decyduje ktorego wariantu uzyc w funkcji add_item_to_inventory
 	void add_item_to_inventory(Item* new_item, int which_case);
 	void add_item_to_inventory_x_y(Item* new_item, int which_case);
 	Item* I_want_take_this_item(int sought_x, int sought_y, int &prev_x, int &prev_y, int which_case);
