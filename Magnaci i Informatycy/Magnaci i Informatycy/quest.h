@@ -108,7 +108,7 @@ public:
 	void quest_file_read(std::string quest_line_name, std::string quest_name);
 	void add_quest(std::string name, int target_id, std::string target_location_name, TYPE to_do, int how_many, int what_class);
 	bool take_next_quest();
-	void save_status(std::fstream &file);
+	void save_status(std::ofstream&file);
 	std::string get_name();
 	void load_status(std::fstream &file, std::string quest_name);
 	Quest* get_quest();

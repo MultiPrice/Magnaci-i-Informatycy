@@ -148,10 +148,11 @@ void window::save_game()
 
 void window::save_player()
 {
-    std::fstream file;
-    file.open("save/save_player.txt");
+    std::ofstream file;
+    file.open("save/save_player.txt", std::ofstream::out);
     if (file)
     {
+        file.clear();
         Character* tmp_player = dynamic_cast<Character*>(player);
         file << tmp_player->get_X() << std::endl;
         file << tmp_player->get_Y() << std::endl;
@@ -166,16 +167,18 @@ void window::save_player()
         file << tmp_player->get_max_damage() << std::endl;
         file << tmp_player->get_armour() << std::endl;
         file << tmp_player->get_attitude() << std::endl;
+        file << location->get_name();
         file.close();
     }
 }
 
 void window::save_inventory()
 {
-    std::fstream file;
-    file.open("save/save_inventory.txt");
+    std::ofstream file;
+    file.open("save/save_inventory.txt", std::ofstream::out);
     if (file)
     {
+        file.clear();
         Character* tmp_player = dynamic_cast<Character*>(player);
         Inventory* tmp_inventory = tmp_player->get_inventory();
         Item* tmp_item = nullptr;
@@ -191,8 +194,10 @@ void window::save_inventory()
         for (int i = 0; i < tmp_inventory->get_inventory_size(); i++)
         {
             tmp_item = tmp_inventory->get_item(i);
-            if(tmp_item)
+            if (tmp_item)
                 file << tmp_item->get_item_id() << " " << tmp_item->get_inventory_x() << " " << tmp_item->get_inventory_y() << std::endl;
+            else
+                file << "";
         }
         file.close();
     }
@@ -200,10 +205,11 @@ void window::save_inventory()
 
 void window::save_quests()
 {
-    std::fstream file;
-    file.open("save/save_quests.txt");
+    std::ofstream file;
+    file.open("save/save_quests.txt", std::ofstream::out);
     if (file)
     {
+        file.clear();
         for (int i = 0; i < quest_line.size(); i++)
         {
             quest_line[i]->save_status(file);
@@ -257,8 +263,10 @@ bool window::load_game()
     clear();
     al_clear_to_color(al_map_rgb(0, 150, 0));
     add_functional_button(10, 10, MENU);
-    player = new Magnat("save/save_player.txt", "save/save_inventory.txt");
-    location = new Location("Plains1", 0, 0, this->map);
+    std::string location_name = "";
+    player = new Magnat("save/save_player.txt", "save/save_inventory.txt", location_name);
+    std::cout << location_name;
+    location = new Location(location_name, 0, 0, this->map);
     map[player->get_X()][player->get_Y()] = player;
     load_quests();
     return true;
