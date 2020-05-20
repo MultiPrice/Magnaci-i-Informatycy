@@ -92,4 +92,3 @@ public:
 	bool make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location*& location, std::vector <Quest_line*>& quest_line);
 	~Breath();
 };
-

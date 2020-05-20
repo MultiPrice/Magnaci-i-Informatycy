@@ -2,25 +2,7 @@
 
 #include <typeinfo>
 #include "window.h"
-//
-//void wypisz_kurde_wszytsko(Object*** twoja_stara)
-//{
-//	system("cls");
-//	for (int i = 0; i < 36; i++)
-//	{
-//		for (int j = 0; j < 64; j++)
-//		{
-//			if (twoja_stara[j][i] == nullptr)
-//				std::cout << "O";
-//			else if (typeid(Magnat)==typeid(*twoja_stara[j][i]))
-//				std::cout << " ";
-//			else if (typeid(Element) == typeid(*twoja_stara[j][i]))
-//				std::cout << "W";
-//		}
-//			
-//		std::cout << std::endl;
-//	}
-//}
+
 
 void window::change_position(Object*& who, int prevX, int prevY, int nextX, int nextY)
 {
@@ -656,15 +638,15 @@ void window::clear_all()
 
 void window::start()
 {
-	//add_login();
+	add_login();
 	movement_timer = al_create_timer(6.0 / FPS);
 	draw_timer = al_create_timer(1.0 / FPS);
 	srand(time(NULL));
 	clear();
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
-	player = new Magnat(67,40, 110000, "player/player.txt");
-	location = new Location("Forest2", 0, 0, this->map);
+	player = new Magnat(2,26, 110000, "player/player.txt");
+	location = new Location("Villige1", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	quest_line.push_back(new Quest_line("Stachu_Jones", "Poczatek przygody"));
 	al_start_timer(movement_timer);
@@ -807,4 +789,3 @@ void window::map_clear()
 	}
 	delete[] map;
 }
-

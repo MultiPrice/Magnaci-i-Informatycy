@@ -265,7 +265,6 @@ bool window::load_game()
     add_functional_button(10, 10, MENU);
     std::string location_name = "";
     player = new Magnat("save/save_player.txt", "save/save_inventory.txt", location_name);
-    std::cout << location_name;
     location = new Location(location_name, 0, 0, this->map);
     map[player->get_X()][player->get_Y()] = player;
     load_quests();
@@ -343,7 +342,6 @@ void window::working()
         al_wait_for_event(event_queue, &events);
         if (game_is_on)
             game_is_on = game_working();
-    /*    std::cout << "Dupa";*/
         if (mouse_position_x != events.mouse.x || mouse_position_y != events.mouse.y)
         {
             butt_list* temp = buttons;

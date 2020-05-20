@@ -1,7 +1,5 @@
 #include "buttons.h"
 
-
-
 Button::Button(int pposition_x, int pposition_y, int psize_x, int psize_y, bool pis_fader)
 	:position_x(pposition_x), position_y(pposition_y), size_x(psize_x), size_y(psize_y), is_fader(pis_fader)
 {

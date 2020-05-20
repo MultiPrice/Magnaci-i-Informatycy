@@ -600,14 +600,14 @@ void Magnat::basic_attack(Object***& map, Location* location, std::vector <Quest
 		for (int i = positionY - 1; i < positionY; i++)
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
-				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
+				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Teleport) && map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Other_element) && map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Container))
 					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;
 	case RIGHT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
-			if (map[positionX + 1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Element))
+			if (map[positionX + 1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Teleport) && map[positionX + 1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Container) && map[positionX + 1][i] != nullptr && typeid(*map[positionX + 1][i]) != typeid(Other_element))
 				dynamic_cast<Character*>(map[positionX + 1][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;
@@ -615,14 +615,14 @@ void Magnat::basic_attack(Object***& map, Location* location, std::vector <Quest
 		for (int i = positionY + 1; i < positionY + 2; i++)
 		{
 			for (int j = positionX - 1; j < positionX + 2; j++)
-				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Element))
+				if (map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Teleport) && map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Container) && map[j][i] != nullptr && typeid(*map[j][i]) != typeid(Other_element))
 					dynamic_cast<Character*>(map[j][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;
 	case LEFT:
 		for (int i = positionY - 1; i < positionY + 2; i++)
 		{
-			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX - 1][i]) != typeid(Element))
+			if (map[positionX - 1][i] != nullptr && typeid(*map[positionX - 1][i]) != typeid(Teleport) && map[positionX - 1][i] != nullptr && typeid(*map[positionX - 1][i]) != typeid(Container) && map[positionX - 1][i] != nullptr && typeid(*map[positionX - 1][i]) != typeid(Other_element))
 				dynamic_cast<Character*>(map[positionX - 1][i])->get_damage(damage, map, location, quest_line);
 		}
 		break;

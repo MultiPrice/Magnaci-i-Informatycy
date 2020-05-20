@@ -1,16 +1,12 @@
 Stachu_Jones
 {
-Poczatek przygody
+Trening wytrzymalosciowy
 {
-110002
+130000
 0
-Village1
-1
-1
+Forest2
+0
+4
 }
-Zadanie burmistrza
-}
-Koniec treningu
-}
-qt2
+Powrot
 }

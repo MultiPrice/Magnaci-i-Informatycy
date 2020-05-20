@@ -673,5 +673,3 @@ Location::~Location()
 	mobs.clear();
 	dead_mobs.clear();
 }
-
-
