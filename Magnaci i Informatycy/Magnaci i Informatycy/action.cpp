@@ -61,10 +61,32 @@ AoE::AoE(int positionX, int positionY, std::string texture_file, std::string nam
 	}
 }
 
-bool AoE::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line)
+void AoE::try_make_effect(int i, Object***& map, Location*& location, std::vector <Quest_line*>& quest_line, int gap)
+{
+	if (i > 0 && i < location->get_sizeX())
+	{
+		if (center_y - gap > 0)
+			if (map[i][center_y - gap] != nullptr)
+				if (typeid(Teleport) != typeid(*map[i][center_y - gap]) && typeid(Container) != typeid(*map[i][center_y - gap]) && typeid(Other_element) != typeid(*map[i][center_y - gap]))
+					if(dynamic_cast<Character*>(map[i][center_y - gap])->get_attitude() == 3)
+						dynamic_cast<Character*>(map[i][center_y - gap])->get_damage(damage, map, location, quest_line);
+		if (gap == 0)
+			return;
+		if (center_y + gap < location->get_sizeY())
+			if (map[i][center_y + gap] != nullptr)
+				if (typeid(Teleport) != typeid(*map[i][center_y + gap]) && typeid(Container) != typeid(*map[i][center_y + gap]) && typeid(Other_element) != typeid(*map[i][center_y + gap]))
+					if (dynamic_cast<Character*>(map[i][center_y + gap])->get_attitude() == 3)
+						dynamic_cast<Character*>(map[i][center_y + gap])->get_damage(damage, map, location, quest_line);
+	}
+}
+
+bool AoE::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* &location, std::vector <Quest_line*> &quest_line)
 {
 	if (cast_time > 0)
+	{
+		cast_time--;
 		return true;
+	}
 	if (countdown % speed != 0)
 	{
 		countdown++;
@@ -76,51 +98,15 @@ bool AoE::make_action(Object***& map, int size_x, int size_y, int position_x, in
 	else
 		duration--;
 	
-	for (int i = center_x - 1; i <= center_x + 1; i++)
-	{
-		if (i > 0 && i < size_x)
-		{
-			if (center_y - 3 > 0)
-				if (map[i][center_y - 3] != nullptr)
-					if (typeid(Teleport) != typeid(*map[i][center_y - 3]) && typeid(Container) != typeid(*map[i][center_y - 3]) && typeid(Other_element) != typeid(*map[i][center_y - 3]))
-						dynamic_cast<Character*>(map[i][center_y - 3])->get_damage(damage, map, location, quest_line);
-			if (center_y + 3 < size_y)
-					if (map[i][center_y + 3] != nullptr)
-						if (typeid(Teleport) != typeid(*map[i][center_y + 3]) && typeid(Container) != typeid(*map[i][center_y + 3]) && typeid(Other_element) != typeid(*map[i][center_y + 3]))
-							dynamic_cast<Character*>(map[i][center_y + 3])->get_damage(damage, map, location, quest_line);
-		}
-	}
 	for (int i = center_x - 3; i <= center_x + 3; i++)
 	{
-		if (i > 0 && i < size_x)
-		{
-			if (center_y - 1 > 0)
-				if (map[i][center_y - 1] != nullptr)
-					if (typeid(Teleport) != typeid(*map[i][center_y - 1]) && typeid(Container) != typeid(*map[i][center_y - 1]) && typeid(Other_element) != typeid(*map[i][center_y - 1]))
-						dynamic_cast<Character*>(map[i][center_y - 1])->get_damage(damage, map, location, quest_line);
-			if (center_y + 1 < size_y)
-				if (map[i][center_y + 1] != nullptr)
-					if (typeid(Teleport) != typeid(*map[i][center_y + 1]) && typeid(Container) != typeid(*map[i][center_y + 1]) && typeid(Other_element) != typeid(*map[i][center_y + 1]))
-						dynamic_cast<Character*>(map[i][center_y + 1])->get_damage(damage, map, location, quest_line);
-				if (map[i][center_y] != nullptr)
-					if (typeid(Teleport) != typeid(*map[i][center_y]) && typeid(Container) != typeid(*map[i][center_y]) && typeid(Other_element) != typeid(*map[i][center_y]))
-						dynamic_cast<Character*>(map[i][center_y ])->get_damage(damage, map, location, quest_line);
-		}
+		try_make_effect(i, map, location, quest_line, 1);
+		try_make_effect(i, map, location, quest_line, 0);
 	}
+	for (int i = center_x - 1; i <= center_x + 1; i++)
+		try_make_effect(i, map, location, quest_line, 3);
 	for (int i = center_x - 2; i <= center_x + 2; i++)
-	{
-		if (i > 0 && i < size_x)
-		{
-			if (center_y - 2 > 0)
-				if (map[i][center_y - 2] != nullptr)
-					if (typeid(Teleport) != typeid(*map[i][center_y - 2]) && typeid(Container) != typeid(*map[i][center_y - 2]) && typeid(Other_element) != typeid(*map[i][center_y - 2]))
-						dynamic_cast<Character*>(map[i][center_y - 2])->get_damage(damage, map, location, quest_line);
-			if (center_y + 2 < size_y)
-				if (map[i][center_y + 2] != nullptr)
-					if (typeid(Teleport) != typeid(*map[i][center_y + 2]) && typeid(Container) != typeid(*map[i][center_y + 2]) && typeid(Other_element) != typeid(*map[i][center_y + 2]))
-						dynamic_cast<Character*>(map[i][center_y + 2])->get_damage(damage, map, location, quest_line);
-		}
-	}
+		try_make_effect(i, map, location, quest_line, 2);
 	return true;
 }
 
@@ -150,111 +136,88 @@ Wind::Wind(int positionX, int positionY, std::string texture_file, std::string n
 	}
 }
 
-bool Wind::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line)
+int Wind::try_make_effect(Object***& map, Location*& location, std::vector<Quest_line*>& quest_line)
 {
-	if (cast_time > 0)
-		return true;
+	if (map[representation->get_X()][representation->get_Y()] != nullptr)
+	{
+		if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+		{
+			if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
+				return 0;
+		}
+		else
+		{
+			dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
+			if (representation->get_ghosted() == false)
+				return 0;
+		}
+	}
 	if (countdown % speed != 0)
 	{
 		countdown++;
-		return true;
+		return 1;
 	}
 	countdown++;
 	if (duration <= 0)
-		return false;
+		return 0;
 	else
 		duration--;
+	return 2;
+}
+
+bool Wind::try_changing_position(Object***& map, Location*& location, std::vector <Quest_line*>& quest_line)
+{
 	switch (direction)
 	{
 	case UP:
-		if (representation->get_Y() > 0)
+		switch (try_make_effect(map, location, quest_line))
 		{
-			if (map[representation->get_X()][representation->get_Y()] != nullptr)
-			{
-				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-				{
-					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-						return false;
-				}
-				else
-				{
-					dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-					if (representation->get_ghosted() == false)
-						return false;
-				}
-			}
-			representation->change_position(representation->get_X(), representation->get_Y() - 1);
+		case 0: return false;
+		case 1: return true;
+		default: break;
 		}
-		else
-			return false;
+		representation->change_position(representation->get_X(), representation->get_Y() - 1);
 		return true;
 	case DOWN:
-		if (representation->get_Y() < size_y)
+		switch (try_make_effect(map, location, quest_line))
 		{
-			if (map[representation->get_X()][representation->get_Y()] != nullptr)
-			{
-				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-				{
-					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-						return false;
-				}
-				else
-				{
-					dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-					if (representation->get_ghosted() == false)
-						return false;
-				}
-			}
-			representation->change_position(representation->get_X(), representation->get_Y() + 1);
+		case 0: return false;
+		case 1: return true;
+		default: break;
 		}
-		else
-			return false;
+		representation->change_position(representation->get_X(), representation->get_Y() + 1);
 		return true;
 	case RIGHT:
-		if (representation->get_X() < size_x)
+		switch (try_make_effect(map, location, quest_line))
 		{
-			if (map[representation->get_X()][representation->get_Y()] != nullptr)
-			{
-				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-				{
-					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-						return false;
-				}
-				else
-				{
-					dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-					if (representation->get_ghosted() == false)
-						return false;
-				}
-			}
-			representation->change_position(representation->get_X() + 1, representation->get_Y());
+		case 0: return false;
+		case 1: return true;
+		default: break;
 		}
-		else
-			return false;
+		representation->change_position(representation->get_X() + 1, representation->get_Y());
 		return true;
 	case LEFT:
-		if (representation->get_X() > 0)
+		switch (try_make_effect(map, location, quest_line))
 		{
-			if (map[representation->get_X()][representation->get_Y()] != nullptr)
-			{
-				if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-				{
-					if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-						return false;
-				}
-				else
-				{
-					dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-					if (representation->get_ghosted() == false)
-						return false;
-				}
-			}
-			representation->change_position(representation->get_X() - 1, representation->get_Y());
+		case 0: return false;
+		case 1: return true;
+		default: break;
 		}
-		else
-			return false;
+		representation->change_position(representation->get_X() - 1, representation->get_Y());
 		return true;
 	}
+}
+
+bool Wind::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* &location, std::vector <Quest_line*>& quest_line)
+{
+	if (cast_time > 0)
+	{
+		cast_time--;
+		return true;
+	}
+	if (representation->get_Y() <= 0 || representation->get_Y() >= size_y || representation->get_X() >= size_x || representation->get_X() <= 0)
+		return false;
+	try_changing_position(map, location, quest_line);
 }
 
 Wind::~Wind()
@@ -270,10 +233,13 @@ Self::Self(int positionX, int positionY, std::string texture_file, std::string n
 	this->over_time = over_time;
 }
 
-bool Self::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line)
+bool Self::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* &location, std::vector <Quest_line*>& quest_line)
 {
 	if (cast_time > 0)
+	{
+		cast_time--;
 		return true;
+	}
 	representation->change_position(player->get_X(), player->get_Y() - 1);
 	if (countdown % speed != 0)
 	{
@@ -285,7 +251,6 @@ bool Self::make_action(Object***& map, int size_x, int size_y, int position_x, i
 		return false;
 	else
 		duration--;
-	
 	if (!over_time)
 	{
 		if (!check)
@@ -330,11 +295,11 @@ Breath::Breath(int positionX, int positionY, std::string texture_file, std::stri
 	}
 }
 
-void Breath::split(int positionX, int positionY) // NARAZIE NA SZTYWNO
+void Breath::split(int positionX, int positionY)
 {
 	check = true;
 	duration = 1;
-	speed = 80;
+	speed = 180;
 	countdown = 0;
 	switch (direction)
 	{
@@ -365,210 +330,214 @@ void Breath::split(int positionX, int positionY) // NARAZIE NA SZTYWNO
 	}
 }
 
-bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* location, std::vector <Quest_line*> quest_line)
+int Breath::try_make_effect(Object***& map, Location*& location, std::vector<Quest_line*>& quest_line)
 {
-	if (cast_time > 0)
-		return true;
+	if (map[representation->get_X()][representation->get_Y()] != nullptr)
+	{
+		if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
+		{
+			if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
+				return 0;
+		}
+		else
+		{
+			dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
+			if (representation->get_ghosted() == false)
+			{
+				split(representation->get_X(), representation->get_Y());
+				return 1;
+			}
+		}
+	}
 	if (countdown % speed != 0)
 	{
 		countdown++;
-		return true;
+		return 1;
 	}
 	countdown++;
 	if (duration <= 0)
 	{
 		if (!check)
+		{
 			split(representation->get_X(), representation->get_Y());
-		else 
-			return false;
+			return 1;
+		}
+		else
+			return 0;
 	}
 	else
 		duration--;
+	return 2;
+}
+
+bool Breath::try_changing_position(Object***& map, Location*& location, std::vector<Quest_line*>& quest_line)
+{
+	switch (direction)
+	{
+	case UP:
+		switch (try_make_effect(map, location, quest_line))
+		{
+		case 0: return false;
+		case 1: return true;
+		default: break;
+		}
+		representation->change_position(representation->get_X(), representation->get_Y() - 1);
+		return true;
+	case DOWN:
+		switch (try_make_effect(map, location, quest_line))
+		{
+		case 0: return false;
+		case 1: return true;
+		default: break;
+		}
+		representation->change_position(representation->get_X(), representation->get_Y() + 1);
+		return true;
+	case RIGHT:
+		switch (try_make_effect(map, location, quest_line))
+		{
+		case 0: return false;
+		case 1: return true;
+		default: break;
+		}
+		representation->change_position(representation->get_X() + 1, representation->get_Y());
+		return true;
+	case LEFT:
+		switch (try_make_effect(map, location, quest_line))
+		{
+		case 0: return false;
+		case 1: return true;
+		default: break;
+		}
+		representation->change_position(representation->get_X() - 1, representation->get_Y());
+		return true;
+	}
+}
+
+void Breath::try_make_effect_after_split_up(int size_x, int size_y, Object***& map, Location*& location, std::vector<Quest_line*>& quest_line)
+{
+	if (center_y - 2 > 0)
+		for (int i = center_x - 2; i <= center_x + 2; i++)
+			if (i > 0 && i < size_x)
+				if (map[i][center_y - 2] != nullptr)
+					if (typeid(Teleport) != typeid(*map[i][center_y - 2]) && typeid(Container) != typeid(*map[i][center_y - 2]) && typeid(Other_element) != typeid(*map[i][center_y - 2]))
+					{
+						
+						dynamic_cast<Character*>(map[i][center_y - 2])->get_damage(damage, map, location, quest_line);
+					}
+	if (center_y - 1 > 0)
+		for (int i = center_x - 1; i <= center_x + 1; i++)
+			if (i > 0 && i < size_x)
+				if (map[i][center_y - 1] != nullptr)
+					if (typeid(Teleport) != typeid(*map[i][center_y - 1]) && typeid(Container) != typeid(*map[i][center_y - 1]) && typeid(Other_element) != typeid(*map[i][center_y - 1]))
+						dynamic_cast<Character*>(map[i][center_y - 1])->get_damage(damage, map, location, quest_line);
+	if (center_y > 0)
+		if (center_x > 0 && center_x < size_x)
+			if (map[center_x][center_y] != nullptr)
+				if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
+					dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+}
+
+void Breath::try_make_effect_after_split_down(int size_x, int size_y, Object***& map, Location*& location, std::vector<Quest_line*>& quest_line)
+{
+	if (center_y + 2 < size_y)
+		for (int i = center_x - 2; i <= center_x + 2; i++)
+			if (i > 0 && i < size_x)
+				if (map[i][center_y + 2] != nullptr)
+					if (typeid(Teleport) != typeid(*map[i][center_y + 2]) && typeid(Container) != typeid(*map[i][center_y + 2]) && typeid(Other_element) != typeid(*map[i][center_y + 2]))
+						dynamic_cast<Character*>(map[i][center_y + 2])->get_damage(damage, map, location, quest_line);
+	if (center_y + 1 < size_y)
+		for (int i = center_x - 1; i <= center_x + 1; i++)
+			if (i > 0 && i < size_x)
+				if (map[i][center_y + 1] != nullptr)
+					if (typeid(Teleport) != typeid(*map[i][center_y + 1]) && typeid(Container) != typeid(*map[i][center_y + 1]) && typeid(Other_element) != typeid(*map[i][center_y + 1]))
+						dynamic_cast<Character*>(map[i][center_y + 1])->get_damage(damage, map, location, quest_line);
+	if (center_y < size_y)
+		if (center_x > 0 && center_x < size_x)
+			if (map[center_x][center_y] != nullptr)
+				if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
+					dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+}
+
+void Breath::try_make_effect_after_split_right(int size_x, int size_y, Object***& map, Location*& location, std::vector<Quest_line*>& quest_line)
+{
+	if (center_x + 2 < size_x)
+		for (int i = center_y - 2; i <= center_y + 2; i++)
+			if (i > 0 && i < size_y)
+				if (map[center_x + 2][i] != nullptr)
+					if (typeid(Teleport) != typeid(*map[center_x + 2][i]) && typeid(Container) != typeid(*map[center_x + 2][i]) && typeid(Other_element) != typeid(*map[center_x + 2][i]))
+						dynamic_cast<Character*>(map[center_x + 2][i])->get_damage(damage, map, location, quest_line);
+	if (center_x + 1 < size_x)
+		for (int i = center_y - 1; i <= center_y + 1; i++)
+			if (i > 0 && i < size_y)
+				if (map[center_x + 1][i] != nullptr)
+					if (typeid(Teleport) != typeid(*map[center_x + 1][i]) && typeid(Container) != typeid(*map[center_x + 1][i]) && typeid(Other_element) != typeid(*map[center_x + 1][i]))
+						dynamic_cast<Character*>(map[center_x + 1][i])->get_damage(damage, map, location, quest_line);
+	if (center_x < size_x)
+		if (center_y > 0 && center_y < size_y)
+			if (map[center_x][center_y] != nullptr)
+				if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
+					dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+}
+
+void Breath::try_make_effect_after_split_left(int size_x, int size_y, Object***& map, Location*& location, std::vector<Quest_line*>& quest_line)
+{
+	if (center_x - 2 > 0)
+		for (int i = center_y - 2; i <= center_y + 2; i++)
+			if (i > 0 && i < size_y)
+				if (map[center_x - 2][i] != nullptr)
+					if (typeid(Teleport) != typeid(*map[center_x - 2][i]) && typeid(Container) != typeid(*map[center_x - 2][i]) && typeid(Other_element) != typeid(*map[center_x - 2][i]))
+						dynamic_cast<Character*>(map[center_x - 2][i])->get_damage(damage, map, location, quest_line);
+	if (center_x - 1 > 0)
+		for (int i = center_y - 1; i <= center_y + 1; i++)
+			if (i > 0 && i < size_y)
+				if (map[center_x - 1][i] != nullptr)
+					if (typeid(Teleport) != typeid(*map[center_x - 1][i]) && typeid(Container) != typeid(*map[center_x - 1][i]) && typeid(Other_element) != typeid(*map[center_x - 1][i]))
+						dynamic_cast<Character*>(map[center_x - 1][i])->get_damage(damage, map, location, quest_line);
+	if (center_x > 0)
+		if (center_y > 0 && center_y < size_y)
+			if (map[center_x][center_y] != nullptr)
+				if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
+					dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+}
+
+bool Breath::make_action(Object***& map, int size_x, int size_y, int position_x, int position_y, Object* player, Location* &location, std::vector <Quest_line*>& quest_line)
+{
+	if (cast_time > 0)
+	{
+		cast_time--;
+		return true;
+	}
 	if (!check)
 	{
-		switch (direction)
-		{
-		case UP:
-			if (representation->get_Y() > 0)
-			{
-				if (map[representation->get_X()][representation->get_Y()] != nullptr)
-				{
-					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-					{
-						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-							return false;
-					}
-					else
-					{
-						dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-						if (representation->get_ghosted() == false)
-						{
-							split(representation->get_X(), representation->get_Y());
-							return true;
-						}
-					}
-				}
-				representation->change_position(representation->get_X(), representation->get_Y() - 1);
-			}
-			else
-				return false;
+		if (try_changing_position(map, location, quest_line))
 			return true;
-		case DOWN:
-			if (representation->get_Y() < size_y)
-			{
-				if (map[representation->get_X()][representation->get_Y()] != nullptr)
-				{
-					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-					{
-						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-							return false;
-					}
-					else
-					{
-						dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-						if (representation->get_ghosted() == false)
-						{
-							split(representation->get_X(), representation->get_Y());
-							return true;
-						}
-					}
-				}
-				representation->change_position(representation->get_X(), representation->get_Y() + 1);
-			}
-			else
-				return false;
-			return true;
-		case RIGHT:
-			if (representation->get_X() < size_x)
-			{
-				if (map[representation->get_X()][representation->get_Y()] != nullptr)
-				{
-					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-					{
-						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-							return false;
-					}
-					else
-					{
-						dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-						if (representation->get_ghosted() == false)
-						{
-							split(representation->get_X(), representation->get_Y());
-							return true;
-						}
-					}
-				}
-				representation->change_position(representation->get_X() + 1, representation->get_Y());
-			}
-			else
-				return false;
-			return true;
-		case LEFT:
-			if (representation->get_X() > 0)
-			{
-				if (map[representation->get_X()][representation->get_Y()] != nullptr)
-				{
-					if (typeid(Teleport) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Container) == typeid(*map[representation->get_X()][representation->get_Y()]) || typeid(Other_element) == typeid(*map[representation->get_X()][representation->get_Y()]))
-					{
-						if (dynamic_cast<Element*>(map[representation->get_X()][representation->get_Y()])->get_ghosted() == false)
-							return false;
-					}
-					else
-					{
-						dynamic_cast<Character*>(map[representation->get_X()][representation->get_Y()])->get_damage(damage, map, location, quest_line);
-						if (representation->get_ghosted() == false)
-						{
-							split(representation->get_X(), representation->get_Y());
-							return true;
-						}
-					}
-				}
-				representation->change_position(representation->get_X() - 1, representation->get_Y());
-			}
-			else
-				return false;
-			return true;
-		}
+		else return false;
 	}
 	else
 	{
+		if (countdown % speed != 0)
+		{
+			countdown++;
+			return true;
+		}
+		countdown++;
+		if (duration <= 0)
+			return false;
+		else
+			duration--;
 		switch (direction)
 		{
 		case UP:
-			if (center_y - 2 > 0)
-				for (int i = center_x - 2; i <= center_x + 2; i++)
-					if(i > 0 && i < size_x)
-						if (map[i][center_y - 2] != nullptr)
-							if (typeid(Teleport) != typeid(*map[i][center_y - 2]) && typeid(Container) != typeid(*map[i][center_y - 2]) && typeid(Other_element) != typeid(*map[i][center_y - 2]))
-								dynamic_cast<Character*>(map[i][center_y - 2])->get_damage(damage, map, location, quest_line);
-			if (center_y - 1 > 0)
-				for (int i = center_x - 1; i <= center_x + 1; i++)
-					if (i > 0 && i < size_x)
-						if (map[i][center_y - 1] != nullptr)
-							if (typeid(Teleport) != typeid(*map[i][center_y - 1]) && typeid(Container) != typeid(*map[i][center_y - 1]) && typeid(Other_element) != typeid(*map[i][center_y - 1]))
-								dynamic_cast<Character*>(map[i][center_y - 1])->get_damage(damage, map, location, quest_line);
-			if (center_y > 0)
-				if (center_x > 0 && center_x < size_x)
-					if (map[center_x][center_y] != nullptr)
-						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
-							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+			try_make_effect_after_split_up(size_x, size_y, map, location, quest_line);
 			return true;
 		case DOWN:
-			if (center_y + 2 < size_y)
-				for (int i = center_x - 2; i <= center_x + 2; i++)
-					if (i > 0 && i < size_x)
-						if (map[i][center_y + 2] != nullptr)
-							if (typeid(Teleport) != typeid(*map[i][center_y + 2]) && typeid(Container) != typeid(*map[i][center_y + 2]) && typeid(Other_element) != typeid(*map[i][center_y + 2]))
-								dynamic_cast<Character*>(map[i][center_y + 2])->get_damage(damage, map, location, quest_line);
-			if (center_y + 1 < size_y)
-				for (int i = center_x - 1; i <= center_x + 1; i++)
-					if (i > 0 && i < size_x)
-						if (map[i][center_y + 1] != nullptr)
-							if (typeid(Teleport) != typeid(*map[i][center_y + 1]) && typeid(Container) != typeid(*map[i][center_y + 1]) && typeid(Other_element) != typeid(*map[i][center_y + 1]))
-								dynamic_cast<Character*>(map[i][center_y + 1])->get_damage(damage, map, location, quest_line);
-			if (center_y < size_y)
-				if (center_x > 0 && center_x < size_x)
-					if (map[center_x][center_y] != nullptr)
-						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
-							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+			try_make_effect_after_split_down(size_x, size_y, map, location, quest_line);
 			return true;
 		case RIGHT:
-			if (center_x + 2 < size_x)
-				for (int i = center_y - 2; i <= center_y + 2; i++)
-					if (i > 0 && i < size_y)
-						if (map[center_x + 2][i] != nullptr)
-							if (typeid(Teleport) != typeid(*map[center_x + 2][i]) && typeid(Container) != typeid(*map[center_x + 2][i]) && typeid(Other_element) != typeid(*map[center_x + 2][i]))
-								dynamic_cast<Character*>(map[center_x + 2][i])->get_damage(damage, map, location, quest_line);
-			if (center_x + 1 < size_x)
-				for (int i = center_y - 1; i <= center_y + 1; i++)
-					if (i > 0 && i < size_y)
-						if (map[center_x + 1][i] != nullptr)
-							if (typeid(Teleport) != typeid(*map[center_x + 1][i]) && typeid(Container) != typeid(*map[center_x + 1][i]) && typeid(Other_element) != typeid(*map[center_x + 1][i]))
-								dynamic_cast<Character*>(map[center_x + 1][i])->get_damage(damage, map, location, quest_line);
-			if (center_x < size_x)
-				if (center_y > 0 && center_y < size_y)
-					if (map[center_x][center_y] != nullptr)
-						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
-							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+			try_make_effect_after_split_right(size_x, size_y, map, location, quest_line);
 			return true;
 		case LEFT:
-			if (center_x - 2 > 0)
-				for (int i = center_y - 2; i <= center_y + 2; i++)
-					if (i > 0 && i < size_y)
-						if (map[center_x - 2][i] != nullptr)
-							if (typeid(Teleport) != typeid(*map[center_x - 2][i]) && typeid(Container) != typeid(*map[center_x - 2][i]) && typeid(Other_element) != typeid(*map[center_x - 2][i]))
-								dynamic_cast<Character*>(map[center_x - 2][i])->get_damage(damage, map, location, quest_line);
-			if (center_x - 1 > 0)
-				for (int i = center_y - 1; i <= center_y + 1; i++)
-					if (i > 0 && i < size_y)
-						if (map[center_x - 1][i] != nullptr)
-							if (typeid(Teleport) != typeid(*map[center_x - 1][i]) && typeid(Container) != typeid(*map[center_x - 1][i]) && typeid(Other_element) != typeid(*map[center_x - 1][i]))
-								dynamic_cast<Character*>(map[center_x - 1][i])->get_damage(damage, map, location, quest_line);
-			if (center_x > 0)
-				if (center_y > 0 && center_y < size_y)
-					if (map[center_x][center_y] != nullptr)
-						if (typeid(Teleport) != typeid(*map[center_x][center_y]) && typeid(Container) != typeid(*map[center_x][center_y]) && typeid(Other_element) != typeid(*map[center_x][center_y]))
-							dynamic_cast<Character*>(map[center_x][center_y])->get_damage(damage, map, location, quest_line);
+			try_make_effect_after_split_left(size_x, size_y, map, location, quest_line);
 			return true;
 		}
 	}

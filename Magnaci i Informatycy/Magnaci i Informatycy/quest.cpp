@@ -44,42 +44,25 @@ TYPE Objective::get_to_do()
 	return to_do;
 }
 
+int Objective::get_to_do_int()
+{
+	return (int)to_do;
+}
+
 Character_objective::Character_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
 	:Objective(target_id, target_location_name, to_do, how_many)
 {
 }
-
-//void Character_objective::check_objective(Location* location)
-//{
-//	if (location->get_name() == target_location_name)
-//		check = true;
-//	else
-//		check = false;
-//}
 
 Element_objective::Element_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
 	:Objective(target_id, target_location_name, to_do, how_many)
 {
 }
 
-//void Element_objective::check_objective(Location* location)
-//{
-//	if (location->get_name() == target_location_name)
-//		check = true;
-//	else
-//		check = false;
-//}
-
 Location_objective::Location_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
 	: Objective(target_id, target_location_name, to_do, how_many)
 {
 }
-
-//void Location_objective::check_objective(Location* location)
-//{
-//	if (location->get_name() == target_location_name)
-//		check = true;
-//}
 
 Item_objective::Item_objective(int target_id, std::string target_location_name, TYPE to_do, int how_many)
 	:Objective(target_id, target_location_name, to_do, how_many)
@@ -132,7 +115,11 @@ void Quest::add_objective(int target_id, std::string target_location_name, TYPE 
 
 Quest::~Quest()
 {
-	objective.clear();
+	if (objective.empty())
+		return;
+	for (int i = 0; i < objective.size(); i++)
+		delete objective[i];
+	//objective.clear();
 }
 
 Quest_line::Quest_line(std::string quest_line_name, std::string start_quest_name)
@@ -156,45 +143,53 @@ Quest_line::Quest_line(std::string quest_line_name)
 	player = al_load_bitmap("player/player_move.png");
 }
 
-void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_name)
+void Quest_line::quest_file_read(std::string quest_line_name, std::string quest_name_s)
 {
-	std::string file_name = "Quest/" + quest_line_name + "/" + quest_name + ".txt";
-	std::fstream file;
-	file.open(file_name);
-	if (file)
+	try
 	{
-		std::string trash;
-		std::getline(file, trash);
-		std::getline(file, trash);
-		std::getline(file, trash);
-		std::string class_type, enum_type, how_many, location_name;
-		while (file)
+		std::string file_name = "Quest/" + quest_line_name + "/" + quest_name_s + ".txt";
+		std::fstream file;
+		file.open(file_name);
+		if (file)
 		{
-			std::getline(file, class_type);
-			std::getline(file, location_name);
-			std::getline(file, enum_type);
-			std::getline(file, how_many);
-			switch (stoi(class_type))
+			std::string trash;
+			std::getline(file, trash);
+			std::getline(file, trash);
+			std::getline(file, trash);
+			std::string class_type, enum_type, how_many, location_name;
+			while (file)
 			{
-			case 0: // Character 
-				add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 0);
-				break;
-			case 1: // Element
-				add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 1);
-				break;
-			case 2: // Location
-				add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 2);
-				break;
-			case 3: // Item
-				add_quest(quest_name, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 3);
-				break;
+				std::getline(file, class_type);
+				std::getline(file, location_name);
+				std::getline(file, enum_type);
+				std::getline(file, how_many);
+				switch (stoi(class_type))
+				{
+				case 0: // Character 
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 0);
+					break;
+				case 1: // Element
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 1);
+					break;
+				case 2: // Location
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 2);
+					break;
+				case 3: // Item
+					add_quest(quest_name_s, stoi(trash), location_name, (TYPE)(stoi(enum_type)), stoi(how_many), 3);
+					break;
+				}
+				std::getline(file, trash);
+				if (trash == "}")
+					break;
 			}
 			std::getline(file, trash);
-			if (trash == "}")
-				break;
+			next_quest_name = trash;
+			quest->name = quest_name_s;
 		}
-		std::getline(file, trash);
-		next_quest_name = trash;
+	}
+	catch (std::ifstream::failure e) 
+	{
+		std::cerr << "Exception opening/reading/closing file\n";
 	}
 }
 
@@ -202,42 +197,65 @@ void Quest_line::add_quest(std::string name, int target_id, std::string target_l
 {
 	if (!quest)
 		quest = new Quest(name, target_id, target_location_name, to_do, how_many, what_class);
-	else /*if(quest->get_name() == name)*/
+	else
 		quest->add_objective(target_id, target_location_name, to_do, how_many, what_class);
-	//else
-	//{
-	//	//quest = nullptr;
-	//	quest = new Quest(name, target_id, target_location_name, to_do, how_many, what_class);
-	//}
 }
 
-void Quest_line::show_quests()
-{
-	al_draw_bitmap(background, 0, 0, 0);
-	al_draw_bitmap(quest_bitmap, screen_width / 2 + measure, 0, 0);
-	al_draw_tinted_scaled_rotated_bitmap_region(player, 0, measure * 6, measure * 1.5, measure * 2, al_map_rgb(255, 255, 255), 0, 0, 150, 60, 8, 8, 0, 0);
-	for (int i = 0; i <quest->objective.size(); i++) // wypisywanie questow
+void Quest_line::show_quests(ALLEGRO_FONT* setting_font, int &j)
+{	
+	al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * j, 0, quest->get_name().c_str());
+	for (int i = 0; i < quest->objective.size(); i++) // wypisywanie objectivow
 	{
-		//std::cout << "dupa \n";
+		std::string tmp;
+		switch (quest->objective[i]->get_to_do_int())
+		{
+		case 0: //KILL
+			if (quest->objective[i]->get_how_many() == 1)
+			{
+				tmp = "    -Zabij " + std::to_string(quest->objective[i]->get_target_id()) + " w " + quest->objective[i]->get_target_location();
+				al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (1 + i + j), 0, tmp.c_str());
+			}
+			else
+			{
+				tmp = "    -Zabij " + std::to_string(quest->objective[i]->get_how_many()) + " " + std::to_string(quest->objective[i]->get_target_id()) + " w " + quest->objective[i]->get_target_location();
+				al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (1 + i + j), 0, tmp.c_str());
+			}
+			break;
+		case 1://SPEAK TO
+			tmp = "    -Porozmawiaj z " + std::to_string(quest->objective[i]->get_target_id()) + " w " + quest->objective[i]->get_target_location();
+			al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (1 + i + j), 0, tmp.c_str());
+			break;
+		case 2: //GO_TO
+			tmp = "    -Idz do " +  quest->objective[i]->get_target_location();
+			al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (1 + i + j), 0, tmp.c_str());
+			break;
+		case 3: //TAKE
+			if (quest->objective[i]->get_how_many() == 1)
+			{
+				tmp = "    -Zdobadz " + std::to_string(quest->objective[i]->get_target_id()) + " w " + quest->objective[i]->get_target_location();
+				al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (1 + i + j), 0, tmp.c_str());
+			}
+			else
+			{
+				tmp = "    -Zdobadz " + std::to_string(quest->objective[i]->get_how_many()) + " " + std::to_string(quest->objective[i]->get_target_id()) + " w " + quest->objective[i]->get_target_location();
+				al_draw_text(setting_font, al_map_rgb(0, 0, 0), screen_width / 2 + measure * 4, measure * (1 + i + j), 0, tmp.c_str());
+			}
+			break;
+		}
 	}
+	j += quest->objective.size();
 }
 
 bool Quest_line::take_next_quest()
 {
-	quest->~Quest();
+	//quest->~Quest();
 	if (next_quest_name == "")
-	{
-		std::cout << "Koniec lini questow" << std::endl;
 		return false;
-	}
 	quest_file_read(name, next_quest_name);
-	std::cout << "Rozpoczales nowego qt" << std::endl;
-	/*std::cout << quest->get_name() << std::endl;
-	std::cout << quest->objective[0]->get_target_name() << std::endl;*/
 	return true;
 }
 
-void Quest_line::save_status(std::fstream& file)
+void Quest_line::save_status(std::ofstream& file)
 {
 	file << name << std::endl << "{" << std::endl;
 	file << quest->get_name() << std::endl << "{" << std::endl;
@@ -306,4 +324,5 @@ Quest_line::~Quest_line()
 	al_destroy_bitmap(background);
 	al_destroy_bitmap(player);
 	quest->~Quest();
+	delete quest;
 }

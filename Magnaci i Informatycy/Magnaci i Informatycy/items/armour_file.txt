@@ -6,7 +6,7 @@ bitmaps/items/armour/helmet/szturmleb.png
 1
 1
 1
-1
+2
 1
 }
 210002
@@ -17,7 +17,7 @@ bitmaps/items/armour/helmet/helmofon.png
 1
 1
 1
-1
+5
 1
 }
 210003
@@ -28,7 +28,7 @@ bitmaps/items/armour/helmet/angry_face.png
 1
 1
 1
-1
+7
 1
 }
 220001
@@ -39,7 +39,7 @@ bitmaps/items/armour/chestplate/turbo_klata.png
 1
 1
 1
-1
+2
 1
 }
 220002
@@ -50,7 +50,7 @@ bitmaps/items/armour/chestplate/rf_ny.png
 1
 1
 1
-1
+5
 1
 }
 220003
@@ -61,7 +61,7 @@ bitmaps/items/armour/chestplate/rf_ny.png
 1
 1
 1
-1
+7
 1
 }
 230001
@@ -72,7 +72,7 @@ bitmaps/items/armour/boots/legos.png
 1
 1
 1
-1
+2
 1
 }
 230002
@@ -83,7 +83,7 @@ bitmaps/items/armour/boots/kaluny.png
 1
 1
 1
-1
+5
 1
 }
 240001
@@ -94,7 +94,7 @@ bitmaps/items/armour/amulet/crying_amulet.png
 1
 1
 1
-1
+3
 1
 }
 240002
@@ -105,7 +105,7 @@ bitmaps/items/armour/amulet/dolar.png
 1
 1
 1
-1
+6
 1
 }
 250001
@@ -116,7 +116,7 @@ bitmaps/items/armour/ring/lotr.png
 1
 1
 1
-1
+3
 1
 }
 250002
@@ -127,7 +127,7 @@ bitmaps/items/armour/ring/biedronka.png
 1
 1
 1
-1
+6
 1
 }
 

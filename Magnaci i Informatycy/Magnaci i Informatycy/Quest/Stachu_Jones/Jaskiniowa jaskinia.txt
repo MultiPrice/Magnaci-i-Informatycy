@@ -1,0 +1,14 @@
+Jaskiniowa jaskinia
+{
+130002
+0
+Cave1
+0
+1
+130003
+3
+Cave1
+3
+1
+}
+Koniec treningu

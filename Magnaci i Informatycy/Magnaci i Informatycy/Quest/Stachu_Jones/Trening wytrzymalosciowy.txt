@@ -1,0 +1,9 @@
+Trening wytrzymałościowy
+{
+130000
+0
+Forest2
+0
+5
+}
+Powrot

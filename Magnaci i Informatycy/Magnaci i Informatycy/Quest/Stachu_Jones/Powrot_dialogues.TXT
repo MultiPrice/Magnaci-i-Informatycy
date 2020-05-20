@@ -1,0 +1,19 @@
+110001
+{
+#...
+1
+Wykonałem zadanie. Jestem gotów
+101
+#Ja o tym zdecyduje, a teraz WON
+101
+Ale co mam zrobić
+102
+#Teraz musisz wiedzieć jak odnaleźć artefakt
+102
+No ale...
+103
+#GUNWO do roboty!
+103
+Ehhh
+0
+}

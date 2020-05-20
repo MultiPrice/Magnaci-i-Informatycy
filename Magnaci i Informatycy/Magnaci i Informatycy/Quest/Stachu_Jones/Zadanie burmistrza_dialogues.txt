@@ -1,0 +1,19 @@
+110006
+{
+#Witaj poszukiwaczy przygód jestem burmistrzem tego zadupia
+1
+Słyszałem, że masz dla mnie zadanie...
+101
+#Zgadza się bestia z północy zaatakowała nasza wioskę.
+101
+Rozumiem...
+102
+#Musisz nam pomóc ją pokonać
+102
+Ale ja nie umiem walczyć
+103
+#Więc idź do Stacha Johnsa on Ci pomoże
+103
+Dobra
+0
+}

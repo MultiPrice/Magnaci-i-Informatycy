@@ -117,11 +117,10 @@ window::window(int pwidth, int pheight)
     al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(screen_width, screen_height);
     header_font = al_load_font("fonts/font.ttf", (150.0 / 1920) * al_get_display_width(display), 0);
-    setting_font = al_load_font("fonts/font.ttf", (40.0 / 1920) * al_get_display_width(display), 0);
+    setting_font = al_load_font("fonts/comic.ttf", (20.0 / 1920) * al_get_display_width(display), 0);
     event_queue = al_create_event_queue();
     backgroud = al_load_bitmap("bitmaps/background/sztandar.bmp");
-    movement_timer = al_create_timer(6.0 / FPS);
-    draw_timer = al_create_timer(1.0 / FPS);
+    
     HUD = al_load_bitmap("bitmaps/background/hud.png");
     HP = al_load_bitmap("bitmaps/background/hp.png");
     MANA = al_load_bitmap("bitmaps/background/mana.png");
@@ -149,10 +148,11 @@ void window::save_game()
 
 void window::save_player()
 {
-    std::fstream file;
-    file.open("save/save_player.txt");
+    std::ofstream file;
+    file.open("save/save_player.txt", std::ofstream::out);
     if (file)
     {
+        file.clear();
         Character* tmp_player = dynamic_cast<Character*>(player);
         file << tmp_player->get_X() << std::endl;
         file << tmp_player->get_Y() << std::endl;
@@ -167,16 +167,18 @@ void window::save_player()
         file << tmp_player->get_max_damage() << std::endl;
         file << tmp_player->get_armour() << std::endl;
         file << tmp_player->get_attitude() << std::endl;
+        file << location->get_name();
         file.close();
     }
 }
 
 void window::save_inventory()
 {
-    std::fstream file;
-    file.open("save/save_inventory.txt");
+    std::ofstream file;
+    file.open("save/save_inventory.txt", std::ofstream::out);
     if (file)
     {
+        file.clear();
         Character* tmp_player = dynamic_cast<Character*>(player);
         Inventory* tmp_inventory = tmp_player->get_inventory();
         Item* tmp_item = nullptr;
@@ -192,8 +194,10 @@ void window::save_inventory()
         for (int i = 0; i < tmp_inventory->get_inventory_size(); i++)
         {
             tmp_item = tmp_inventory->get_item(i);
-            if(tmp_item)
+            if (tmp_item)
                 file << tmp_item->get_item_id() << " " << tmp_item->get_inventory_x() << " " << tmp_item->get_inventory_y() << std::endl;
+            else
+                file << "";
         }
         file.close();
     }
@@ -201,10 +205,11 @@ void window::save_inventory()
 
 void window::save_quests()
 {
-    std::fstream file;
-    file.open("save/save_quests.txt");
+    std::ofstream file;
+    file.open("save/save_quests.txt", std::ofstream::out);
     if (file)
     {
+        file.clear();
         for (int i = 0; i < quest_line.size(); i++)
         {
             quest_line[i]->save_status(file);
@@ -241,78 +246,91 @@ void window::load_quests()
     }
 }
 
-void window::load_game()
+bool window::load_game()
 {
+    std::string email, haslo;
+    std::cout << "Podaj email: ";
+    std::cin >> email;
+    std::cout << "Podaj haslo: ";
+    std::cin >> haslo;
+    if (!check_login(email, haslo))
+        return false;
+    movement_timer = al_create_timer(6.0 / FPS);
+    draw_timer = al_create_timer(1.0 / FPS);
+    al_start_timer(movement_timer);
+    al_start_timer(draw_timer);
     srand(time(NULL));
     clear();
     al_clear_to_color(al_map_rgb(0, 150, 0));
     add_functional_button(10, 10, MENU);
-    player = new Magnat("save/save_player.txt", "save/save_inventory.txt");
-    location = new Location("Plains1", 0, 0, this->map);
+    std::string location_name = "";
+    player = new Magnat("save/save_player.txt", "save/save_inventory.txt", location_name);
+    location = new Location(location_name, 0, 0, this->map);
     map[player->get_X()][player->get_Y()] = player;
-    test = false;
     load_quests();
+    return true;
+}
+
+void window::add_login()
+{
+    vector<std::unique_ptr<Uzytkownik>> gejmer;
+
+    gejmer.push_back(std::make_unique<Uzytkownik>());
+
+    vector<unique_ptr<Uzytkownik>>::iterator iter;
+
+    for (iter = gejmer.begin(); iter < gejmer.end(); iter++)
+        (*iter)->zapisz("save/login.txt");
+}
+
+bool window::check_login(std::string email_p, std::string haslo_p)
+{
+    fstream plik;
+    plik.open("save/login.txt");
+    if (plik)
+    {
+        std::string email, haslo;
+        std::getline(plik, email);
+        std::getline(plik, haslo);
+        plik.close();
+        if (email == email_p && haslo == haslo_p)
+            return true;
+        else 
+            return false;
+    }
+    else return true;
 }
 
 void window::create_colision_file()
 {
     std::fstream file;
-    file.open("Locations/colision.txt");
+    file.open("Locations/better_colision.txt");
     if (file)
     {
         al_stop_timer(movement_timer);
         al_stop_timer(draw_timer);
         bool check = true;
-        ALLEGRO_BITMAP* map_bitmap = al_load_bitmap("Locations/test_map.png");
-        int map_x = 0;
-        int map_y = 0;
-        while (check)
+        ALLEGRO_BITMAP* map_bitmap = al_load_bitmap("Locations/Bez nazwy.png");
+        ALLEGRO_COLOR pixel;
+        ALLEGRO_COLOR red = al_map_rgb(255, 0, 0);
+        for (int i = 30; i < al_get_bitmap_height(map_bitmap); i += 60)
         {
-            al_wait_for_event(event_queue, &events);
-            if (events.type == ALLEGRO_EVENT_MOUSE_AXES)
+            for (int j = 30; j < al_get_bitmap_width(map_bitmap); j += 60)
             {
-                
-            }
-            else if (events.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-            {
-                if (events.mouse.button & 1)
-                    file << "W";
-                else if (events.mouse.button & 2)
+                pixel = al_get_pixel(map_bitmap, j, i);
+                if (memcmp(&pixel, &red, sizeof(ALLEGRO_COLOR)))
                     file << "O";
+                else
+                    file << "W";
             }
-            else if (events.type == ALLEGRO_EVENT_KEY_DOWN)
-            {
-                switch (events.keyboard.keycode)
-                {
-                case ALLEGRO_KEY_UP:
-                    map_y -= measure;
-                    break;
-                case ALLEGRO_KEY_DOWN:
-                    map_y += measure;
-                    break;
-                case ALLEGRO_KEY_RIGHT:
-                    map_x += measure;
-                    break;
-                case ALLEGRO_KEY_LEFT:
-                    map_x -= measure;
-                    break;
-                case ALLEGRO_KEY_E:
-                    check = false;
-                    break;
-                case ALLEGRO_KEY_ENTER:
-                    file << std::endl;
-                    break;
-                }
-            }
-            std::cout << map_x << " " << map_y << std::endl;
-            al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_bitmap_region(map_bitmap, map_x, map_y, screen_width, screen_height, 0, 0, 0);
-            al_flip_display();
+            file << std::endl;
+            std::cout << i << " ";
         }
-        al_start_timer(movement_timer);
-        al_start_timer(draw_timer);
-    }
         file.close();
+    }
+    std::cout << std::endl << "done " << std::endl;
+    al_start_timer(movement_timer);
+    al_start_timer(draw_timer);
 }
 
 void window::working()
@@ -330,9 +348,7 @@ void window::working()
             while (temp)
             {
                 if (temp->element->check_position(events.mouse.x, events.mouse.y))
-                {
                     temp->element->select();
-                }
                 else
                     temp->element->unselect();
                 temp = temp->next;
@@ -376,8 +392,8 @@ void window::working()
                         break;
                     case 5:
                         checking = false;
-                        load_game();
-                        game_is_on = true;
+                        game_is_on = load_game();
+                        //game_is_on = true;
                         break;
                     case 6:
                         checking = false;
@@ -412,7 +428,6 @@ void window::working()
             }
         }
     }
-    save_game();
 }
 
 void window::display_mode()

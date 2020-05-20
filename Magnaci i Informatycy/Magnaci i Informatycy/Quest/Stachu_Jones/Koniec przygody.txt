@@ -1,0 +1,8 @@
+Koniec przygody
+{
+14
+2
+Village1
+2
+1
+}

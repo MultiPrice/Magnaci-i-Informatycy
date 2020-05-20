@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <fstream>
+#include <string>
 
 #include "buttons.h"
 #include "general_functions.h"
@@ -15,6 +16,7 @@
 #include "action.h"
 #include "quest.h"
 #include "dialogue.h"
+#include "User.h"
 
 
 struct butt_list
@@ -54,7 +56,6 @@ class window
     Object* player;
     Object*** map;
     Location* location;
-    bool test;
     std::vector <Action*> action;
     std::vector <Quest_line*> quest_line;
     std::vector <Question*> dialogue;
@@ -64,9 +65,12 @@ public:
     void registration();
     void working();
     bool game_working();
+    void check_location_quest(std::vector <Quest_line*> quest_line, int location_id);
+    void clear_all();
     void restart(std::string location_name);
     int check_answer(int mouse_x, int mouse_y, Question* question);
     void show_dialogue(int character_id);
+    void check_dialogue_quest(bool quest_check, std::vector<Quest_line*>& quest_line, int character_id); // sprawdza czy zostala wykonana rozowa potrzebna w quescie
     void draw_dialogue(Question* question);
     void map_clear();
 
@@ -97,7 +101,7 @@ public:
     void change_position(Object*& who, int prevX, int prevY, int nextX, int nextY);
     void draw_actions(int position_x, int position_y);
     void inventory(Inventory* droped);
-    void guests();
+    void quests();
     bool dialogue_file_read(int character_id, std::string file_name);
     void check_quest_item(Inventory* inventory);
     void save_game();
@@ -105,8 +109,22 @@ public:
     void save_inventory();
     void save_quests();
     void load_quests();
-    void load_game();
+    bool load_game();
+    void add_login();
+    bool check_login(std::string email_p, std::string haslo_p);
     void create_colision_file();
+
+    // funkcje poruszania
+    void attack_in_movement(Character*& tmp); // gracz wykonuje atak
+    void action_in_movement(Character*& tmp, Action* new_action, int type); // gracz wyonal akcje
+    void go_up(Character*& tmp); // ruch gracza w gore
+    void go_down(Character*& tmp); // ruch gracza w dol
+    void go_right(Character*& tmp); // ruch gracza w prawo
+    void go_left(Character*& tmp); // ruch gracza w lewo
+    void inventory_interaction(Character*& tmp); // interakcja z przedmiotem
+    void portal_interaction(Character*& tmp); // interakcja z portalem
+    void dialogue_interaction(Character*& tmp, Object*& obj); // interakcja z posatcia 
+    void any_interaction(Character*& tmp); // wywolanie wszystkich funkcji interakcji
 };
 
 void which_x_in_animation(int& start_x);

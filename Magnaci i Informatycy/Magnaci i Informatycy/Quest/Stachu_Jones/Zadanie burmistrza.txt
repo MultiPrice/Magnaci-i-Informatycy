@@ -1,0 +1,9 @@
+Zadanie burmistrza
+{
+110006
+0
+House1
+1
+1
+}
+Mistrza nad mistrzami

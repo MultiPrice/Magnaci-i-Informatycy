@@ -1,0 +1,9 @@
+nazwa_qt
+{
+id_objectiva
+typ_klasy (0-character 1-element 2-location 3-item)
+location_name
+enum (0-KIL 1-SPEAK_TO 2-GO_TO 3-TAKE)
+how_many
+}
+next_qt

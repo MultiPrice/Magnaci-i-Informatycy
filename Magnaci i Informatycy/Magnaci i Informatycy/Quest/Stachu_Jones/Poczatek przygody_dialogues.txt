@@ -1,0 +1,17 @@
+110002
+{
+#Poszukiwaczu przygód burmistrz potrzebuje twojej pomocy!
+1
+Dlaczego w ogóle powinienem wam pomóc?
+101
+Już się za to biorę, w końcu jestem bohaterem.
+102
+#Jesteś głównym bohaterem nie pytaj tylko ciś do burmistrza!
+101
+O'kej
+0
+#Bardzo dobrze, na frajerów aka bohaterów zawsze można liczyć
+102
+I gitara
+0
+}

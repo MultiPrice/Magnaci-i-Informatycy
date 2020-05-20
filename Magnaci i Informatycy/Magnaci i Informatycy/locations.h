@@ -54,7 +54,6 @@ struct Dead_mobs
 	Dead_mobs(Object* mob, int duration, Inventory* droped);
 	~Dead_mobs();
 	Inventory* get_drop();
-	void wypisz_w_dupe();
 };
 
 class Location : public Object
@@ -69,7 +68,6 @@ protected:
 public:
 	std::vector <Object*> mobs;
 	std::vector <Dead_mobs*> dead_mobs;
-	std::vector <Object*> elements;
 	Location(std::string location_name, int X, int Y, Object***& map);
 	int get_sizeX();
 	int get_sizeY();
@@ -77,7 +75,7 @@ public:
 	Object* get_mob(std::string name);
 	Dead_mobs* find_dead_mob(int X, int Y);
 	std::string get_terrain_name();
-	Travel_list* get_pTravel();
+	Travel_list* get_pTravel(std::string location_name);
 	void read_travel_file(std::string location_name);
 	std::string search_travel(int wanted_X, int wanted_Y);
 	void read_info_file(std::string& location_name);
@@ -88,6 +86,14 @@ public:
 	void draw_mobs(int position_x, int position_y, Object*** map);
 	void draw_dead_mobs(int position_x, int position_y, Object*** map);
 	void draw_portals(int position_x, int position_y, Object*** map);
+	void prepere_mob_attack(class Character*& tmp_mob, Object*& player, int dir); // ustawia moba na atak 
+	void where_can_mob_go(Object***& map, int i, float x2, float y2, Object*& player, double distance, bool& up, bool& down, bool& right, bool& left); // Sprawdza w ktorym kierunku moze przemiescic sie mob
+	void which_quater(class Character*& tmp_mob, int i, bool& up, bool& down, bool& right, bool& left, Object*& player, bool& first, bool& second, bool& third, bool& fourth); // decyduje na której æwiartce zglêdem moba jest gracz
+	void check_first_quoter(class Character*& tmp_mob, Object*& player, int i, bool up, bool down, bool right, bool left); // jesli gracz jest w pierwszej cwiartce to szuka i wykonuje najszybsza droge
+	void check_second_quoter(class Character*& tmp_mob, Object*& player, int i, bool up, bool down, bool right, bool left); // jesli gracz jest w drugiej cwiartce to szuka i wykonuje najszybsza droge
+	void check_third_quoter(class Character*& tmp_mob, Object*& player, int i, bool up, bool down, bool right, bool left); // jesli gracz jest w trzeciej cwiartce to szuka i wykonuje najszybsza droge
+	void check_fourth_quoter(class Character*& tmp_mob, Object*& player, int i, bool up, bool down, bool right, bool left); // jesli gracz jest w czwartej cwiartce to szuka i wykonuje najszybsza droge
+	void mob_not_attacking(class Character*& tmp_mob, int i, bool& up, bool& down, bool& right, bool& left, Object*& player, bool& first, bool& second, bool& third, bool& fourth, float x2, float y2, double distance, Object***& map); // kiedy mob nie atakuje tylko sie porusza
 	void mob_movement(Object* &player, Object*** map);
 	void mob_attack(Object* mob_tmp);
 	int interaction() { return 0; };

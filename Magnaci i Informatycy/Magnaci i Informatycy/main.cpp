@@ -21,6 +21,5 @@ int main()
 	if (!al_addon())
 		return -1;
 	window* game = new window(screen_width, screen_height);
-	std::cout << "zmitac dupa";
 	return 0;
 }
