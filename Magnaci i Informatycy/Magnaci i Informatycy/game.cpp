@@ -634,7 +634,7 @@ void window::start() // pierwsze uruchomienie planszy
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
 	player = new Magnat(2,2, 110000, "player/player.txt");
-	location = new Location("Forest2", 0, 0, this->map);
+	location = new Location("Plains1", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	test = false;
 }
