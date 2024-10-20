@@ -638,7 +638,7 @@ void window::clear_all()
 
 void window::start()
 {
-	add_login();
+	//add_login();
 	movement_timer = al_create_timer(6.0 / FPS);
 	draw_timer = al_create_timer(1.0 / FPS);
 	srand(time(NULL));
@@ -646,7 +646,7 @@ void window::start()
 	al_clear_to_color(al_map_rgb(0, 150, 0));
 	add_functional_button(10, 10, MENU);
 	player = new Magnat(2,26, 110000, "player/player.txt");
-	location = new Location("Villige1", 0, 0, this->map);
+	location = new Location("Village1", 0, 0, this->map);
 	map[player->get_X()][player->get_Y()] = player;
 	quest_line.push_back(new Quest_line("Stachu_Jones", "Poczatek przygody"));
 	al_start_timer(movement_timer);

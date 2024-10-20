@@ -248,13 +248,13 @@ void window::load_quests()
 
 bool window::load_game()
 {
-    std::string email, haslo;
+    /*std::string email, haslo;
     std::cout << "Podaj email: ";
     std::cin >> email;
     std::cout << "Podaj haslo: ";
     std::cin >> haslo;
     if (!check_login(email, haslo))
-        return false;
+        return false;*/
     movement_timer = al_create_timer(6.0 / FPS);
     draw_timer = al_create_timer(1.0 / FPS);
     al_start_timer(movement_timer);
